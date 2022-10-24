@@ -16,7 +16,7 @@
 <?rfc text-list-symbols="-o*+"?>
 <?rfc docmapping="yes"?>
 
-<rfc ipr="trust200902" docName="draft-ietf-suit-report-01" category="info">
+<rfc ipr="trust200902" docName="draft-ietf-suit-report-03" category="info">
 
   <front>
     <title abbrev="Secure Reporting of Update Status">Secure Reporting of Update Status</title>
@@ -34,7 +34,7 @@
       </address>
     </author>
 
-    <date year="2022" month="July" day="11"/>
+    <date year="2022" month="October" day="24"/>
 
     <area>Security</area>
     <workgroup>SUIT</workgroup>
@@ -98,9 +98,9 @@ that may be used in a variety of scenarios.</t>
 </section>
 <section anchor="terminology"><name>Conventions and Terminology</name>
 
-<t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
-NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
-"MAY", and "OPTIONAL" in this document are to be interpreted as
+<t>The key words "<bcp14>MUST</bcp14>", "<bcp14>MUST NOT</bcp14>", "<bcp14>REQUIRED</bcp14>", "<bcp14>SHALL</bcp14>", "<bcp14>SHALL</bcp14>
+NOT", "<bcp14>SHOULD</bcp14>", "<bcp14>SHOULD NOT</bcp14>", "<bcp14>RECOMMENDED</bcp14>", "<bcp14>NOT RECOMMENDED</bcp14>",
+"<bcp14>MAY</bcp14>", and "<bcp14>OPTIONAL</bcp14>" in this document are to be interpreted as
 described in BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/> when, and only when, they
 appear in all capitals, as shown here.</t>
 
@@ -122,11 +122,11 @@ the control flow of the manifest. The manifest only supports the
 following control flow primitives:</t>
 
 <t><list style="symbols">
-  <t>Set Component/Dependency Index</t>
+  <t>Set Component</t>
   <t>Set/Override Parameters</t>
   <t>Try-Each</t>
   <t>Run Sequence</t>
-  <t>Conditions.</t>
+  <t>Conditions</t>
 </list></t>
 
 <t>Of these, only conditions change the behavior of the processor from the
@@ -159,16 +159,14 @@ however it requires some reconstruction effort. This is an issue that
 can be solved by tooling.</t>
 
 <figure><artwork><![CDATA[
-SUIT_Record = {
-    suit-record-manifest-id        => [* uint ],
-    suit-record-manifest-section   => int,
-    suit-record-section-offset     => uint,
-    (
-        suit-record-component-index  => uint //
-        suit-record-dependency-index => uint
-    ),
-    suit-record-properties     => SUIT_Parameters,
-}
+SUIT_Record = [
+    suit-record-manifest-id        : [* uint ],
+    suit-record-manifest-section   : int,
+    suit-record-section-offset     : uint,
+    suit-record-component-index    : uint,
+    suit-record-properties         : SUIT_Parameters,
+    $$SUIT_Record_Extensions
+]
 ]]></artwork></figure>
 
 <t>suit-record-manifest-id is used to identify which manifest contains the
@@ -219,9 +217,6 @@ True and a list of components. Both of these values cause the manifest
 processor to loop over commands using a series of component-ids, so the
 developer needs to know which was selected when the command executed.</t>
 
-<t>suit-record-dependency-index is similar to suit-record-component-index
-but is used to identify the dependency that was active.</t>
-
 <t>suit-record-properties contains any measured properties that led to the
 command failure.
 For example, this could be the actual value of a SUIT_Digest or
@@ -242,18 +237,17 @@ SUIT_Report = {
   suit-report-manifest-digest => SUIT_Digest,
   ? suit-report-manifest-uri  => tstr,
   ? suit-report-nonce         => bstr,
-  suit-report-records         => [ * SUIT_Record ],
-  ? suit-system-properties      => [ + system-property-claims ],
+  suit-report-records         => [ * SUIT_Record / system-property-claims ],
   suit-report-result          => true / {
     suit-report-result-code   => int, ; could condense to enum later
     suit-report-result-record => SUIT_Record,
   }
+  $$SUIT_Report_Extensions
 }
 system-property-claims = {
   system-component-id => SUIT_Component_Identifier,
   + SUIT_Parameters,
 }
-
 ]]></artwork></figure>
 
 <t>suit-report-manifest-digest provides a SUIT_Digest (as defined in
@@ -264,12 +258,18 @@ Root manifest.</t>
 the root manifest.</t>
 
 <t>suit-report-nonce provides a container for freshness or replay
-protection information. This field MAY be omitted where the suit-report
+protection information. This field <bcp14>MAY</bcp14> be omitted where the suit-report
 is authenticated within a container that provides freshness already.
 For example, attestation evidence typically contains a proof of
 freshness.</t>
 
-<t>suit-system-properties provides a list of measured or asserted properties
+<t>suit-report-records is a list of 0 or more SUIT Records or 
+system-property-claims. Because SUIT Records are only generated on failure,
+in simple cases this can be an empty list.</t>
+
+<t>System properties can be extracted from suit-report-records by filtering
+suit-report-records for maps. System Properties are a list of measured 
+or asserted properties
 of the system that creates the suit report. These properties are scoped by
 component identifier. Because this list is expected to be constructed on
 the fly by a constrained node, component identifiers may appear more than
@@ -282,10 +282,6 @@ SUIT_Record_System_Properties = {
   }
 }
 ]]></sourcecode></figure>
-
-<t>suit-report-records is a list of 0 or more SUIT Records. Because SUIT
-Records are only generated on failure, in simple cases this can be an
-empty list.</t>
 
 <t>suit-report-result provides a mechanism to show that the SUIT procedure
 completed successfully (value is true) or why it failed (value is a map
@@ -301,9 +297,9 @@ or manifest dependency tree where the error occured.</t>
 </section>
 <section anchor="attestation"><name>Attestation</name>
 
-<t>This document can allow a well-informed verifier to infer the trustworthiness of a device. This is done by using the SUIT_Manifest_Envelope along with the SUIT_Report to reconstruct the state of the device at boot time. This approach allows a device to use an append-only log to collect both measurements and debug/failure information into the same document. This document can then be transfered to a verifier as a part of the attestation evidence. This must include an attestation of the Manifest Parser &amp; Report Generator.</t>
+<t>This document describes how a well-informed verifier can infer the trustworthiness of a remote device. Remote attestation is done by using the SUIT_Manifest_Envelope along with the SUIT_Report to reconstruct the state of the device at boot time. By embedding data used for remote attestation in the SUIT_Report, a remote device can use an append-only log to collect both measurements and debug/failure information into the same document. This document can then be conveyed to a verifier as a part of the attestation evidence. A remote attestation format to convey attestation evidence, such as an Entity Attestation Token (EAT, see <xref target="I-D.ietf-rats-eat"/>), that contains a SUIT_Report <bcp14>MUST</bcp14> also include an integrity measurement of the Manifest Processor &amp; Report Generator.</t>
 
-<t>When a CoRIM is delivered in a SUIT_Manifest_Envelope, this codifies the delivery of verification information to the verifier:</t>
+<t>When a Concise Reference Integrity Manifest (CoRIM, see <xref target="I-D.birkholz-rats-corim"/> is delivered in a SUIT_Manifest_Envelope, this codifies the delivery of verification information to the verifier:</t>
 
 <t><list style="symbols">
   <t>The Firmware Distributor:
@@ -327,7 +323,36 @@ or manifest dependency tree where the error occured.</t>
 
 <t>This approach simplifies the design of the bootloader since it is able to use an append-only log. It allows a verifier to validate this report against a signed CoRIM that is provided by the firmware author, which simplifies the delivery chain of verification information to the verifier.</t>
 
-<t>This information is not intended as Attestation Evidence and while an Attestation Report MAY provide this information for conveying error codes and/or failure reports, it SHOULD be translated into general-purpose claims for use by the Relying Party.</t>
+<t>This information is not intended as Attestation Evidence and while an Attestation Report <bcp14>MAY</bcp14> provide this information for conveying error codes and/or failure reports, it <bcp14>SHOULD</bcp14> be translated into general-purpose claims for use by the Relying Party.</t>
+
+</section>
+<section anchor="capability-reporting"><name>Capability Reporting</name>
+
+<t>Because SUIT is extensible, a manifest author must know what capabilities a device has available. To enable this, a capability report is a set of lists that define which commands, parameters, algorithms, and component IDs are supported by a manifest processor.</t>
+
+<t>The CDDL for a SUIT_Capability_Report follows:</t>
+
+<figure><sourcecode type="CDDL"><![CDATA[
+SUIT_Capability_Report = {
+  suit-component-capabilities      => [+ SUIT_Component_Capability ]
+  suit-command-capabilities        => [+ int],
+  suit-parameters-capabilities     => [+ int],
+  suit-crypt-algo-capabilities     => [+ int],
+  suit-envelope-capabilities       => [+ int],
+  suit-manifest-capabilities       => [+ int],
+  suit-common-capabilities         => [+ int],
+  suit-text-component-capabilities => [+ int],
+  suit-text-capabilities           => [+ int],
+  suit-dependency-capabilities     => [+ int],
+  $$SUIT_Capability_Report_Extensions
+}
+
+SUIT_Component_Capability = [*bstr,?true]
+]]></sourcecode></figure>
+
+<t>A SUIT_Component_Capability is similar to a SUIT_Component_ID, with one difference: it may optionally be terminated by a CBOR 'true' which acts as a wild-card match for any component with a prefix matching the SUIT_Component_Capability leading up to the 'true.' This feature is for use with filesystem storage, key value stores, or any other arbitrary-component-id storage systems.</t>
+
+<t>When reporting capabilities, it is <bcp14>OPTIONAL</bcp14> to report capabilities that are declared mandatory by the SUIT Manifest <xref target="I-D.ietf-suit-manifest"/>. Capabilities defined by extensions <bcp14>MUST</bcp14> be reported.</t>
 
 </section>
 <section anchor="iana"><name>IANA Considerations</name>
@@ -359,19 +384,22 @@ report was generated by legitimate hardware.</t>
 <reference anchor='I-D.ietf-suit-manifest'>
    <front>
       <title>A Concise Binary Object Representation (CBOR)-based Serialization Format for the Software Updates for Internet of Things (SUIT) Manifest</title>
-      <author fullname='Brendan Moran'>
-	 <organization>Arm Limited</organization>
+      <author fullname='Brendan Moran' initials='B.' surname='Moran'>
+         <organization>Arm Limited</organization>
       </author>
-      <author fullname='Hannes Tschofenig'>
-	 <organization>Arm Limited</organization>
+      <author fullname='Hannes Tschofenig' initials='H.' surname='Tschofenig'>
+         <organization>Arm Limited</organization>
       </author>
-      <author fullname='Henk Birkholz'>
-	 <organization>Fraunhofer SIT</organization>
+      <author fullname='Henk Birkholz' initials='H.' surname='Birkholz'>
+         <organization>Fraunhofer SIT</organization>
       </author>
-      <author fullname='Koen Zandberg'>
-	 <organization>Inria</organization>
+      <author fullname='Koen Zandberg' initials='K.' surname='Zandberg'>
+         <organization>Inria</organization>
       </author>
-      <date day='11' month='July' year='2022'/>
+      <author fullname='Øyvind Rønningstad' initials='O.' surname='Rønningstad'>
+         <organization>Nordic Semiconductor</organization>
+      </author>
+      <date day='7' month='October' year='2022'/>
       <abstract>
 	 <t>   This specification describes the format of a manifest.  A manifest is
    a bundle of metadata about code/data obtained by a recipient (chiefly
@@ -385,8 +413,8 @@ report was generated by legitimate hardware.</t>
 	 </t>
       </abstract>
    </front>
-   <seriesInfo name='Internet-Draft' value='draft-ietf-suit-manifest-18'/>
-   <format target='https://www.ietf.org/archive/id/draft-ietf-suit-manifest-18.txt' type='TXT'/>
+   <seriesInfo name='Internet-Draft' value='draft-ietf-suit-manifest-20'/>
+   <format target='https://www.ietf.org/archive/id/draft-ietf-suit-manifest-20.txt' type='TXT'/>
 </reference>
 
 
@@ -422,112 +450,212 @@ report was generated by legitimate hardware.</t>
 
     </references>
 
+    <references title='Informative References'>
+
+
+
+
+<reference anchor='I-D.ietf-rats-eat'>
+   <front>
+      <title>The Entity Attestation Token (EAT)</title>
+      <author fullname='Laurence Lundblade' initials='L.' surname='Lundblade'>
+         <organization>Security Theory LLC</organization>
+      </author>
+      <author fullname='Giridhar Mandyam' initials='G.' surname='Mandyam'>
+         <organization>Qualcomm Technologies Inc.</organization>
+      </author>
+      <author fullname='Jeremy O&#39;Donoghue' initials='J.' surname='O&#39;Donoghue'>
+         <organization>Qualcomm Technologies Inc.</organization>
+      </author>
+      <author fullname='Carl Wallace' initials='C.' surname='Wallace'>
+         <organization>Red Hound Software, Inc.</organization>
+      </author>
+      <date day='22' month='October' year='2022'/>
+      <abstract>
+	 <t>   An Entity Attestation Token (EAT) provides an attested claims set
+   that describes state and characteristics of an entity, a device like
+   a smartphone, IoT device, network equipment or such.  This claims set
+   is used by a relying party, server or service to determine how much
+   it wishes to trust the entity.
+
+   An EAT is either a CBOR Web Token (CWT) or JSON Web Token (JWT) with
+   attestation-oriented claims.
+
+	 </t>
+      </abstract>
+   </front>
+   <seriesInfo name='Internet-Draft' value='draft-ietf-rats-eat-17'/>
+   <format target='https://www.ietf.org/archive/id/draft-ietf-rats-eat-17.txt' type='TXT'/>
+</reference>
+
+
+<reference anchor='I-D.birkholz-rats-corim'>
+   <front>
+      <title>Concise Reference Integrity Manifest</title>
+      <author fullname='Henk Birkholz' initials='H.' surname='Birkholz'>
+         <organization>Fraunhofer SIT</organization>
+      </author>
+      <author fullname='Thomas Fossati' initials='T.' surname='Fossati'>
+         <organization>arm</organization>
+      </author>
+      <author fullname='Yogesh Deshpande' initials='Y.' surname='Deshpande'>
+         <organization>arm</organization>
+      </author>
+      <author fullname='Ned Smith' initials='N.' surname='Smith'>
+         <organization>Intel</organization>
+      </author>
+      <author fullname='Wei Pan' initials='W.' surname='Pan'>
+         <organization>Huawei Technologies</organization>
+      </author>
+      <date day='11' month='July' year='2022'/>
+      <abstract>
+	 <t>   Remote Attestation Procedures (RATS) enable Relying Parties to assess
+   the trustworthiness of a remote Attester and therefore to decide
+   whether to engage in secure interactions with it.  Evidence about
+   trustworthiness can be rather complex and it is deemed unrealistic
+   that every Relying Party is capable of the appraisal of Evidence.
+   Therefore that burden is typically offloaded to a Verifier.  In order
+   to conduct Evidence appraisal, a Verifier requires not only fresh
+   Evidence from an Attester, but also trusted Endorsements and
+   Reference Values from Endorsers and Reference Value Providers, such
+   as manufacturers, distributors, or device owners.  This document
+   specifies Concise Reference Integrity Manifests (CoRIM) that
+   represent Endorsements and Reference Values in CBOR format.
+   Composite devices or systems are represented by a collection of
+   Concise Module Identifiers (CoMID) and Concise Software Identifiers
+   (CoSWID) bundled in a CoRIM document.
+
+	 </t>
+      </abstract>
+   </front>
+   <seriesInfo name='Internet-Draft' value='draft-birkholz-rats-corim-03'/>
+   <format target='https://www.ietf.org/archive/id/draft-birkholz-rats-corim-03.txt' type='TXT'/>
+</reference>
+
+
+
+
+    </references>
 
 
 
   </back>
 
 <!-- ##markdown-source:
-H4sIAKiYzGIAA71a647bSHb+z6eotIHE9kiy21kg2Q422b544gbc05Pu9gSL
-mUGjRJYkrilSU0Va1hr2s+RZ8mT5zoXFolpaZPMjA8xMi6zLqXP5zndOcTqd
-Zm3ZVu7M3Lu8887cuU3j27JemmZhPmwK2zpz39q2C5mdz7379L8ZWTR5bddY
-tPB20U5L1y6moSvbqec509enWY7hy8bvzkxZL5osKzf+zLS+C+2b169///pN
-Zr2zulfZ7rJt4z8ufdNt8OzD9UP20e3wqDgz13XrfO3a6RXtlWWhtXXxaKum
-xv47F7JNeZYZ4xe5K0K7q/SpMW2TJ3+WdeHqtn8QIKV3ixB/79ajn60v8zg4
-b9ZrzI1vy7oq62Eb97mdVmVop1hk3lQYNm1efoc30NLabjbQoIy1XbtqPISd
-4iX/U9YYfTEzN423df9QNHvhXV3Yevyq8Utbl3+xbdnUZ+bcr837cl22rugH
-uLUtqzh5xpP/aP16hjNgXzPa+N3MXJT+46qp/jLe+52rPz55Nd77e2+7etUs
-nDf3sNZ4+xXmz+Y6/4+hbGeLOHxWuCyrG7/GQp8cWe56ejUbPGiNTRYuQPnG
-ZNl0OjV2DnPYHKZ/WMEDm0W7he/0HrlovGnxvHcTctaHFXQezHNypBemX9Fs
-fPOpLMgQZmt3PBPvdqYoFxAMFjadrAkHM/OmadkpF1WzDfAgM3cGk3Nfzh1e
-74xlx2hqWginmZl3zdZ9cn4CecoA67tgaiyi22L8wrlibvOPZu3yFaQKaxai
-wKyq2TgfYBc+DB5AmnZlW8iiUmUYSUKZBXQcZqQN7BI2Li8XZc5mifIFbFaV
-y1W7dfTfQxvT4pmt+HB2EIEk2DQhuBBoQSjTDgqEErzLmxr26HKSz2UFtqeR
-AaMK0RxMxQ+wGmmmV1ZqhhzLN34m9l2XRVHBKZ6RDX1TdDw/y84ZCA7MMzmU
-QloggeDJLY5heu1EfUX7ZgCaAIFmcFr3WwfNVruJqNl7Wq2B2szS1c5jGksb
-unwFTAitW4d+p2jHxFzbsl0ZVzfdcsUwx14NtUGuBQDHeJIot10gi9QFLYHj
-OWzpoUgKgF5bE2g2dBXDLUwATPHWuAWWVLXr1IykATrjNO+b5ZKG00lkciB7
-OQvZWXPknmQQUlco15uqXOzYNzNVJQzwn6uycqZsDXyJ7F7O8VM25K3Ha6fL
-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
-FiNOoEsuAAA=
+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
+Z/8D4po/MEw2AAA=
 
 -->
 

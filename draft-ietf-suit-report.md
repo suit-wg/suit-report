@@ -1,7 +1,7 @@
 ---
 title: Secure Reporting of Update Status
 abbrev: Secure Reporting of Update Status
-docname: draft-ietf-suit-report-02
+docname: draft-ietf-suit-report-03
 category: info
 
 ipr: trust200902
@@ -100,7 +100,7 @@ manifest processor has done. They simply need any data that influences
 the control flow of the manifest. The manifest only supports the
 following control flow primitives:
 
-- Set Component/Dependency Index
+- Set Component
 - Set/Override Parameters
 - Try-Each
 - Run Sequence
@@ -134,16 +134,14 @@ however it requires some reconstruction effort. This is an issue that
 can be solved by tooling.
 
 ~~~
-SUIT_Record = {
-    suit-record-manifest-id        => [* uint ],
-    suit-record-manifest-section   => int,
-    suit-record-section-offset     => uint,
-    (
-        suit-record-component-index  => uint //
-        suit-record-dependency-index => uint
-    ),
-    suit-record-properties     => SUIT_Parameters,
-}
+SUIT_Record = [
+    suit-record-manifest-id        : [* uint ],
+    suit-record-manifest-section   : int,
+    suit-record-section-offset     : uint,
+    suit-record-component-index    : uint,
+    suit-record-properties         : SUIT_Parameters,
+    $$SUIT_Record_Extensions
+]
 ~~~
 
 suit-record-manifest-id is used to identify which manifest contains the
@@ -194,9 +192,6 @@ True and a list of components. Both of these values cause the manifest
 processor to loop over commands using a series of component-ids, so the
 developer needs to know which was selected when the command executed.
 
-suit-record-dependency-index is similar to suit-record-component-index
-but is used to identify the dependency that was active.
-
 suit-record-properties contains any measured properties that led to the
 command failure.
 For example, this could be the actual value of a SUIT_Digest or
@@ -216,18 +211,17 @@ SUIT_Report = {
   suit-report-manifest-digest => SUIT_Digest,
   ? suit-report-manifest-uri  => tstr,
   ? suit-report-nonce         => bstr,
-  suit-report-records         => [ * SUIT_Record ],
-  ? suit-system-properties      => [ + system-property-claims ],
+  suit-report-records         => [ * SUIT_Record / system-property-claims ],
   suit-report-result          => true / {
     suit-report-result-code   => int, ; could condense to enum later
     suit-report-result-record => SUIT_Record,
   }
+  $$SUIT_Report_Extensions
 }
 system-property-claims = {
   system-component-id => SUIT_Component_Identifier,
   + SUIT_Parameters,
 }
-
 ~~~
 
 suit-report-manifest-digest provides a SUIT_Digest (as defined in
@@ -243,7 +237,13 @@ is authenticated within a container that provides freshness already.
 For example, attestation evidence typically contains a proof of
 freshness.
 
-suit-system-properties provides a list of measured or asserted properties
+suit-report-records is a list of 0 or more SUIT Records or 
+system-property-claims. Because SUIT Records are only generated on failure,
+in simple cases this can be an empty list.
+
+System properties can be extracted from suit-report-records by filtering
+suit-report-records for maps. System Properties are a list of measured 
+or asserted properties
 of the system that creates the suit report. These properties are scoped by
 component identifier. Because this list is expected to be constructed on
 the fly by a constrained node, component identifiers may appear more than
@@ -256,10 +256,6 @@ SUIT_Record_System_Properties = {
   }
 }
 ~~~~
-
-suit-report-records is a list of 0 or more SUIT Records. Because SUIT
-Records are only generated on failure, in simple cases this can be an
-empty list.
 
 suit-report-result provides a mechanism to show that the SUIT procedure
 completed successfully (value is true) or why it failed (value is a map
@@ -274,7 +270,7 @@ or manifest dependency tree where the error occured.
 
 #  Attestation
 
-This document ~~can allow~~ describes how a well-informed verifier can infer the trustworthiness of a remote device. Remote attestation is done by using the SUIT_Manifest_Envelope along with the SUIT_Report to reconstruct the state of the device at boot time. By embedding data used for remote attestation in the SUIT_Report, a remote device can use an append-only log to collect both measurements and debug/failure information into the same document. This document can then be conveyed to a verifier as a part of the attestation evidence. A remote attestation format to convey attestation evidence, such as an Entity Attestation Token (EAT, see {{-EAT}}), that contains a SUIT_Report MUST also include an integrity measurement of the Manifest Parser & Report Generator. 
+This document describes how a well-informed verifier can infer the trustworthiness of a remote device. Remote attestation is done by using the SUIT_Manifest_Envelope along with the SUIT_Report to reconstruct the state of the device at boot time. By embedding data used for remote attestation in the SUIT_Report, a remote device can use an append-only log to collect both measurements and debug/failure information into the same document. This document can then be conveyed to a verifier as a part of the attestation evidence. A remote attestation format to convey attestation evidence, such as an Entity Attestation Token (EAT, see {{-EAT}}), that contains a SUIT_Report MUST also include an integrity measurement of the Manifest Processor & Report Generator. 
 
 When a Concise Reference Integrity Manifest (CoRIM, see {{-CoRIM}} is delivered in a SUIT_Manifest_Envelope, this codifies the delivery of verification information to the verifier:
 
@@ -293,6 +289,34 @@ When a Concise Reference Integrity Manifest (CoRIM, see {{-CoRIM}} is delivered 
 This approach simplifies the design of the bootloader since it is able to use an append-only log. It allows a verifier to validate this report against a signed CoRIM that is provided by the firmware author, which simplifies the delivery chain of verification information to the verifier.
 
 This information is not intended as Attestation Evidence and while an Attestation Report MAY provide this information for conveying error codes and/or failure reports, it SHOULD be translated into general-purpose claims for use by the Relying Party.
+
+# Capability Reporting
+
+Because SUIT is extensible, a manifest author must know what capabilities a device has available. To enable this, a capability report is a set of lists that define which commands, parameters, algorithms, and component IDs are supported by a manifest processor.
+
+The CDDL for a SUIT_Capability_Report follows:
+
+~~~~CDDL
+SUIT_Capability_Report = {
+  suit-component-capabilities      => [+ SUIT_Component_Capability ]
+  suit-command-capabilities        => [+ int],
+  suit-parameters-capabilities     => [+ int],
+  suit-crypt-algo-capabilities     => [+ int],
+  suit-envelope-capabilities       => [+ int],
+  suit-manifest-capabilities       => [+ int],
+  suit-common-capabilities         => [+ int],
+  suit-text-component-capabilities => [+ int],
+  suit-text-capabilities           => [+ int],
+  suit-dependency-capabilities     => [+ int],
+  $$SUIT_Capability_Report_Extensions
+}
+
+SUIT_Component_Capability = [*bstr,?true]
+~~~~
+
+A SUIT_Component_Capability is similar to a SUIT_Component_ID, with one difference: it may optionally be terminated by a CBOR 'true' which acts as a wild-card match for any component with a prefix matching the SUIT_Component_Capability leading up to the 'true.' This feature is for use with filesystem storage, key value stores, or any other arbitrary-component-id storage systems.
+
+When reporting capabilities, it is OPTIONAL to report capabilities that are declared mandatory by the SUIT Manifest {{I-D.ietf-suit-manifest}}. Capabilities defined by extensions MUST be reported.
 
 #  IANA Considerations {#iana}
 
