@@ -69,9 +69,9 @@ Table of Contents
    2.  Conventions and Terminology . . . . . . . . . . . . . . . . .   3
    3.  The SUIT Record . . . . . . . . . . . . . . . . . . . . . . .   3
    4.  The SUIT Report . . . . . . . . . . . . . . . . . . . . . . .   6
-   5.  Attestation . . . . . . . . . . . . . . . . . . . . . . . . .   7
-   6.  Capability Reporting  . . . . . . . . . . . . . . . . . . . .   8
-   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   9
+   5.  Attestation . . . . . . . . . . . . . . . . . . . . . . . . .   8
+   6.  Capability Reporting  . . . . . . . . . . . . . . . . . . . .   9
+   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  10
    8.  Security Considerations . . . . . . . . . . . . . . . . . . .  10
    9.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  10
    10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  10
@@ -292,8 +292,7 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
    occured.
 
 SUIT_Report = {
-  suit-report-manifest-digest => SUIT_Digest,
-  ? suit-report-manifest-uri  => tstr,
+  suit-reference              => SUIT_Reference,
   ? suit-report-nonce         => bstr,
   suit-report-records         => [ * SUIT_Record / system-property-claims ],
   suit-report-result          => true / {
@@ -307,12 +306,37 @@ system-property-claims = {
   + SUIT_Parameters,
 }
 
+   The suit-reference provides a reference URI and digest for a suit
+   manifest.  The uri SHOULD be the canonical URI that is provided in
+   the manifest.  The digest is the digest of the manifest.
+
+   NOTE: The digest is used in preference to other identifiers in the
+   manifest because it allows a manifest to be uniquely identified
+   (collision resistance) whereas other identifiers, such as the
+   sequence number, can collide, particularly in scenarios with multiple
+   trusted signers.
+
+   The following CDDL describes a SUIT_Reference.
+
+   SUIT_Reference = {
+       suit-report-manifest-uri  => tstr,
+       suit-report-manifest-digest => SUIT_Digest,
+   }
+
    suit-report-manifest-digest provides a SUIT_Digest (as defined in
    [I-D.ietf-suit-manifest]) that is the characteristic digest of the
    Root manifest.
 
    suit-report-manifest-uri provides the reference URI that was provided
    in the root manifest.
+
+
+
+
+Moran & Birkholz          Expires 27 April 2023                 [Page 6]
+
+Internet-Draft      Secure Reporting of Update Status       October 2022
+
 
    suit-report-nonce provides a container for freshness or replay
    protection information.  This field MAY be omitted where the suit-
@@ -330,13 +354,6 @@ system-property-claims = {
    are encoded as maps and SUIT_Records are encoded as lists, a
    recipient need only filter the CBOR Type-5 entries from suit-report-
    records to obtain all system-property-claims.
-
-
-
-Moran & Birkholz          Expires 27 April 2023                 [Page 6]
-
-Internet-Draft      Secure Reporting of Update Status       October 2022
-
 
    System properties can be extracted from suit-report-records by
    filtering suit-report-records for maps.  System Properties are a list
@@ -363,6 +380,20 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
    The suit-report-result-record indicates the exact point in the
    manifest or manifest dependency tree where the error occured.
 
+
+
+
+
+
+
+
+
+
+Moran & Birkholz          Expires 27 April 2023                 [Page 7]
+
+Internet-Draft      Secure Reporting of Update Status       October 2022
+
+
 5.  Attestation
 
    This document describes how a well-informed verifier can infer the
@@ -384,15 +415,6 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
    verifier:
 
    *  The Firmware Distributor:
-
-
-
-
-
-Moran & Birkholz          Expires 27 April 2023                 [Page 7]
-
-Internet-Draft      Secure Reporting of Update Status       October 2022
-
 
       -  sends the SUIT_Manifest_Envelope to the Verifier without
          payload or text, but with CoRIM
@@ -421,6 +443,13 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
 
       -  Returns an Attestation Report to the Firmware Distributor
 
+
+
+Moran & Birkholz          Expires 27 April 2023                 [Page 8]
+
+Internet-Draft      Secure Reporting of Update Status       October 2022
+
+
    This approach simplifies the design of the bootloader since it is
    able to use an append-only log.  It allows a verifier to validate
    this report against a signed CoRIM that is provided by the firmware
@@ -440,15 +469,6 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
    algorithms, and component IDs are supported by a manifest processor.
 
    The CDDL for a SUIT_Capability_Report follows:
-
-
-
-
-
-Moran & Birkholz          Expires 27 April 2023                 [Page 8]
-
-Internet-Draft      Secure Reporting of Update Status       October 2022
-
 
    SUIT_Capability_Report = {
      suit-component-capabilities        => [+ SUIT_Component_Capability ]
@@ -479,6 +499,13 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
    [I-D.ietf-suit-manifest].  Capabilities defined by extensions MUST be
    reported.
 
+
+
+Moran & Birkholz          Expires 27 April 2023                 [Page 9]
+
+Internet-Draft      Secure Reporting of Update Status       October 2022
+
+
    Additional capability reporting can be added as follows: if a
    manifest element does not exist in this map, it can be added by
    specifying the CBOR path to the manifest element in an array and
@@ -494,18 +521,6 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
 
    IANA is requested to allocate a CBOR tag for the SUIT Report.
 
-
-
-
-
-
-
-
-Moran & Birkholz          Expires 27 April 2023                 [Page 9]
-
-Internet-Draft      Secure Reporting of Update Status       October 2022
-
-
 8.  Security Considerations
 
    The SUIT Report should either be carried over a secure transport, or
@@ -513,6 +528,8 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
    the report was generated by legitimate hardware.
 
 9.  Acknowledgements
+
+   The authors would like to thank Dave Thaler for his feedback.
 
 10.  References
 
@@ -538,6 +555,13 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
 
 10.2.  Informative References
 
+
+
+Moran & Birkholz          Expires 27 April 2023                [Page 10]
+
+Internet-Draft      Secure Reporting of Update Status       October 2022
+
+
    [I-D.birkholz-rats-corim]
               Birkholz, H., Fossati, T., Deshpande, Y., Smith, N., and
               W. Pan, "Concise Reference Integrity Manifest", Work in
@@ -551,16 +575,6 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
               Progress, Internet-Draft, draft-ietf-rats-eat-17, 22
               October 2022, <https://www.ietf.org/archive/id/draft-ietf-
               rats-eat-17.txt>.
-
-
-
-
-
-
-Moran & Birkholz          Expires 27 April 2023                [Page 10]
-
-Internet-Draft      Secure Reporting of Update Status       October 2022
-
 
    [I-D.ietf-suit-trust-domains]
               Moran, B. and K. Takayama, "SUIT Manifest Extensions for
@@ -579,20 +593,6 @@ Authors' Addresses
    Henk Birkholz
    Fraunhofer SIT
    Email: henk.birkholz@sit.fraunhofer.de
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

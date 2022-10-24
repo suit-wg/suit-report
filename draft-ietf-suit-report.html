@@ -1535,8 +1535,7 @@ and reported, and a reason for a failure if one occured.<a href="#section-4-1" c
 <div class="alignLeft art-text artwork" id="section-4-2">
 <pre>
 SUIT_Report = {
-  suit-report-manifest-digest =&gt; SUIT_Digest,
-  ? suit-report-manifest-uri  =&gt; tstr,
+  suit-reference              =&gt; SUIT_Reference,
   ? suit-report-nonce         =&gt; bstr,
   suit-report-records         =&gt; [ * SUIT_Record / system-property-claims ],
   suit-report-result          =&gt; true / {
@@ -1551,17 +1550,34 @@ system-property-claims = {
 }
 </pre><a href="#section-4-2" class="pilcrow">¶</a>
 </div>
-<p id="section-4-3">suit-report-manifest-digest provides a SUIT_Digest (as defined in
+<p id="section-4-3">The suit-reference provides a reference URI and digest for a suit
+manifest. The uri <span class="bcp14">SHOULD</span> be the canonical URI that is provided in the
+manifest. The digest is the digest of the manifest.<a href="#section-4-3" class="pilcrow">¶</a></p>
+<p id="section-4-4">NOTE: The digest is used
+in preference to other identifiers in the manifest because it allows
+a manifest to be uniquely identified (collision resistance) whereas
+other identifiers, such as the sequence number, can collide,
+particularly in scenarios with multiple trusted signers.<a href="#section-4-4" class="pilcrow">¶</a></p>
+<p id="section-4-5">The following CDDL describes a SUIT_Reference.<a href="#section-4-5" class="pilcrow">¶</a></p>
+<div id="section-4-6">
+<pre class="lang-CDDL sourcecode">
+SUIT_Reference = {
+    suit-report-manifest-uri  =&gt; tstr,
+    suit-report-manifest-digest =&gt; SUIT_Digest,
+}
+</pre><a href="#section-4-6" class="pilcrow">¶</a>
+</div>
+<p id="section-4-7">suit-report-manifest-digest provides a SUIT_Digest (as defined in
 <span>[<a href="#I-D.ietf-suit-manifest" class="cite xref">I-D.ietf-suit-manifest</a>]</span>) that is the characteristic digest of the
-Root manifest.<a href="#section-4-3" class="pilcrow">¶</a></p>
-<p id="section-4-4">suit-report-manifest-uri provides the reference URI that was provided in
-the root manifest.<a href="#section-4-4" class="pilcrow">¶</a></p>
-<p id="section-4-5">suit-report-nonce provides a container for freshness or replay
+Root manifest.<a href="#section-4-7" class="pilcrow">¶</a></p>
+<p id="section-4-8">suit-report-manifest-uri provides the reference URI that was provided in
+the root manifest.<a href="#section-4-8" class="pilcrow">¶</a></p>
+<p id="section-4-9">suit-report-nonce provides a container for freshness or replay
 protection information. This field <span class="bcp14">MAY</span> be omitted where the suit-report
 is authenticated within a container that provides freshness already.
 For example, attestation evidence typically contains a proof of
-freshness.<a href="#section-4-5" class="pilcrow">¶</a></p>
-<p id="section-4-6">suit-report-records is a list of 0 or more SUIT Records or 
+freshness.<a href="#section-4-9" class="pilcrow">¶</a></p>
+<p id="section-4-10">suit-report-records is a list of 0 or more SUIT Records or 
 system-property-claims. Because SUIT Records are only generated on failure,
 in simple cases this can be an empty list. SUIT_Records and 
 suit-system-property-claims are merged into a single list because this
@@ -1570,31 +1586,31 @@ The use of a single append-only log allows report generators to use simple
 memory management. Because the system-property-claims are encoded as maps
 and SUIT_Records are encoded as lists, a recipient need only filter the
 CBOR Type-5 entries from suit-report-records to obtain all 
-system-property-claims.<a href="#section-4-6" class="pilcrow">¶</a></p>
-<p id="section-4-7">System properties can be extracted from suit-report-records by filtering
+system-property-claims.<a href="#section-4-10" class="pilcrow">¶</a></p>
+<p id="section-4-11">System properties can be extracted from suit-report-records by filtering
 suit-report-records for maps. System Properties are a list of measured 
 or asserted properties
 of the system that creates the suit report. These properties are scoped by
 component identifier. Because this list is expected to be constructed on
 the fly by a constrained node, component identifiers may appear more than
-once. A recipient may convert the result to a more conventional structure:<a href="#section-4-7" class="pilcrow">¶</a></p>
-<div id="section-4-8">
+once. A recipient may convert the result to a more conventional structure:<a href="#section-4-11" class="pilcrow">¶</a></p>
+<div id="section-4-12">
 <pre class="lang-CDDL sourcecode">
 SUIT_Record_System_Properties = {
   * component-id =&gt; {
     + SUIT_Parameters,
   }
 }
-</pre><a href="#section-4-8" class="pilcrow">¶</a>
+</pre><a href="#section-4-12" class="pilcrow">¶</a>
 </div>
-<p id="section-4-9">suit-report-result provides a mechanism to show that the SUIT procedure
+<p id="section-4-13">suit-report-result provides a mechanism to show that the SUIT procedure
 completed successfully (value is true) or why it failed (value is a map
-of an error code and a SUIT_Record).<a href="#section-4-9" class="pilcrow">¶</a></p>
-<p id="section-4-10">The suit-report-result-code indicates the reason for the failure. Values
+of an error code and a SUIT_Record).<a href="#section-4-13" class="pilcrow">¶</a></p>
+<p id="section-4-14">The suit-report-result-code indicates the reason for the failure. Values
 are expected to be CBOR parsing failures, Schema validation failures,
-COSE validation failures or SUIT processing failures.<a href="#section-4-10" class="pilcrow">¶</a></p>
-<p id="section-4-11">The suit-report-result-record indicates the exact point in the manifest
-or manifest dependency tree where the error occured.<a href="#section-4-11" class="pilcrow">¶</a></p>
+COSE validation failures or SUIT processing failures.<a href="#section-4-14" class="pilcrow">¶</a></p>
+<p id="section-4-15">The suit-report-result-record indicates the exact point in the manifest
+or manifest dependency tree where the error occured.<a href="#section-4-15" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="attestation">
@@ -1695,7 +1711,8 @@ report was generated by legitimate hardware.<a href="#section-8-1" class="pilcro
 <section id="section-9">
       <h2 id="name-acknowledgements">
 <a href="#section-9" class="section-number selfRef">9. </a><a href="#name-acknowledgements" class="section-name selfRef">Acknowledgements</a>
-    </h2>
+      </h2>
+<p id="section-9-1">The authors would like to thank Dave Thaler for his feedback.<a href="#section-9-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <section id="section-10">
