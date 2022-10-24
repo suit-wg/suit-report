@@ -10,7 +10,7 @@ Expires: 27 April 2023                                    Fraunhofer SIT
 
 
                    Secure Reporting of Update Status
-                       draft-ietf-suit-report-03
+                       draft-ietf-suit-report-04
 
 Abstract
 
