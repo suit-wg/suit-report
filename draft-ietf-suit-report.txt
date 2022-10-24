@@ -72,12 +72,12 @@ Table of Contents
    5.  Attestation . . . . . . . . . . . . . . . . . . . . . . . . .   7
    6.  Capability Reporting  . . . . . . . . . . . . . . . . . . . .   8
    7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   9
-   8.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
-   9.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   9
-   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .   9
-     10.1.  Normative References . . . . . . . . . . . . . . . . . .   9
+   8.  Security Considerations . . . . . . . . . . . . . . . . . . .  10
+   9.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  10
+   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  10
+     10.1.  Normative References . . . . . . . . . . . . . . . . . .  10
      10.2.  Informative References . . . . . . . . . . . . . . . . .  10
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  10
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  11
 
 1.  Introduction
 
@@ -322,14 +322,14 @@ system-property-claims = {
 
    suit-report-records is a list of 0 or more SUIT Records or system-
    property-claims.  Because SUIT Records are only generated on failure,
-   in simple cases this can be an empty list.
-
-
-
-
-
-
-
+   in simple cases this can be an empty list.  SUIT_Records and suit-
+   system-property-claims are merged into a single list because this
+   reduces the overhead for a constrained node that generates this
+   report.  The use of a single append-only log allows report generators
+   to use simple memory management.  Because the system-property-claims
+   are encoded as maps and SUIT_Records are encoded as lists, a
+   recipient need only filter the CBOR Type-5 entries from suit-report-
+   records to obtain all system-property-claims.
 
 
 
@@ -451,16 +451,17 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
 
 
    SUIT_Capability_Report = {
-     suit-component-capabilities      => [+ SUIT_Component_Capability ]
-     suit-command-capabilities        => [+ int],
-     suit-parameters-capabilities     => [+ int],
-     suit-crypt-algo-capabilities     => [+ int],
-     suit-envelope-capabilities       => [+ int],
-     suit-manifest-capabilities       => [+ int],
-     suit-common-capabilities         => [+ int],
-     suit-text-component-capabilities => [+ int],
-     suit-text-capabilities           => [+ int],
-     suit-dependency-capabilities     => [+ int],
+     suit-component-capabilities        => [+ SUIT_Component_Capability ]
+     suit-command-capabilities          => [+ int],
+     suit-parameters-capabilities       => [+ int],
+     suit-crypt-algo-capabilities       => [+ int],
+     ? suit-envelope-capabilities       => [+ int],
+     ? suit-manifest-capabilities       => [+ int],
+     ? suit-common-capabilities         => [+ int],
+     ? suit-text-component-capabilities => [+ int],
+     ? suit-text-capabilities           => [+ int],
+     ? suit-dependency-capabilities     => [+ int],
+     * [+int]                           => [+ int],
      $$SUIT_Capability_Report_Extensions
    }
 
@@ -478,9 +479,32 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
    [I-D.ietf-suit-manifest].  Capabilities defined by extensions MUST be
    reported.
 
+   Additional capability reporting can be added as follows: if a
+   manifest element does not exist in this map, it can be added by
+   specifying the CBOR path to the manifest element in an array and
+   using this as the key.  For example SUIT_Dependencies, as described
+   in [I-D.ietf-suit-trust-domains] could have an extension added, which
+   was key 3 in the SUIT_Dependencies map.  This capability would be
+   reported as: [3, 3, 1] => [3], where the key consists of the key for
+   SUIT_Manifest (3), the key for SUIT_Common (3), and the key for
+   SUIT_Dependencies (1).  Then the value indicates that this manifest
+   processor supports the extension (3).
+
 7.  IANA Considerations
 
    IANA is requested to allocate a CBOR tag for the SUIT Report.
+
+
+
+
+
+
+
+
+Moran & Birkholz          Expires 27 April 2023                 [Page 9]
+
+Internet-Draft      Secure Reporting of Update Status       October 2022
+
 
 8.  Security Considerations
 
@@ -498,14 +522,6 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
               Moran, B., Tschofenig, H., Birkholz, H., Zandberg, K., and
               O. Rønningstad, "A Concise Binary Object Representation
               (CBOR)-based Serialization Format for the Software Updates
-
-
-
-Moran & Birkholz          Expires 27 April 2023                 [Page 9]
-
-Internet-Draft      Secure Reporting of Update Status       October 2022
-
-
               for Internet of Things (SUIT) Manifest", Work in Progress,
               Internet-Draft, draft-ietf-suit-manifest-20, 7 October
               2022, <https://www.ietf.org/archive/id/draft-ietf-suit-
@@ -536,11 +552,28 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
               October 2022, <https://www.ietf.org/archive/id/draft-ietf-
               rats-eat-17.txt>.
 
+
+
+
+
+
+Moran & Birkholz          Expires 27 April 2023                [Page 10]
+
+Internet-Draft      Secure Reporting of Update Status       October 2022
+
+
+   [I-D.ietf-suit-trust-domains]
+              Moran, B. and K. Takayama, "SUIT Manifest Extensions for
+              Multiple Trust Domains", Work in Progress, Internet-Draft,
+              draft-ietf-suit-trust-domains-01, 24 October 2022,
+              <https://www.ietf.org/archive/id/draft-ietf-suit-trust-
+              domains-01.txt>.
+
 Authors' Addresses
 
    Brendan Moran
    Arm Limited
-   Email: Brendan.Moran@arm.com
+   Email: brendan.moran.ietf@gmail.com
 
 
    Henk Birkholz
@@ -557,4 +590,27 @@ Authors' Addresses
 
 
 
-Moran & Birkholz          Expires 27 April 2023                [Page 10]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Moran & Birkholz          Expires 27 April 2023                [Page 11]

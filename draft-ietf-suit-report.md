@@ -26,7 +26,7 @@ author:
        ins: B. Moran
        name: Brendan Moran
        organization: Arm Limited
-       email: Brendan.Moran@arm.com
+       email: brendan.moran.ietf@gmail.com
  - 
        ins: H. Birkholz
        name: Henk Birkholz
@@ -36,6 +36,7 @@ author:
 informative:
   I-D.ietf-rats-eat: EAT
   I-D.birkholz-rats-corim: CoRIM
+  I-D.ietf-suit-trust-domains:
 
 normative:
   I-D.ietf-suit-manifest:
@@ -239,7 +240,14 @@ freshness.
 
 suit-report-records is a list of 0 or more SUIT Records or 
 system-property-claims. Because SUIT Records are only generated on failure,
-in simple cases this can be an empty list.
+in simple cases this can be an empty list. SUIT_Records and 
+suit-system-property-claims are merged into a single list because this
+reduces the overhead for a constrained node that generates this report.
+The use of a single append-only log allows report generators to use simple
+memory management. Because the system-property-claims are encoded as maps
+and SUIT_Records are encoded as lists, a recipient need only filter the
+CBOR Type-5 entries from suit-report-records to obtain all 
+system-property-claims.
 
 System properties can be extracted from suit-report-records by filtering
 suit-report-records for maps. System Properties are a list of measured 
@@ -298,16 +306,17 @@ The CDDL for a SUIT_Capability_Report follows:
 
 ~~~~CDDL
 SUIT_Capability_Report = {
-  suit-component-capabilities      => [+ SUIT_Component_Capability ]
-  suit-command-capabilities        => [+ int],
-  suit-parameters-capabilities     => [+ int],
-  suit-crypt-algo-capabilities     => [+ int],
-  suit-envelope-capabilities       => [+ int],
-  suit-manifest-capabilities       => [+ int],
-  suit-common-capabilities         => [+ int],
-  suit-text-component-capabilities => [+ int],
-  suit-text-capabilities           => [+ int],
-  suit-dependency-capabilities     => [+ int],
+  suit-component-capabilities        => [+ SUIT_Component_Capability ]
+  suit-command-capabilities          => [+ int],
+  suit-parameters-capabilities       => [+ int],
+  suit-crypt-algo-capabilities       => [+ int],
+  ? suit-envelope-capabilities       => [+ int],
+  ? suit-manifest-capabilities       => [+ int],
+  ? suit-common-capabilities         => [+ int],
+  ? suit-text-component-capabilities => [+ int],
+  ? suit-text-capabilities           => [+ int],
+  ? suit-dependency-capabilities     => [+ int],
+  * [+int]                           => [+ int],
   $$SUIT_Capability_Report_Extensions
 }
 
@@ -317,6 +326,8 @@ SUIT_Component_Capability = [*bstr,?true]
 A SUIT_Component_Capability is similar to a SUIT_Component_ID, with one difference: it may optionally be terminated by a CBOR 'true' which acts as a wild-card match for any component with a prefix matching the SUIT_Component_Capability leading up to the 'true.' This feature is for use with filesystem storage, key value stores, or any other arbitrary-component-id storage systems.
 
 When reporting capabilities, it is OPTIONAL to report capabilities that are declared mandatory by the SUIT Manifest {{I-D.ietf-suit-manifest}}. Capabilities defined by extensions MUST be reported.
+
+Additional capability reporting can be added as follows: if a manifest element does not exist in this map, it can be added by specifying the CBOR path to the manifest element in an array and using this as the key. For example SUIT_Dependencies, as described in {{I-D.ietf-suit-trust-domains}} could have an extension added, which was key 3 in the SUIT_Dependencies map. This capability would be reported as: \[3, 3, 1\] => \[3\], where the key consists of the key for SUIT_Manifest (3), the key for SUIT_Common (3), and the key for SUIT_Dependencies (1). Then the value indicates that this manifest processor supports the extension (3).
 
 #  IANA Considerations {#iana}
 
