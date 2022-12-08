@@ -25,7 +25,7 @@ SUIT_Record = [
 
 system-property-claims = {
   system-component-id => SUIT_Component_Identifier,
-  + $$SUIT_Parameters,
+  * $$SUIT_Parameters,
 }
 
 suit-report-manifest-digest = 0

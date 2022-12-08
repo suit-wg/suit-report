@@ -220,7 +220,7 @@ SUIT_Report = {
 }
 system-property-claims = {
   system-component-id => SUIT_Component_Identifier,
-  + SUIT_Parameters,
+  * $$SUIT_Parameters,
 }
 ~~~
 
