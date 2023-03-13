@@ -9,10 +9,10 @@ SUIT_Report = {
   $$SUIT_Report_Extensions
 }
 
-SUIT_Reference = {
-    suit-report-manifest-uri  => tstr,
-    suit-report-manifest-digest => SUIT_Digest,
-}
+SUIT_Reference = [
+    suit-report-manifest-uri : tstr,
+    suit-report-manifest-digest : SUIT_Digest
+]
 
 SUIT_Record = [
     suit-record-manifest-id        : [* uint ],
@@ -28,14 +28,11 @@ system-property-claims = {
   + $$SUIT_Parameters,
 }
 
-suit-report-manifest-digest = 0
-suit-report-manifest-uri = 1
 suit-report-nonce = 2
 suit-report-records = 3
 suit-report-result = 4
 suit-report-result-code = 5
 suit-report-result-record = 6
-
 suit-reference = 99
 
 suit-system-properties = 13

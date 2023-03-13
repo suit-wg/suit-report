@@ -238,8 +238,8 @@ The following CDDL describes a SUIT_Reference.
 
 ~~~CDDL
 SUIT_Reference = {
-    suit-report-manifest-uri  => tstr,
-    suit-report-manifest-digest => SUIT_Digest,
+    suit-report-manifest-uri  : tstr,
+    suit-report-manifest-digest : SUIT_Digest,
 }
 ~~~
 
@@ -349,7 +349,11 @@ Additional capability reporting can be added as follows: if a manifest element d
 
 #  IANA Considerations {#iana}
 
-IANA is requested to allocate a CBOR tag for the SUIT Report.
+IANA is requested to allocate a CBOR tag and a coap content-type for the SUIT Report.
+
+IANA is requested to allocate a CBOR tag and a coap content-type for the SUIT_Reference.
+
+IANA is also requested to add a table to the SUIT page for SUIT_Capability_Report_Extensions.
 
 #  Security Considerations
 
