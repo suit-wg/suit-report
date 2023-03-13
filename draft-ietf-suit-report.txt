@@ -5,12 +5,12 @@
 SUIT                                                            B. Moran
 Internet-Draft                                               Arm Limited
 Intended status: Informational                               H. Birkholz
-Expires: 27 April 2023                                    Fraunhofer SIT
-                                                         24 October 2022
+Expires: 14 September 2023                                Fraunhofer SIT
+                                                           13 March 2023
 
 
                    Secure Reporting of Update Status
-                       draft-ietf-suit-report-04
+                       draft-ietf-suit-report-05
 
 Abstract
 
@@ -39,11 +39,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 April 2023.
+   This Internet-Draft will expire on 14 September 2023.
 
 Copyright Notice
 
-   Copyright (c) 2022 IETF Trust and the persons identified as the
+   Copyright (c) 2023 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Moran & Birkholz          Expires 27 April 2023                 [Page 1]
+Moran & Birkholz        Expires 14 September 2023               [Page 1]
 
-Internet-Draft      Secure Reporting of Update Status       October 2022
+Internet-Draft      Secure Reporting of Update Status         March 2023
 
 
    and restrictions with respect to this document.  Code Components
@@ -71,13 +71,14 @@ Table of Contents
    4.  The SUIT Report . . . . . . . . . . . . . . . . . . . . . . .   6
    5.  Attestation . . . . . . . . . . . . . . . . . . . . . . . . .   8
    6.  Capability Reporting  . . . . . . . . . . . . . . . . . . . .   9
-   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  10
-   8.  Security Considerations . . . . . . . . . . . . . . . . . . .  10
-   9.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  10
-   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  10
-     10.1.  Normative References . . . . . . . . . . . . . . . . . .  10
-     10.2.  Informative References . . . . . . . . . . . . . . . . .  10
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  11
+   7.  EAT Claim . . . . . . . . . . . . . . . . . . . . . . . . . .  10
+   8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  10
+   9.  Security Considerations . . . . . . . . . . . . . . . . . . .  10
+   10. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  11
+   11. References  . . . . . . . . . . . . . . . . . . . . . . . . .  11
+     11.1.  Normative References . . . . . . . . . . . . . . . . . .  11
+     11.2.  Informative References . . . . . . . . . . . . . . . . .  11
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  12
 
 1.  Introduction
 
@@ -108,10 +109,9 @@ Table of Contents
 
 
 
-
-Moran & Birkholz          Expires 27 April 2023                 [Page 2]
+Moran & Birkholz        Expires 14 September 2023               [Page 2]
 
-Internet-Draft      Secure Reporting of Update Status       October 2022
+Internet-Draft      Secure Reporting of Update Status         March 2023
 
 
    *  describe the measured properties of a system
@@ -165,9 +165,9 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
 
 
 
-Moran & Birkholz          Expires 27 April 2023                 [Page 3]
+Moran & Birkholz        Expires 14 September 2023               [Page 3]
 
-Internet-Draft      Secure Reporting of Update Status       October 2022
+Internet-Draft      Secure Reporting of Update Status         March 2023
 
 
    *  the current section
@@ -221,9 +221,9 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
 
 
 
-Moran & Birkholz          Expires 27 April 2023                 [Page 4]
+Moran & Birkholz        Expires 14 September 2023               [Page 4]
 
-Internet-Draft      Secure Reporting of Update Status       October 2022
+Internet-Draft      Secure Reporting of Update Status         March 2023
 
 
          o  Dependency A0
@@ -277,9 +277,9 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
 
 
 
-Moran & Birkholz          Expires 27 April 2023                 [Page 5]
+Moran & Birkholz        Expires 14 September 2023               [Page 5]
 
-Internet-Draft      Secure Reporting of Update Status       October 2022
+Internet-Draft      Secure Reporting of Update Status         March 2023
 
 
 4.  The SUIT Report
@@ -319,8 +319,8 @@ system-property-claims = {
    The following CDDL describes a SUIT_Reference.
 
    SUIT_Reference = {
-       suit-report-manifest-uri  => tstr,
-       suit-report-manifest-digest => SUIT_Digest,
+       suit-report-manifest-uri  : tstr,
+       suit-report-manifest-digest : SUIT_Digest,
    }
 
    suit-report-manifest-digest provides a SUIT_Digest (as defined in
@@ -333,9 +333,9 @@ system-property-claims = {
 
 
 
-Moran & Birkholz          Expires 27 April 2023                 [Page 6]
+Moran & Birkholz        Expires 14 September 2023               [Page 6]
 
-Internet-Draft      Secure Reporting of Update Status       October 2022
+Internet-Draft      Secure Reporting of Update Status         March 2023
 
 
    suit-report-nonce provides a container for freshness or replay
@@ -389,9 +389,9 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
 
 
 
-Moran & Birkholz          Expires 27 April 2023                 [Page 7]
+Moran & Birkholz        Expires 14 September 2023               [Page 7]
 
-Internet-Draft      Secure Reporting of Update Status       October 2022
+Internet-Draft      Secure Reporting of Update Status         March 2023
 
 
 5.  Attestation
@@ -445,9 +445,9 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
 
 
 
-Moran & Birkholz          Expires 27 April 2023                 [Page 8]
+Moran & Birkholz        Expires 14 September 2023               [Page 8]
 
-Internet-Draft      Secure Reporting of Update Status       October 2022
+Internet-Draft      Secure Reporting of Update Status         March 2023
 
 
    This approach simplifies the design of the bootloader since it is
@@ -501,9 +501,9 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
 
 
 
-Moran & Birkholz          Expires 27 April 2023                 [Page 9]
+Moran & Birkholz        Expires 14 September 2023               [Page 9]
 
-Internet-Draft      Secure Reporting of Update Status       October 2022
+Internet-Draft      Secure Reporting of Update Status         March 2023
 
 
    Additional capability reporting can be added as follows: if a
@@ -517,32 +517,84 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
    SUIT_Dependencies (1).  Then the value indicates that this manifest
    processor supports the extension (3).
 
-7.  IANA Considerations
+7.  EAT Claim
 
-   IANA is requested to allocate a CBOR tag for the SUIT Report.
+   The SUIT Report is a form of measurement done by the SUIT Manifest
+   Processor as it attempts to invoke a manifest or install a manifest.
+   As a result, the SUIT Report can be captured in an EAT mesres
+   (Software Measurements Results) type.
 
-8.  Security Considerations
+8.  IANA Considerations
 
-   The SUIT Report should either be carried over a secure transport, or
-   signed, or both.  Ideally, attestation should be used to prove that
-   the report was generated by legitimate hardware.
+   IANA is requested to allocate a CBOR tag and a coap content-type for
+   the SUIT Report.
 
-9.  Acknowledgements
+   IANA is requested to allocate a CBOR tag and a coap content-type for
+   the SUIT_Reference.
+
+   IANA is also requested to add a table to the SUIT page for
+   SUIT_Capability_Report_Extensions.
+
+9.  Security Considerations
+
+   There are two aspects to the security considerations for SUIT
+   reports: authenticity and confidentiality.  SUIT reports must have
+   guaranteed authenticity for them to be useful.  Several options are
+   available to ensure the authenticity of a SUIT report.  The report
+   MAY be bundled as the payload of a cryptographic container that
+   provides authenticity, such as COSE_Sign, COSE_MAC, or COSE_Encrypt.
+   The SUIT Report MAY be communicated over a secure transport.  It may
+   also be communicated as part of an existing authenticated protocol,
+   such as within an EAT token.  Ideally, the SUIT Report SHOULD be
+   communicated as part of an attestation flow, such as within an EAT
+   token, since this proves the authenticity of the environment
+   (hardware, software, or both) in which the SUIT Report was generated.
+
+
+
+
+
+
+
+
+Moran & Birkholz        Expires 14 September 2023              [Page 10]
+
+Internet-Draft      Secure Reporting of Update Status         March 2023
+
+
+   The SUIT Report MAY require confidentiality as well.  A SUIT Report
+   could potentially reveal confidential information about the kinds of
+   device that a particular user has.  It could also reveal confidential
+   information about intellectual property contained in a device.  Where
+   these concerns are relevant, the SUIT Report MUST be encrypted, for
+   example using a COSE_Encrypt, or secure transport.
+
+   There are also operational considerations that intersect with these
+   security considerations.  In situations where the SUIT report is
+   encrypted as an element of a message within another protocol, care
+   must be taken to ensure that this does not leak information and that
+   the principle of least privilege is respected.  For example, in an
+   EAT-based attestation workflow, the Verifier often will not need the
+   full SUIT Report.  Similarly, the Relying Party may also not need the
+   SUIT Report.  In this case, the SUIT Report MUST be encrypted even if
+   the EAT token that contains it is also encrypted.
+
+10.  Acknowledgements
 
    The authors would like to thank Dave Thaler for his feedback.
 
-10.  References
+11.  References
 
-10.1.  Normative References
+11.1.  Normative References
 
    [I-D.ietf-suit-manifest]
               Moran, B., Tschofenig, H., Birkholz, H., Zandberg, K., and
               O. Rønningstad, "A Concise Binary Object Representation
               (CBOR)-based Serialization Format for the Software Updates
               for Internet of Things (SUIT) Manifest", Work in Progress,
-              Internet-Draft, draft-ietf-suit-manifest-20, 7 October
-              2022, <https://www.ietf.org/archive/id/draft-ietf-suit-
-              manifest-20.txt>.
+              Internet-Draft, draft-ietf-suit-manifest-22, 27 February
+              2023, <https://datatracker.ietf.org/doc/html/draft-ietf-
+              suit-manifest-22>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -553,35 +605,36 @@ Internet-Draft      Secure Reporting of Update Status       October 2022
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
-10.2.  Informative References
-
-
-
-Moran & Birkholz          Expires 27 April 2023                [Page 10]
-
-Internet-Draft      Secure Reporting of Update Status       October 2022
-
+11.2.  Informative References
 
    [I-D.birkholz-rats-corim]
               Birkholz, H., Fossati, T., Deshpande, Y., Smith, N., and
               W. Pan, "Concise Reference Integrity Manifest", Work in
+
+
+
+Moran & Birkholz        Expires 14 September 2023              [Page 11]
+
+Internet-Draft      Secure Reporting of Update Status         March 2023
+
+
               Progress, Internet-Draft, draft-birkholz-rats-corim-03, 11
-              July 2022, <https://www.ietf.org/archive/id/draft-
-              birkholz-rats-corim-03.txt>.
+              July 2022, <https://datatracker.ietf.org/doc/html/draft-
+              birkholz-rats-corim-03>.
 
    [I-D.ietf-rats-eat]
               Lundblade, L., Mandyam, G., O'Donoghue, J., and C.
               Wallace, "The Entity Attestation Token (EAT)", Work in
-              Progress, Internet-Draft, draft-ietf-rats-eat-17, 22
-              October 2022, <https://www.ietf.org/archive/id/draft-ietf-
-              rats-eat-17.txt>.
+              Progress, Internet-Draft, draft-ietf-rats-eat-19, 19
+              December 2022, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-rats-eat-19>.
 
    [I-D.ietf-suit-trust-domains]
               Moran, B. and K. Takayama, "SUIT Manifest Extensions for
               Multiple Trust Domains", Work in Progress, Internet-Draft,
-              draft-ietf-suit-trust-domains-01, 24 October 2022,
-              <https://www.ietf.org/archive/id/draft-ietf-suit-trust-
-              domains-01.txt>.
+              draft-ietf-suit-trust-domains-02, 13 March 2023,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-suit-
+              trust-domains-02>.
 
 Authors' Addresses
 
@@ -613,4 +666,7 @@ Authors' Addresses
 
 
 
-Moran & Birkholz          Expires 27 April 2023                [Page 11]
+
+
+
+Moran & Birkholz        Expires 14 September 2023              [Page 12]
