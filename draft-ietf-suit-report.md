@@ -347,9 +347,15 @@ When reporting capabilities, it is OPTIONAL to report capabilities that are decl
 
 Additional capability reporting can be added as follows: if a manifest element does not exist in this map, it can be added by specifying the CBOR path to the manifest element in an array and using this as the key. For example SUIT_Dependencies, as described in {{I-D.ietf-suit-trust-domains}} could have an extension added, which was key 3 in the SUIT_Dependencies map. This capability would be reported as: \[3, 3, 1\] => \[3\], where the key consists of the key for SUIT_Manifest (3), the key for SUIT_Common (3), and the key for SUIT_Dependencies (1). Then the value indicates that this manifest processor supports the extension (3).
 
+#  EAT Claim
+
+The SUIT Report is a form of measurement done by the SUIT Manifest Processor as it attempts to invoke a manifest or install a manifest. As a result, the SUIT Report can be captured in an EAT mesres (Software Measurements Results) type.
+
 #  IANA Considerations {#iana}
 
-IANA is requested to allocate a CBOR tag for the SUIT Report.
+IANA is requested to allocate a CBOR tag and a coap content-type for the SUIT Report.
+
+IANA is also requested to add a table to the SUIT page for SUIT_Capability_Report_Extensions.
 
 #  Security Considerations
 
