@@ -5,12 +5,12 @@
 SUIT                                                            B. Moran
 Internet-Draft                                               Arm Limited
 Intended status: Informational                               H. Birkholz
-Expires: 14 September 2023                                Fraunhofer SIT
-                                                           13 March 2023
+Expires: 8 January 2024                                   Fraunhofer SIT
+                                                             7 July 2023
 
 
                    Secure Reporting of Update Status
-                       draft-ietf-suit-report-05
+                       draft-ietf-suit-report-06
 
 Abstract
 
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 September 2023.
+   This Internet-Draft will expire on 8 January 2024.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Moran & Birkholz        Expires 14 September 2023               [Page 1]
+Moran & Birkholz         Expires 8 January 2024                 [Page 1]
 
-Internet-Draft      Secure Reporting of Update Status         March 2023
+Internet-Draft      Secure Reporting of Update Status          July 2023
 
 
    and restrictions with respect to this document.  Code Components
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Moran & Birkholz        Expires 14 September 2023               [Page 2]
+Moran & Birkholz         Expires 8 January 2024                 [Page 2]
 
-Internet-Draft      Secure Reporting of Update Status         March 2023
+Internet-Draft      Secure Reporting of Update Status          July 2023
 
 
    *  describe the measured properties of a system
@@ -165,9 +165,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2023
 
 
 
-Moran & Birkholz        Expires 14 September 2023               [Page 3]
+Moran & Birkholz         Expires 8 January 2024                 [Page 3]
 
-Internet-Draft      Secure Reporting of Update Status         March 2023
+Internet-Draft      Secure Reporting of Update Status          July 2023
 
 
    *  the current section
@@ -221,9 +221,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2023
 
 
 
-Moran & Birkholz        Expires 14 September 2023               [Page 4]
+Moran & Birkholz         Expires 8 January 2024                 [Page 4]
 
-Internet-Draft      Secure Reporting of Update Status         March 2023
+Internet-Draft      Secure Reporting of Update Status          July 2023
 
 
          o  Dependency A0
@@ -277,9 +277,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2023
 
 
 
-Moran & Birkholz        Expires 14 September 2023               [Page 5]
+Moran & Birkholz         Expires 8 January 2024                 [Page 5]
 
-Internet-Draft      Secure Reporting of Update Status         March 2023
+Internet-Draft      Secure Reporting of Update Status          July 2023
 
 
 4.  The SUIT Report
@@ -333,9 +333,9 @@ system-property-claims = {
 
 
 
-Moran & Birkholz        Expires 14 September 2023               [Page 6]
+Moran & Birkholz         Expires 8 January 2024                 [Page 6]
 
-Internet-Draft      Secure Reporting of Update Status         March 2023
+Internet-Draft      Secure Reporting of Update Status          July 2023
 
 
    suit-report-nonce provides a container for freshness or replay
@@ -389,9 +389,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2023
 
 
 
-Moran & Birkholz        Expires 14 September 2023               [Page 7]
+Moran & Birkholz         Expires 8 January 2024                 [Page 7]
 
-Internet-Draft      Secure Reporting of Update Status         March 2023
+Internet-Draft      Secure Reporting of Update Status          July 2023
 
 
 5.  Attestation
@@ -445,9 +445,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2023
 
 
 
-Moran & Birkholz        Expires 14 September 2023               [Page 8]
+Moran & Birkholz         Expires 8 January 2024                 [Page 8]
 
-Internet-Draft      Secure Reporting of Update Status         March 2023
+Internet-Draft      Secure Reporting of Update Status          July 2023
 
 
    This approach simplifies the design of the bootloader since it is
@@ -501,9 +501,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2023
 
 
 
-Moran & Birkholz        Expires 14 September 2023               [Page 9]
+Moran & Birkholz         Expires 8 January 2024                 [Page 9]
 
-Internet-Draft      Secure Reporting of Update Status         March 2023
+Internet-Draft      Secure Reporting of Update Status          July 2023
 
 
    Additional capability reporting can be added as follows: if a
@@ -521,16 +521,17 @@ Internet-Draft      Secure Reporting of Update Status         March 2023
 
    The SUIT Report is a form of measurement done by the SUIT Manifest
    Processor as it attempts to invoke a manifest or install a manifest.
-   As a result, the SUIT Report can be captured in an EAT mesres
-   (Software Measurements Results) type.
+   As a result, the SUIT Report can be captured in an EAT measurements
+   type.  The Verifier MAY convert a SUIT Report into a more consumable
+   version of the EAT claim by, for example, constructing a measres
+   claim that contains the digest of a component, the vendor ID & class
+   ID of a component, etc.
 
 8.  IANA Considerations
 
-   IANA is requested to allocate a CBOR tag and a coap content-type for
-   the SUIT Report.
-
-   IANA is requested to allocate a CBOR tag and a coap content-type for
-   the SUIT_Reference.
+   IANA is requested to allocate a CBOR tag and a coap content-type each
+   for the SUIT_Report, SUIT_Reference, and SUIT_Capability_Report CBOR
+   data structures.
 
    IANA is also requested to add a table to the SUIT page for
    SUIT_Capability_Report_Extensions.
@@ -550,21 +551,17 @@ Internet-Draft      Secure Reporting of Update Status         March 2023
    token, since this proves the authenticity of the environment
    (hardware, software, or both) in which the SUIT Report was generated.
 
-
-
-
-
-
-
-
-Moran & Birkholz        Expires 14 September 2023              [Page 10]
-
-Internet-Draft      Secure Reporting of Update Status         March 2023
-
-
    The SUIT Report MAY require confidentiality as well.  A SUIT Report
    could potentially reveal confidential information about the kinds of
    device that a particular user has.  It could also reveal confidential
+
+
+
+Moran & Birkholz         Expires 8 January 2024                [Page 10]
+
+Internet-Draft      Secure Reporting of Update Status          July 2023
+
+
    information about intellectual property contained in a device.  Where
    these concerns are relevant, the SUIT Report MUST be encrypted, for
    example using a COSE_Encrypt, or secure transport.
@@ -578,6 +575,12 @@ Internet-Draft      Secure Reporting of Update Status         March 2023
    full SUIT Report.  Similarly, the Relying Party may also not need the
    SUIT Report.  In this case, the SUIT Report MUST be encrypted even if
    the EAT token that contains it is also encrypted.
+
+   In contrast, however, there are scenarios where the EAT Verifier
+   consumes the SUIT report and translates it into one or more other EAT
+   claims.  For example, a SUIT report that shows a particular digest
+   was matched using an suit-condition-image can be translated into a
+   EAT measres (Measurement Results) claim.  In this scenario, the
 
 10.  Acknowledgements
 
@@ -599,25 +602,25 @@ Internet-Draft      Secure Reporting of Update Status         March 2023
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/info/rfc2119>.
+              <https://www.rfc-editor.org/rfc/rfc2119>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
 11.2.  Informative References
+
+
+
+
+Moran & Birkholz         Expires 8 January 2024                [Page 11]
+
+Internet-Draft      Secure Reporting of Update Status          July 2023
+
 
    [I-D.birkholz-rats-corim]
               Birkholz, H., Fossati, T., Deshpande, Y., Smith, N., and
               W. Pan, "Concise Reference Integrity Manifest", Work in
-
-
-
-Moran & Birkholz        Expires 14 September 2023              [Page 11]
-
-Internet-Draft      Secure Reporting of Update Status         March 2023
-
-
               Progress, Internet-Draft, draft-birkholz-rats-corim-03, 11
               July 2022, <https://datatracker.ietf.org/doc/html/draft-
               birkholz-rats-corim-03>.
@@ -625,16 +628,16 @@ Internet-Draft      Secure Reporting of Update Status         March 2023
    [I-D.ietf-rats-eat]
               Lundblade, L., Mandyam, G., O'Donoghue, J., and C.
               Wallace, "The Entity Attestation Token (EAT)", Work in
-              Progress, Internet-Draft, draft-ietf-rats-eat-19, 19
-              December 2022, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-rats-eat-19>.
+              Progress, Internet-Draft, draft-ietf-rats-eat-21, 30 June
+              2023, <https://datatracker.ietf.org/doc/html/draft-ietf-
+              rats-eat-21>.
 
    [I-D.ietf-suit-trust-domains]
               Moran, B. and K. Takayama, "SUIT Manifest Extensions for
               Multiple Trust Domains", Work in Progress, Internet-Draft,
-              draft-ietf-suit-trust-domains-02, 13 March 2023,
+              draft-ietf-suit-trust-domains-03, 19 June 2023,
               <https://datatracker.ietf.org/doc/html/draft-ietf-suit-
-              trust-domains-02>.
+              trust-domains-03>.
 
 Authors' Addresses
 
@@ -666,7 +669,4 @@ Authors' Addresses
 
 
 
-
-
-
-Moran & Birkholz        Expires 14 September 2023              [Page 12]
+Moran & Birkholz         Expires 8 January 2024                [Page 12]

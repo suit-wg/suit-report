@@ -1,7 +1,7 @@
 ---
 title: Secure Reporting of Update Status
 abbrev: Secure Reporting of Update Status
-docname: draft-ietf-suit-report-05
+docname: draft-ietf-suit-report-06
 category: info
 
 ipr: trust200902
@@ -349,13 +349,12 @@ Additional capability reporting can be added as follows: if a manifest element d
 
 #  EAT Claim
 
-The SUIT Report is a form of measurement done by the SUIT Manifest Processor as it attempts to invoke a manifest or install a manifest. As a result, the SUIT Report can be captured in an EAT mesres (Software Measurements Results) type.
+The SUIT Report is a form of measurement done by the SUIT Manifest Processor as it attempts to invoke a manifest or install a manifest. As a result, the SUIT Report can be captured in an EAT measurements type.
+The Verifier MAY convert a SUIT Report into a more consumable version of the EAT claim by, for example, constructing a measres claim that contains the digest of a component, the vendor ID & class ID of a component, etc.
 
 #  IANA Considerations {#iana}
 
-IANA is requested to allocate a CBOR tag and a coap content-type for the SUIT Report.
-
-IANA is requested to allocate a CBOR tag and a coap content-type for the SUIT_Reference.
+IANA is requested to allocate a CBOR tag and a coap content-type each for the SUIT_Report, SUIT_Reference, and SUIT_Capability_Report CBOR data structures.
 
 IANA is also requested to add a table to the SUIT page for SUIT_Capability_Report_Extensions.
 
@@ -391,6 +390,11 @@ Report. Similarly, the Relying Party may also not need the SUIT Report.
 In this case, the SUIT Report MUST be encrypted even if the EAT token
 that contains it is also encrypted.
 
+In contrast, however, there are scenarios where the EAT Verifier
+consumes the SUIT report and translates it into one or more other
+EAT claims. For example, a SUIT report that shows a particular digest
+was matched using an suit-condition-image can be translated into a
+EAT measres (Measurement Results) claim. In this scenario, the 
 
 #  Acknowledgements
 
