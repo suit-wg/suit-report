@@ -19,7 +19,7 @@
 
 DRAFT = draft-ietf-suit-report
 
-all: $(DRAFT).xml
+all: $(DRAFT).xml 
 
-$(DRAFT).xml: $(DRAFT).md
+$(DRAFT).xml: $(DRAFT).md $(DRAFT).cddl
 	kdrfc -ht3 $<

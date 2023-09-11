@@ -1,7 +1,7 @@
 ---
 title: Secure Reporting of Update Status
 abbrev: Secure Reporting of Update Status
-docname: draft-ietf-suit-report-06
+docname: draft-ietf-suit-report-07
 category: info
 
 ipr: trust200902
@@ -37,6 +37,7 @@ informative:
   I-D.ietf-rats-eat: EAT
   I-D.birkholz-rats-corim: CoRIM
   I-D.ietf-suit-trust-domains:
+  I-D.ietf-suit-mti:
 
 normative:
   I-D.ietf-suit-manifest:
@@ -199,7 +200,7 @@ For example, this could be the actual value of a SUIT_Digest or
 class identifier. This is encoded in a SUIT_Parameters block as defined
 in {{I-D.ietf-suit-manifest}}.
 
-# The SUIT Report
+# The SUIT_Report
 
 Some metadata is common to all records, such as the root manifest:
 the manifest that is the entry-point for the manifest processor. This
@@ -270,7 +271,7 @@ system-property-claims.
 System properties can be extracted from suit-report-records by filtering
 suit-report-records for maps. System Properties are a list of measured 
 or asserted properties
-of the system that creates the suit report. These properties are scoped by
+of the system that creates the SUIT_Report. These properties are scoped by
 component identifier. Because this list is expected to be constructed on
 the fly by a constrained node, component identifiers may appear more than
 once. A recipient may convert the result to a more conventional structure:
@@ -347,10 +348,52 @@ When reporting capabilities, it is OPTIONAL to report capabilities that are decl
 
 Additional capability reporting can be added as follows: if a manifest element does not exist in this map, it can be added by specifying the CBOR path to the manifest element in an array and using this as the key. For example SUIT_Dependencies, as described in {{I-D.ietf-suit-trust-domains}} could have an extension added, which was key 3 in the SUIT_Dependencies map. This capability would be reported as: \[3, 3, 1\] => \[3\], where the key consists of the key for SUIT_Manifest (3), the key for SUIT_Common (3), and the key for SUIT_Dependencies (1). Then the value indicates that this manifest processor supports the extension (3).
 
-#  EAT Claim
+#  EAT Claim {#eat}
 
-The SUIT Report is a form of measurement done by the SUIT Manifest Processor as it attempts to invoke a manifest or install a manifest. As a result, the SUIT Report can be captured in an EAT measurements type.
-The Verifier MAY convert a SUIT Report into a more consumable version of the EAT claim by, for example, constructing a measres claim that contains the digest of a component, the vendor ID & class ID of a component, etc.
+The SUIT_Report is a form of measurement done by the SUIT Manifest Processor as it attempts to invoke a manifest or install a manifest. As a result, the SUIT_Report can be captured in an EAT measurements type.
+The Verifier MAY convert a SUIT_Report into a more consumable version of the EAT claim by, for example, constructing a measres claim that contains the digest of a component, the vendor ID & class ID of a component, etc.
+
+#  SUIT_Report container {#container}
+
+The SUIT_Report MUST be carried in a container or transport that ensures authenticity. The SUIT_Report MUST be transported using one of the following options:
+
+* As an element of an existing document that ensures authenticity, such as in a measurements claim in an EAT.
+* As the payload of a message delivered over secure transport, such as a CoAP or LwM2M message.
+* Contained within a secure container that conforms to the current recommendations of {{I-D.ietf-suit-mti}}.
+
+In this case, the SUIT_Report is carried as sole payload of a COSE_Encrypt0 or COSE_Sign1 as shown in the CDDL snippet below.
+
+~~~CDDL
+SUIT_Report_Protected /= SUIT_Report_COSE_Sign1 .and SUIT_COSE_Profiles
+SUIT_Report_Protected /= SUIT_Report_COSE_Sign1_Tagged .and SUIT_COSE_Profiles
+SUIT_Report_Protected /= SUIT_Report_COSE_MAC0 .and SUIT_COSE_Profiles
+SUIT_Report_Protected /= SUIT_Report_COSE_MAC0_Tagged .and SUIT_COSE_Profiles
+
+SUIT_Report_COSE_Sign1_Tagged = #6.18(SUIT_Report_COSE_Sign1)
+SUIT_Report_COSE_Sign1 = [
+    protected : bstr,
+    unprotected : {* int => any},
+    payload : bstr .cbor SUIT_Report_Unprotected,
+    signature : bstr
+]
+SUIT_Report_COSE_MAC0_Tagged = #6.17(SUIT_Report_COSE_MAC0)
+SUIT_Report_COSE_MAC0 = [
+    protected : bstr,
+    unprotected : {* int => any},
+    payload : bstr .cbor SUIT_Report_Unprotected,
+    tag : bstr
+]
+SUIT_Report_Unprotected = SUIT_Report / SUIT_Report_COSE_Encrypt0
+SUIT_Report_COSE_Encrypt0 = COSE_Encrypt0
+~~~
+
+Note that SUIT_Report_COSE_Sign1 and SUIT_Report_COSE_MAC0 MUST be combined with a SUIT_COSE_Profile from {{I-D.ietf-suit-mti}} using the CDDL .and directive. The SUIT_Report_COSE_Encrypt0 carries a ciphertext payload that MUST contain just the ciphertext obtained by encrypting the following CDDL:
+
+~~~CDDL
+SUIT_Report_plaintext = bstr .cbor SUIT_Report
+~~~
+
+SUIT_COSE_Profiles define only AES-CTR encryption due to its suitability for firmware distribution. Because AES-CTR is not authenticated, SUIT_Report_Protected defines authenticated containers with an encrypted payload.
 
 #  IANA Considerations {#iana}
 
@@ -364,21 +407,21 @@ There are two aspects to the security considerations for SUIT reports:
 authenticity and confidentiality. SUIT reports must have guaranteed
 authenticity for them to be useful. Several options are available to
 ensure the authenticity of a SUIT report. The report MAY be bundled
-as the payload of a cryptographic container that provides authenticity,
-such as COSE_Sign, COSE_MAC, or COSE_Encrypt. The SUIT Report MAY be
+as the payload of a cryptographic container as described in {{container}}.
 communicated over a secure transport. It may also be communicated as
 part of an existing authenticated protocol, such as within an EAT 
-token. Ideally, the SUIT Report SHOULD be communicated as part of an
+token. Ideally, the SUIT_Report SHOULD be communicated as part of an
 attestation flow, such as within an EAT token, since this proves the
 authenticity of the environment (hardware, software, or both) in which
-the SUIT Report was generated.
+the SUIT_Report was generated.
 
-The SUIT Report MAY require confidentiality as well. A SUIT Report
+The SUIT_Report MAY require confidentiality as well. A SUIT_Report
 could potentially reveal confidential information about the kinds of
 device that a particular user has. It could also reveal confidential
 information about intellectual property contained in a device. Where
-these concerns are relevant, the SUIT Report MUST be encrypted, for 
-example using a COSE_Encrypt, or secure transport.
+these concerns are relevant, the SUIT_Report MUST be encrypted, for 
+example using a COSE_Encrypt as described in {{container}}, or by using
+secure transport.
 
 There are also operational considerations that intersect with these
 security considerations. In situations where the SUIT report is
@@ -386,15 +429,16 @@ encrypted as an element of a message within another protocol, care must
 be taken to ensure that this does not leak information and that the
 principle of least privilege is respected. For example, in an EAT-based
 attestation workflow, the Verifier often will not need the full SUIT
-Report. Similarly, the Relying Party may also not need the SUIT Report.
-In this case, the SUIT Report MUST be encrypted even if the EAT token
+Report. Similarly, the Relying Party may also not need the SUIT_Report.
+In this case, the SUIT_Report MUST be encrypted even if the EAT token
 that contains it is also encrypted.
 
 In contrast, however, there are scenarios where the EAT Verifier
 consumes the SUIT report and translates it into one or more other
 EAT claims. For example, a SUIT report that shows a particular digest
 was matched using an suit-condition-image can be translated into a
-EAT measres (Measurement Results) claim. In this scenario, the 
+EAT measres (Measurement Results) claim. In this scenario, the Verifier
+must have access to the full SUIT_Report.
 
 #  Acknowledgements
 

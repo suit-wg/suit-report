@@ -1,3 +1,25 @@
+SUIT_Report_Protected /= SUIT_Report_COSE_Sign1 .and SUIT_COSE_Profiles
+SUIT_Report_Protected /= SUIT_Report_COSE_Sign1_Tagged .and SUIT_COSE_Profiles
+SUIT_Report_Protected /= SUIT_Report_COSE_MAC0 .and SUIT_COSE_Profiles
+SUIT_Report_Protected /= SUIT_Report_COSE_MAC0_Tagged .and SUIT_COSE_Profiles
+
+SUIT_Report_COSE_Sign1_Tagged = #6.18(SUIT_Report_COSE_Sign1)
+SUIT_Report_COSE_Sign1 = [
+    protected : bstr,
+    unprotected : {* int => any},
+    payload : bstr .cbor SUIT_Report_Unprotected,
+    signature : bstr
+]
+SUIT_Report_COSE_MAC0_Tagged = #6.17(SUIT_Report_COSE_MAC0)
+SUIT_Report_COSE_MAC0 = [
+    protected : bstr,
+    unprotected : {* int => any},
+    payload : bstr .cbor SUIT_Report_Unprotected,
+    tag : bstr
+]
+SUIT_Report_Unprotected = SUIT_Report / SUIT_Report_COSE_Encrypt0
+SUIT_Report_COSE_Encrypt0 = COSE_Encrypt0
+
 SUIT_Report = {
   suit-reference              => SUIT_Reference,
   ? suit-report-nonce         => bstr,
