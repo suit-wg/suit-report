@@ -214,9 +214,11 @@ SUIT_Report = {
   ? suit-report-nonce         => bstr,
   suit-report-records         => [ * SUIT_Record / system-property-claims ],
   suit-report-result          => true / {
+    suit-report-result-reason => SUIT_Report_Reasons,
     suit-report-result-code   => int, ; could condense to enum later
     suit-report-result-record => SUIT_Record,
-  }
+  },
+  ? suit-report-capability-report => SUIT_Capability_Report,
   $$SUIT_Report_Extensions
 }
 system-property-claims = {
@@ -288,12 +290,43 @@ suit-report-result provides a mechanism to show that the SUIT procedure
 completed successfully (value is true) or why it failed (value is a map
 of an error code and a SUIT_Record).
 
-The suit-report-result-code indicates the reason for the failure. Values
-are expected to be CBOR parsing failures, Schema validation failures,
-COSE validation failures or SUIT processing failures.
+suit-report-result-reason gives a high-level explanation of the failure.
+These reasons are intended for interoperable implementations. The reasons
+are divided into a small number of groups:
+
+* suit-report-reason-cbor-parse: a parsing error was encountered by the
+CBOR parser.
+* suit-report-reason-cose-unsupported: an unusupported COSE structure or
+header was encountered.
+* suit-report-reason-alg-unsupported: an unsupported COSE algorithm was
+encountered.
+* suit-report-reason-unauthorised: Signature/MAC verification failed.
+* suit-report-reason-command-unsupported: an unsupported command was
+encountered.
+* suit-report-reason-component-unsupported: The manifest declared a 
+component/prefix that does not exist.
+* suit-report-reason-component-unauthorised: The manifest declared a 
+component that is not accessible by the signer.
+* suit-report-reason-parameter-unsupported: The manifest used a
+parameter that does not exist.
+* suit-report-severing-unsupported: The manifest uses severable fields
+but the Manifest Processor doesn't support them.
+* suit-report-reason-condition-failed: A condition failed with soft-
+failure off.
+* suit-report-reason-operation-failed: A command failed (e.g. 
+download/copy/swap/write)
+
+The suit-report-result-code reports an internal error code that is
+provided for debugging reasons. This code is not intended for 
+interoperability.
 
 The suit-report-result-record indicates the exact point in the manifest
 or manifest dependency tree where the error occured.
+
+suit-report-capability-report provides a mechanism to report the capabilities of the Manifest Processor. The SUIT_Capability_Report is described in {{capabilities}}. The capability report is optional to include in the SUIT_Report, according to an application-specific policy. While the SUIT_Capability_Report is not expected to be very large, applications should ensure that they only report capabilities when necessary in order to conserve bandwidth. A capability report is not necessary except when:
+
+1. A client explicitly requests the capability report, or
+2. A manifest attempts to use a capability that the Manifest Processor does not implement.
 
 #  Attestation
 
@@ -317,7 +350,7 @@ This approach simplifies the design of the bootloader since it is able to use an
 
 This information is not intended as Attestation Evidence and while an Attestation Report MAY provide this information for conveying error codes and/or failure reports, it SHOULD be translated into general-purpose claims for use by the Relying Party.
 
-# Capability Reporting
+# Capability Reporting {#capabilities}
 
 Because SUIT is extensible, a manifest author must know what capabilities a device has available. To enable this, a capability report is a set of lists that define which commands, parameters, algorithms, and component IDs are supported by a manifest processor.
 
@@ -421,7 +454,10 @@ device that a particular user has. It could also reveal confidential
 information about intellectual property contained in a device. Where
 these concerns are relevant, the SUIT_Report MUST be encrypted, for 
 example using a COSE_Encrypt as described in {{container}}, or by using
-secure transport.
+secure transport. When reporting failures, particularly in the
+cryptographic primitives, there is a risk that over-reporting can
+provide an attacker with better visibility. Therefore, SUIT_Reports
+SHOULD be encrypted wherever possible.
 
 There are also operational considerations that intersect with these
 security considerations. In situations where the SUIT report is

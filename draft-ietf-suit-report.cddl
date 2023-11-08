@@ -25,9 +25,11 @@ SUIT_Report = {
   ? suit-report-nonce         => bstr,
   suit-report-records         => [ * SUIT_Record / system-property-claims ],
   suit-report-result          => true / {
-    suit-report-result-code   => int, ; could condense to enum later
+    suit-report-result-code   => int,
     suit-report-result-record => SUIT_Record,
-  }
+    suit-report-result-reason => SUIT_Report_Reasons,
+  },
+  ? suit-report-capability-report => SUIT_Capability_Report,
   $$SUIT_Report_Extensions
 }
 
@@ -55,6 +57,8 @@ suit-report-records = 3
 suit-report-result = 4
 suit-report-result-code = 5
 suit-report-result-record = 6
+suit-report-result-reason = 7
+suit-report-capability-report = 8
 suit-reference = 99
 
 suit-system-properties = 13
@@ -66,3 +70,29 @@ suit-record-section-offset = 2
 suit-record-component-index = 3
 suit-record-dependency-index = 4
 suit-record-properties = 5
+
+SUIT_Report_Reasons /= suit-report-reason-ok
+SUIT_Report_Reasons /= suit-report-reason-cbor-parse
+SUIT_Report_Reasons /= suit-report-reason-cose-unsupported
+SUIT_Report_Reasons /= suit-report-reason-alg-unsupported
+SUIT_Report_Reasons /= suit-report-reason-unauthorised
+SUIT_Report_Reasons /= suit-report-reason-command-unsupported
+SUIT_Report_Reasons /= suit-report-reason-component-unsupported
+SUIT_Report_Reasons /= suit-report-reason-component-unauthorised
+SUIT_Report_Reasons /= suit-report-reason-parameter-unsupported
+SUIT_Report_Reasons /= suit-report-severing-unsupported
+SUIT_Report_Reasons /= suit-report-reason-condition-failed
+SUIT_Report_Reasons /= suit-report-reason-operation-failed
+
+suit-report-reason-ok = 0
+suit-report-reason-cbor-parse = 1
+suit-report-reason-cose-unsupported = 2
+suit-report-reason-alg-unsupported = 3
+suit-report-reason-unauthorised = 4
+suit-report-reason-command-unsupported = 5
+suit-report-reason-component-unsupported = 6
+suit-report-reason-component-unauthorised = 7
+suit-report-reason-parameter-unsupported = 8
+suit-report-severing-unsupported = 9
+suit-report-reason-condition-failed = 10
+suit-report-reason-operation-failed = 11
