@@ -313,7 +313,7 @@ parameter that does not exist.
 but the Manifest Processor doesn't support them.
 * suit-report-reason-condition-failed: A condition failed with soft-
 failure off.
-* suit-report-reason-operation-failed: A command failed (e.g. 
+* suit-report-reason-operation-failed: A command failed (e.g., 
 download/copy/swap/write)
 
 The suit-report-result-code reports an internal error code that is
