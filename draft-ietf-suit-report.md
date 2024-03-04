@@ -1,7 +1,7 @@
 ---
 title: Secure Reporting of Update Status
 abbrev: Secure Reporting of Update Status
-docname: draft-ietf-suit-report-07
+docname: draft-ietf-suit-report-08
 category: info
 
 ipr: trust200902
