@@ -214,9 +214,9 @@ SUIT_Report = {
   ? suit-report-nonce         => bstr,
   suit-report-records         => [ * SUIT_Record / system-property-claims ],
   suit-report-result          => true / {
-    suit-report-result-reason => SUIT_Report_Reasons,
-    suit-report-result-code   => int, ; could condense to enum later
+    suit-report-result-code   => int,
     suit-report-result-record => SUIT_Record,
+    suit-report-result-reason => SUIT_Report_Reasons,
   },
   ? suit-report-capability-report => SUIT_Capability_Report,
   $$SUIT_Report_Extensions
