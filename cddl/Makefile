@@ -17,17 +17,32 @@
 # limitations under the License.
 # ----------------------------------------------------------------------------
 
-DRAFT = draft-ietf-suit-report
+CDDL=update-complete.cddl
+COSE_XML_URL=https://www.ietf.org/archive/id/draft-ietf-cose-msg-24.xml
+COSE_XML=cose.xml
+COSE_CDDL=cose.cddl
+SUIT_CDDL=suit.cddl
+SUIT_CDDL_URL=https://raw.githubusercontent.com/suit-wg/manifest-spec/master/draft-ietf-suit-manifest.cddl
+SUIT_COMPLETE_CDDL=suit-complete.cddl
+UPDATE_CDDL=../draft-ietf-suit-report.cddl
 
-all: $(DRAFT).xml 
+all: ${CDDL}
 
-$(DRAFT).xml: $(DRAFT).md $(DRAFT).cddl 
-	# make -C cddl
-	#make -C examples
-	kdrfc -ht3 $<
+.PHONY: fetch-xml
 
-.PHONY: clean
-clean:
-	rm $(DRAFT).xml
-	make -C cddl clean
-	make -C examples clean
+${COSE_XML}:
+	curl -o $@ ${COSE_XML_URL}
+
+${SUIT_CDDL}:
+	curl -o $@ ${SUIT_CDDL_URL}
+
+${COSE_CDDL}: ${COSE_XML} cose_cddl.py
+	@python3 cose_cddl.py $< | sed -e 's/^!$$//' > $@
+
+${SUIT_COMPLETE_CDDL}: ${SUIT_CDDL} ${COSE_CDDL}
+	cat $^ > $@
+
+.PHONY: ${CDDL}
+${CDDL}: ${UPDATE_CDDL} ${COSE_CDDL} #${SUIT_COMPLETE_CDDL}
+	cat $^ > $@
+	cddl $@ generate

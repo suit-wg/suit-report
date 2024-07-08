@@ -5,12 +5,12 @@
 SUIT                                                            B. Moran
 Internet-Draft                                               Arm Limited
 Intended status: Informational                               H. Birkholz
-Expires: 5 September 2024                                 Fraunhofer SIT
-                                                            4 March 2024
+Expires: 9 January 2025                                   Fraunhofer SIT
+                                                             8 July 2024
 
 
                    Secure Reporting of Update Status
-                       draft-ietf-suit-report-08
+                       draft-ietf-suit-report-09
 
 Abstract
 
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 September 2024.
+   This Internet-Draft will expire on 9 January 2025.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Moran & Birkholz        Expires 5 September 2024                [Page 1]
+Moran & Birkholz         Expires 9 January 2025                 [Page 1]
 
-Internet-Draft      Secure Reporting of Update Status         March 2024
+Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
    and restrictions with respect to this document.  Code Components
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Moran & Birkholz        Expires 5 September 2024                [Page 2]
+Moran & Birkholz         Expires 9 January 2025                 [Page 2]
 
-Internet-Draft      Secure Reporting of Update Status         March 2024
+Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
    *  describe the installation of complex multi-component architectures
@@ -165,9 +165,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2024
 
 
 
-Moran & Birkholz        Expires 5 September 2024                [Page 3]
+Moran & Birkholz         Expires 9 January 2025                 [Page 3]
 
-Internet-Draft      Secure Reporting of Update Status         March 2024
+Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
    *  the current manifest
@@ -221,9 +221,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2024
 
 
 
-Moran & Birkholz        Expires 5 September 2024                [Page 4]
+Moran & Birkholz         Expires 9 January 2025                 [Page 4]
 
-Internet-Draft      Secure Reporting of Update Status         March 2024
+Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
       -  Dependency A
@@ -277,9 +277,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2024
 
 
 
-Moran & Birkholz        Expires 5 September 2024                [Page 5]
+Moran & Birkholz         Expires 9 January 2025                 [Page 5]
 
-Internet-Draft      Secure Reporting of Update Status         March 2024
+Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
 4.  The SUIT_Report
@@ -333,9 +333,9 @@ system-property-claims = {
 
 
 
-Moran & Birkholz        Expires 5 September 2024                [Page 6]
+Moran & Birkholz         Expires 9 January 2025                 [Page 6]
 
-Internet-Draft      Secure Reporting of Update Status         March 2024
+Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
    suit-report-manifest-uri provides the reference URI that was provided
@@ -389,9 +389,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2024
 
 
 
-Moran & Birkholz        Expires 5 September 2024                [Page 7]
+Moran & Birkholz         Expires 9 January 2025                 [Page 7]
 
-Internet-Draft      Secure Reporting of Update Status         March 2024
+Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
    *  suit-report-reason-alg-unsupported: an unsupported COSE algorithm
@@ -445,9 +445,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2024
 
 
 
-Moran & Birkholz        Expires 5 September 2024                [Page 8]
+Moran & Birkholz         Expires 9 January 2025                 [Page 8]
 
-Internet-Draft      Secure Reporting of Update Status         March 2024
+Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
 5.  Attestation
@@ -501,9 +501,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2024
 
 
 
-Moran & Birkholz        Expires 5 September 2024                [Page 9]
+Moran & Birkholz         Expires 9 January 2025                 [Page 9]
 
-Internet-Draft      Secure Reporting of Update Status         March 2024
+Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
    This approach simplifies the design of the bootloader since it is
@@ -557,9 +557,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2024
 
 
 
-Moran & Birkholz        Expires 5 September 2024               [Page 10]
+Moran & Birkholz         Expires 9 January 2025                [Page 10]
 
-Internet-Draft      Secure Reporting of Update Status         March 2024
+Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
    Additional capability reporting can be added as follows: if a
@@ -613,9 +613,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2024
 
 
 
-Moran & Birkholz        Expires 5 September 2024               [Page 11]
+Moran & Birkholz         Expires 9 January 2025                [Page 11]
 
-Internet-Draft      Secure Reporting of Update Status         March 2024
+Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
    SUIT_Report_Protected /= SUIT_Report_COSE_Sign1 .and SUIT_COSE_Profiles
@@ -669,9 +669,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2024
 
 
 
-Moran & Birkholz        Expires 5 September 2024               [Page 12]
+Moran & Birkholz         Expires 9 January 2025                [Page 12]
 
-Internet-Draft      Secure Reporting of Update Status         March 2024
+Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
 10.  Security Considerations
@@ -725,9 +725,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2024
 
 
 
-Moran & Birkholz        Expires 5 September 2024               [Page 13]
+Moran & Birkholz         Expires 9 January 2025                [Page 13]
 
-Internet-Draft      Secure Reporting of Update Status         March 2024
+Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
 12.1.  Normative References
@@ -762,9 +762,9 @@ Internet-Draft      Secure Reporting of Update Status         March 2024
    [I-D.ietf-rats-eat]
               Lundblade, L., Mandyam, G., O'Donoghue, J., and C.
               Wallace, "The Entity Attestation Token (EAT)", Work in
-              Progress, Internet-Draft, draft-ietf-rats-eat-25, 15
-              January 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-rats-eat-25>.
+              Progress, Internet-Draft, draft-ietf-rats-eat-29, 8 July
+              2024, <https://datatracker.ietf.org/doc/html/draft-ietf-
+              rats-eat-29>.
 
    [I-D.ietf-suit-mti]
               Moran, B., Rønningstad, O., and A. Tsukamoto, "Mandatory-
@@ -781,17 +781,17 @@ Internet-Draft      Secure Reporting of Update Status         March 2024
 
 
 
-Moran & Birkholz        Expires 5 September 2024               [Page 14]
+Moran & Birkholz         Expires 9 January 2025                [Page 14]
 
-Internet-Draft      Secure Reporting of Update Status         March 2024
+Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
    [I-D.ietf-suit-trust-domains]
               Moran, B. and K. Takayama, "SUIT Manifest Extensions for
               Multiple Trust Domains", Work in Progress, Internet-Draft,
-              draft-ietf-suit-trust-domains-06, 4 March 2024,
+              draft-ietf-suit-trust-domains-07, 6 July 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-suit-
-              trust-domains-06>.
+              trust-domains-07>.
 
 Authors' Addresses
 
@@ -837,4 +837,4 @@ Authors' Addresses
 
 
 
-Moran & Birkholz        Expires 5 September 2024               [Page 15]
+Moran & Birkholz         Expires 9 January 2025                [Page 15]
