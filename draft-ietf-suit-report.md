@@ -1,7 +1,7 @@
 ---
 title: Secure Reporting of Update Status
 abbrev: Secure Reporting of Update Status
-docname: draft-ietf-suit-report-09
+docname: draft-ietf-suit-report-10
 category: info
 
 ipr: trust200902
@@ -37,10 +37,12 @@ informative:
   I-D.ietf-rats-eat: EAT
   I-D.birkholz-rats-corim: CoRIM
   I-D.ietf-suit-trust-domains:
-  I-D.ietf-suit-mti:
 
 normative:
   I-D.ietf-suit-manifest:
+  RFC9052: cose
+  I-D.ietf-suit-mti:
+
 
 --- abstract
 
@@ -208,11 +210,12 @@ metadata is aggregated with a list of SUIT_Records. The SUIT_Report
 may also contain a list of any system properties that were measured
 and reported, and a reason for a failure if one occured.
 
-CDDL~~~
+CDDL
+~~~
 SUIT_Report = {
   suit-reference              => SUIT_Reference,
   ? suit-report-nonce         => bstr,
-  suit-report-records         => [ * SUIT_Record / system-property-claims ],
+  suit-report-records         => \[ * SUIT_Record / system-property-claims \],
   suit-report-result          => true / {
     suit-report-result-code   => int,
     suit-report-result-record => SUIT_Record,
@@ -443,7 +446,7 @@ IANA is also requested to add the following registries to the SUIT category:
   * SUIT Report Reasons
   * SUIT Capability Report Elements
 
-## SUIT Report 
+## SUIT Report Elements
 
 IANA is requested to create a new registry for SUIT Report Elements.
 
@@ -458,7 +461,7 @@ Label | Name | Reference
 8 | Capability Report | {{suit-report}}
 99 | Reference | {{suit-report}}
 
-## SUIT Record
+## SUIT Record Elements
 
 IANA is requested to create a new registry for SUIT Record Elements.
 
@@ -471,7 +474,7 @@ Label | Name | Reference
 4 | Dependency Index | {{suit-record}}
 5 | Record Properties | {{suit-record}}
 
-## SUIT Report Reason
+## SUIT Report Reasons
 
 IANA is requested to create a new registry for SUIT Report Reasons.
 
@@ -491,7 +494,7 @@ Label | Name | Reference
 11 | Operation Failed | {{suit-report-result}}
 
 
-## SUIT Capability Report
+## SUIT Capability Report Elements
 
 IANA is requested to create a new registry for SUIT Capability Report Elements.
 
@@ -561,6 +564,6 @@ In order to create a valid SUIT Report document the structure of the correspondi
 To be valid, the following CDDL MUST have the COSE CDDL appended to it. The COSE CDDL can be obtained by following the directions in {{-cose, Section 1.4}}. It must also have the CDDL from {{I-D.ietf-suit-mti}} appended to it.
 
 ~~~ CDDL
-{::include draft-ietf-suit-manifest.cddl}
+{::include draft-ietf-suit-report.cddl}
 ~~~
 
