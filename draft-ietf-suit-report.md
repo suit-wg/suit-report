@@ -552,3 +552,15 @@ must have access to the full SUIT_Report.
 #  Acknowledgements
 
 The authors would like to thank Dave Thaler for his feedback.
+
+--- back
+
+# Full CDDL {#full-cddl}
+In order to create a valid SUIT Report document the structure of the corresponding CBOR message MUST adhere to the following CDDL data definition.
+
+To be valid, the following CDDL MUST have the COSE CDDL appended to it. The COSE CDDL can be obtained by following the directions in {{-cose, Section 1.4}}. It must also have the CDDL from {{I-D.ietf-suit-mti}} appended to it.
+
+~~~ CDDL
+{::include draft-ietf-suit-manifest.cddl}
+~~~
+
