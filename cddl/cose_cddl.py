@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # ----------------------------------------------------------------------------
 # Copyright 2022 ARM Limited or its affiliates
@@ -17,21 +18,15 @@
 # limitations under the License.
 # ----------------------------------------------------------------------------
 
-MD_FILE := draft-ietf-suit-report.md
-DRAFT := $(shell grep 'docname: ' $(MD_FILE) | awk '{print $$2}')
+import xml.etree.ElementTree as ET
+import sys
 
-all: $(DRAFT).xml $(DRAFT).txt $(DRAFT).html
+cose_filename = sys.argv[1]
 
-$(DRAFT).html: $(DRAFT).xml
-	xml2rfc $(DRAFT).xml --html
+# Load cose xml
+xml_cose = ET.parse(cose_filename)
+# Filter for cddl
+cddl_elements = xml_cose.findall(".//artwork[@type='CDDL']")
 
-$(DRAFT).txt: $(DRAFT).xml
-	xml2rfc $(DRAFT).xml
-
-$(DRAFT).xml: $(MD_FILE)
-	kramdown-rfc2629 $(MD_FILE) > $(DRAFT).xml
-
-.PHONY: clean
-clean:
-	rm -fr $(DRAFT).xml $(DRAFT).txt $(DRAFT).html
-
+cddl = '\n'.join([e.text for e in cddl_elements])
+print(cddl)

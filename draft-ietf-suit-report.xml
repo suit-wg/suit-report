@@ -19,7 +19,7 @@
 <?rfc text-list-symbols="-o*+"?>
 <?rfc docmapping="yes"?>
 
-<rfc ipr="trust200902" docName="draft-ietf-suit-report-08" category="info" tocInclude="true" sortRefs="true" symRefs="true">
+<rfc ipr="trust200902" docName="draft-ietf-suit-report-09" category="info" tocInclude="true" sortRefs="true" symRefs="true">
   <front>
     <title abbrev="Secure Reporting of Update Status">Secure Reporting of Update Status</title>
 
@@ -36,7 +36,7 @@
       </address>
     </author>
 
-    <date year="2024" month="March" day="04"/>
+    <date year="2024" month="July" day="08"/>
 
     <area>Security</area>
     <workgroup>SUIT</workgroup>
@@ -620,14 +620,15 @@ must have access to the full SUIT_Report.</t>
          <organization>Security Theory LLC</organization>
       </author>
       <author fullname='Giridhar Mandyam' initials='G.' surname='Mandyam'>
-         </author>
+         <organization>Mediatek USA</organization>
+      </author>
       <author fullname='Jeremy O&#x27;Donoghue' initials='J.' surname='O&#x27;Donoghue'>
          <organization>Qualcomm Technologies Inc.</organization>
       </author>
       <author fullname='Carl Wallace' initials='C.' surname='Wallace'>
          <organization>Red Hound Software, Inc.</organization>
       </author>
-      <date day='15' month='January' year='2024'/>
+      <date day='8' month='July' year='2024'/>
       <abstract>
 	 <t>   An Entity Attestation Token (EAT) provides an attested claims set
    that describes state and characteristics of an entity, a device like
@@ -641,7 +642,7 @@ must have access to the full SUIT_Report.</t>
 	 </t>
       </abstract>
    </front>
-   <seriesInfo name='Internet-Draft' value='draft-ietf-rats-eat-25'/>
+   <seriesInfo name='Internet-Draft' value='draft-ietf-rats-eat-29'/>
    
 </reference>
 
@@ -699,7 +700,7 @@ must have access to the full SUIT_Report.</t>
       <author fullname='Ken Takayama' initials='K.' surname='Takayama'>
          <organization>SECOM CO., LTD.</organization>
       </author>
-      <date day='4' month='March' year='2024'/>
+      <date day='6' month='July' year='2024'/>
       <abstract>
 	 <t>   This specification describes extensions to the SUIT Manifest format
    (as defined in [I-D.ietf-suit-manifest]) for use in deployments with
@@ -711,7 +712,7 @@ must have access to the full SUIT_Report.</t>
 	 </t>
       </abstract>
    </front>
-   <seriesInfo name='Internet-Draft' value='draft-ietf-suit-trust-domains-06'/>
+   <seriesInfo name='Internet-Draft' value='draft-ietf-suit-trust-domains-07'/>
    
 </reference>
 
@@ -754,7 +755,7 @@ must have access to the full SUIT_Report.</t>
 H4sIAAAAAAAAA71c63LcxpX+j6folVOxqMyMRNm7SVirJBRJr1klWlqKSiol
 q1Q9QM8MQgwwRgMcTVT0s+yz7JPtufUNmKGc3a24EpsD9PX0uXzn0phOp1lX
 dpU5UW9N3rdGXZtN03ZlvVTNQr3bFLoz6m2nu95mej5vzd0vaVk0ea3XMGjR
-6kU3LU23mNq+7KYt9Zk++12WQ/Nl0+5OVFkvmiwrN+2J6treds+fPfv9s+eZ
+6kU3LU23mNq+7KYt9Zk++32WQ/Nl0+5OVFkvmiwrN+2J6treds+fPfv9s+eZ
 bo2Wucpul22b9nbZNv0Gnr27vMluzQ4eFSfqsu5MW5tueo5zZZntdF181FVT
 w/w7Y7NNeZIp1S5yU9huV8lTpbomj/4s68LUnXtgYZWtWVj/e7dOfnZtmfvG
 ebNeQ1//tqyrsg7TmE/dtCptN4VB5k0FzabNk9/AG6DSWm82QEFuq/tu1bSw
@@ -921,7 +922,7 @@ kfwqTuw7sgNMHyjS+F2eVfTtEuGy6IaWZwecwlEl43BPVKXvs694TC51yPNj
 lIiCGVIaT6yR+bCQHZxRYmT5yNGltqny41hQtqXbGF2+8mET/J4hp2xcmSd9
 S8sFwIZpTZ25GBjGRx5fReG6a/624REvU74dg4kKIU7KKFlAJFxn6yCQZxR/
 0FRKlmP+ErDCUr46SPaG85tWYqxVeSuYTde36hyHvlnpSm5VcR6Bv905y/4H
-1sBe9k1YAAA=
+TxakAk1YAAA=
 
 -->
 

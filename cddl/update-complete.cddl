@@ -1,0 +1,273 @@
+SUIT_Report_Protected /= SUIT_Report_COSE_Sign1 .and SUIT_COSE_Profiles
+SUIT_Report_Protected /= SUIT_Report_COSE_Sign1_Tagged .and SUIT_COSE_Profiles
+SUIT_Report_Protected /= SUIT_Report_COSE_MAC0 .and SUIT_COSE_Profiles
+SUIT_Report_Protected /= SUIT_Report_COSE_MAC0_Tagged .and SUIT_COSE_Profiles
+
+SUIT_Report_COSE_Sign1_Tagged = #6.18(SUIT_Report_COSE_Sign1)
+SUIT_Report_COSE_Sign1 = [
+    protected : bstr,
+    unprotected : {* int => any},
+    payload : bstr .cbor SUIT_Report_Unprotected,
+    signature : bstr
+]
+SUIT_Report_COSE_MAC0_Tagged = #6.17(SUIT_Report_COSE_MAC0)
+SUIT_Report_COSE_MAC0 = [
+    protected : bstr,
+    unprotected : {* int => any},
+    payload : bstr .cbor SUIT_Report_Unprotected,
+    tag : bstr
+]
+SUIT_Report_Unprotected = SUIT_Report / SUIT_Report_COSE_Encrypt0
+SUIT_Report_COSE_Encrypt0 = COSE_Encrypt0
+
+SUIT_Report = {
+  suit-reference              => SUIT_Reference,
+  ? suit-report-nonce         => bstr,
+  suit-report-records         => [ * SUIT_Record / system-property-claims ],
+  suit-report-result          => true / {
+    suit-report-result-code   => int,
+    suit-report-result-record => SUIT_Record,
+    suit-report-result-reason => SUIT_Report_Reasons,
+  },
+  ? suit-report-capability-report => SUIT_Capability_Report,
+  $$SUIT_Report_Extensions
+}
+
+SUIT_Reference = [
+    suit-report-manifest-uri : tstr,
+    suit-report-manifest-digest : SUIT_Digest
+]
+
+SUIT_Record = [
+    suit-record-manifest-id        : [* uint ],
+    suit-record-manifest-section   : int,
+    suit-record-section-offset     : uint,
+    suit-record-component-index    : uint,
+    suit-record-properties         : {*$$SUIT_Parameters},
+    $$SUIT_Record_Extensions
+]
+
+system-property-claims = {
+  system-component-id => SUIT_Component_Identifier,
+  + $$SUIT_Parameters,
+}
+
+suit-report-nonce = 2
+suit-report-records = 3
+suit-report-result = 4
+suit-report-result-code = 5
+suit-report-result-record = 6
+suit-report-result-reason = 7
+suit-report-capability-report = 8
+suit-reference = 99
+
+suit-system-properties = 13
+system-component-id = 0
+
+suit-record-manifest-id = 0
+suit-record-manifest-section = 1
+suit-record-section-offset = 2
+suit-record-component-index = 3
+suit-record-dependency-index = 4
+suit-record-properties = 5
+
+SUIT_Report_Reasons /= suit-report-reason-ok
+SUIT_Report_Reasons /= suit-report-reason-cbor-parse
+SUIT_Report_Reasons /= suit-report-reason-cose-unsupported
+SUIT_Report_Reasons /= suit-report-reason-alg-unsupported
+SUIT_Report_Reasons /= suit-report-reason-unauthorised
+SUIT_Report_Reasons /= suit-report-reason-command-unsupported
+SUIT_Report_Reasons /= suit-report-reason-component-unsupported
+SUIT_Report_Reasons /= suit-report-reason-component-unauthorised
+SUIT_Report_Reasons /= suit-report-reason-parameter-unsupported
+SUIT_Report_Reasons /= suit-report-severing-unsupported
+SUIT_Report_Reasons /= suit-report-reason-condition-failed
+SUIT_Report_Reasons /= suit-report-reason-operation-failed
+
+suit-report-reason-ok = 0
+suit-report-reason-cbor-parse = 1
+suit-report-reason-cose-unsupported = 2
+suit-report-reason-alg-unsupported = 3
+suit-report-reason-unauthorised = 4
+suit-report-reason-command-unsupported = 5
+suit-report-reason-component-unsupported = 6
+suit-report-reason-component-unauthorised = 7
+suit-report-reason-parameter-unsupported = 8
+suit-report-severing-unsupported = 9
+suit-report-reason-condition-failed = 10
+suit-report-reason-operation-failed = 11
+start = COSE_Messages / COSE_Key / COSE_KeySet / Internal_Types
+
+; This is defined to make the tool quieter:
+Internal_Types = Sig_structure / Enc_structure / MAC_structure /
+        COSE_KDF_Context
+
+
+label = int / tstr
+values = any
+
+
+COSE_Messages = COSE_Untagged_Message / COSE_Tagged_Message
+      
+COSE_Untagged_Message = COSE_Sign / COSE_Sign1 /
+    COSE_Encrypt / COSE_Encrypt0 /
+    COSE_Mac / COSE_Mac0
+
+COSE_Tagged_Message = COSE_Sign_Tagged / COSE_Sign1_Tagged /
+    COSE_Encrypt_Tagged / COSE_Encrypt0_Tagged /
+    COSE_Mac_Tagged / COSE_Mac0_Tagged
+
+
+Headers = (
+    protected : empty_or_serialized_map,
+    unprotected : header_map
+)
+
+header_map = {
+    Generic_Headers,
+    * label => values
+}
+
+empty_or_serialized_map = bstr .cbor header_map / bstr .size 0
+
+
+
+Generic_Headers = (
+    ? 1 => int / tstr,  ; algorithm identifier
+    ? 2 => [+label],    ; criticality
+    ? 3 => tstr / int,  ; content type
+    ? 4 => bstr,        ; key identifier
+    ? 5 => bstr,        ; IV
+    ? 6 => bstr,        ; Partial IV
+    ? 7 => COSE_Signature / [+COSE_Signature] ; Counter signature
+)
+
+
+COSE_Sign_Tagged = #6.98(COSE_Sign)
+
+
+COSE_Sign = [
+    Headers,
+    payload : bstr / nil,
+    signatures : [+ COSE_Signature]
+]
+
+
+COSE_Signature =  [
+    Headers,      
+    signature : bstr
+]
+
+
+COSE_Sign1_Tagged = #6.18(COSE_Sign1)
+
+
+COSE_Sign1 = [
+    Headers,
+    payload : bstr / nil,
+    signature : bstr
+]
+
+
+Sig_structure = [
+    context : "Signature" / "Signature1" / "CounterSignature",
+    body_protected : empty_or_serialized_map,
+    ? sign_protected : empty_or_serialized_map,
+    external_aad : bstr,
+    payload : bstr
+]
+
+
+COSE_Encrypt_Tagged = #6.96(COSE_Encrypt)
+
+
+COSE_Encrypt = [
+    Headers,
+    ciphertext : bstr / nil,
+    recipients : [+COSE_recipient]
+]
+
+
+COSE_recipient = [    
+    Headers,
+    ciphertext : bstr / nil,
+    ? recipients : [+COSE_recipient]
+]
+
+
+COSE_Encrypt0_Tagged = #6.16(COSE_Encrypt0)
+
+
+COSE_Encrypt0 = [
+    Headers,
+    ciphertext : bstr / nil,
+]
+
+
+Enc_structure = [
+    context : "Encrypt" / "Encrypt0" / "Enc_Recipient" /
+        "Mac_Recipient" / "Rec_Recipient",
+    protected : empty_or_serialized_map,
+    external_aad : bstr
+]
+
+
+COSE_Mac_Tagged = #6.97(COSE_Mac)
+
+
+COSE_Mac = [
+   Headers,
+   payload : bstr / nil,
+   tag : bstr,
+   recipients :[+COSE_recipient]
+]
+
+
+COSE_Mac0_Tagged = #6.17(COSE_Mac0)
+
+
+COSE_Mac0 = [
+   Headers,
+   payload : bstr / nil,
+   tag : bstr,
+]
+
+
+MAC_structure = [
+     context : "MAC" / "MAC0",
+     protected : empty_or_serialized_map,
+     external_aad : bstr,
+     payload : bstr
+]
+
+
+COSE_Key = {
+    1 => tstr / int,          ; kty
+    ? 2 => bstr,              ; kid
+    ? 3 => tstr / int,        ; alg
+    ? 4 => [+ (tstr / int) ], ; key_ops
+    ? 5 => bstr,              ; Base IV
+    * label => values
+}
+
+COSE_KeySet = [+COSE_Key]
+
+
+PartyInfo = (
+    identity : bstr / nil,
+    nonce : bstr / int / nil,
+    other : bstr / nil,
+)
+
+COSE_KDF_Context = [
+    AlgorithmID : int / tstr,
+    PartyUInfo : [ PartyInfo ],
+    PartyVInfo : [ PartyInfo ],
+    SuppPubInfo : [
+        keyDataLength : uint,
+        protected : empty_or_serialized_map,
+        ? other : bstr
+    ],
+    ? SuppPrivInfo : bstr
+]
+
