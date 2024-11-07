@@ -1,7 +1,7 @@
 ---
 title: Secure Reporting of Update Status
 abbrev: Secure Reporting of Update Status
-docname: draft-ietf-suit-report-09
+docname: draft-ietf-suit-report-10
 category: info
 
 ipr: trust200902
@@ -37,10 +37,12 @@ informative:
   I-D.ietf-rats-eat: EAT
   I-D.birkholz-rats-corim: CoRIM
   I-D.ietf-suit-trust-domains:
-  I-D.ietf-suit-mti:
 
 normative:
   I-D.ietf-suit-manifest:
+  RFC9052: cose
+  I-D.ietf-suit-mti:
+
 
 --- abstract
 
@@ -200,7 +202,7 @@ For example, this could be the actual value of a SUIT_Digest or
 class identifier. This is encoded in a SUIT_Parameters block as defined
 in {{I-D.ietf-suit-manifest}}.
 
-# The SUIT_Report
+# The SUIT_Report {#suit-report}
 
 Some metadata is common to all records, such as the root manifest:
 the manifest that is the entry-point for the manifest processor. This
@@ -208,11 +210,12 @@ metadata is aggregated with a list of SUIT_Records. The SUIT_Report
 may also contain a list of any system properties that were measured
 and reported, and a reason for a failure if one occured.
 
+CDDL
 ~~~
 SUIT_Report = {
   suit-reference              => SUIT_Reference,
   ? suit-report-nonce         => bstr,
-  suit-report-records         => [ * SUIT_Record / system-property-claims ],
+  suit-report-records         => \[ * SUIT_Record / system-property-claims \],
   suit-report-result          => true / {
     suit-report-result-code   => int,
     suit-report-result-record => SUIT_Record,
@@ -259,6 +262,8 @@ is authenticated within a container that provides freshness already.
 For example, attestation evidence typically contains a proof of
 freshness.
 
+## SUIT Record {#suit-record}
+
 suit-report-records is a list of 0 or more SUIT Records or 
 system-property-claims. Because SUIT Records are only generated on failure,
 in simple cases this can be an empty list. SUIT_Records and 
@@ -285,6 +290,8 @@ SUIT_Record_System_Properties = {
   }
 }
 ~~~~
+
+## SUIT Report Result {#suit-report-result}
 
 suit-report-result provides a mechanism to show that the SUIT procedure
 completed successfully (value is true) or why it failed (value is a map
@@ -365,8 +372,8 @@ SUIT_Capability_Report = {
   ? suit-envelope-capabilities       => [+ int],
   ? suit-manifest-capabilities       => [+ int],
   ? suit-common-capabilities         => [+ int],
-  ? suit-text-component-capabilities => [+ int],
   ? suit-text-capabilities           => [+ int],
+  ? suit-text-component-capabilities => [+ int],
   ? suit-dependency-capabilities     => [+ int],
   * [+int]                           => [+ int],
   $$SUIT_Capability_Report_Extensions
@@ -432,7 +439,76 @@ SUIT_COSE_Profiles define only AES-CTR encryption due to its suitability for fir
 
 IANA is requested to allocate a CBOR tag and a coap content-type each for the SUIT_Report, SUIT_Reference, and SUIT_Capability_Report CBOR data structures.
 
-IANA is also requested to add a table to the SUIT page for SUIT_Capability_Report_Extensions.
+IANA is also requested to add the following registries to the SUIT category:
+
+  * SUIT Report Elements
+  * SUIT Record Elements
+  * SUIT Report Reasons
+  * SUIT Capability Report Elements
+
+## SUIT Report Elements
+
+IANA is requested to create a new registry for SUIT Report Elements.
+
+Label | Name | Reference
+---|---|---
+2 | Nonce | {{suit-report}}
+3 | Records | {{suit-report}}
+4 | Result | {{suit-report}}
+5 | Result Code | {{suit-report}}
+6 | Result Record | {{suit-report}}
+7 | Result Reason | {{suit-report}}
+8 | Capability Report | {{suit-report}}
+99 | Reference | {{suit-report}}
+
+## SUIT Record Elements
+
+IANA is requested to create a new registry for SUIT Record Elements.
+
+Label | Name | Reference
+---|---|---
+0 | Manifest ID | {{suit-record}}
+1 | Manifest Section | {{suit-record}}
+2 | Section Offset | {{suit-record}}
+3 | Component Index  | {{suit-record}}
+4 | Dependency Index | {{suit-record}}
+5 | Record Properties | {{suit-record}}
+
+## SUIT Report Reasons
+
+IANA is requested to create a new registry for SUIT Report Reasons.
+
+Label | Name | Reference
+---|---|---
+0 | Result OK | {{suit-report-result}}
+1 | CBOR Parse Failure | {{suit-report-result}}
+2 | Unsupported COSE Structure or Header | {{suit-report-result}}
+3 | Unsupported COSE Algorithm |  {{suit-report-result}}
+4 | Signature / MAC verification failed | {{suit-report-result}}
+5 | Unsupported SUIT Command | {{suit-report-result}}
+6 | Unsupported SUIT Component | {{suit-report-result}}
+7 | Unauthorized SUIT Component | {{suit-report-result}}
+8 | Unsupported SUIT Parameter | {{suit-report-result}}
+9 | Severing Unsupported | {{suit-report-result}}
+10 | Condition Failed | {{suit-report-result}}
+11 | Operation Failed | {{suit-report-result}}
+
+
+## SUIT Capability Report Elements
+
+IANA is requested to create a new registry for SUIT Capability Report Elements.
+
+Label | Name | Reference
+---|---|---
+1 | Components | {{capabilities}}
+2 | Commands | {{capabilities}}
+3 | Parameters | {{capabilities}}
+4 | Cryptographic Algorithms | {{capabilities}}
+5 | Envelope Elements | {{capabilities}}
+6 | Manifest Elements | {{capabilities}}
+7 | Common Elements | {{capabilities}}
+8 | Text Elements | {{capabilities}}
+9 | Component Text Elements | {{capabilities}}
 
 #  Security Considerations
 
@@ -479,3 +555,15 @@ must have access to the full SUIT_Report.
 #  Acknowledgements
 
 The authors would like to thank Dave Thaler for his feedback.
+
+--- back
+
+# Full CDDL {#full-cddl}
+In order to create a valid SUIT Report document the structure of the corresponding CBOR message MUST adhere to the following CDDL data definition.
+
+To be valid, the following CDDL MUST have the COSE CDDL appended to it. The COSE CDDL can be obtained by following the directions in {{-cose, Section 1.4}}. It must also have the CDDL from {{I-D.ietf-suit-mti}} appended to it.
+
+~~~ CDDL
+{::include draft-ietf-suit-report.cddl}
+~~~
+

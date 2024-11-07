@@ -52,6 +52,23 @@ system-property-claims = {
   + $$SUIT_Parameters,
 }
 
+SUIT_Capability_Report = {
+  suit-component-capabilities        => [+ SUIT_Component_Capability ]
+  suit-command-capabilities          => [+ int],
+  suit-parameters-capabilities       => [+ int],
+  suit-crypt-algo-capabilities       => [+ int],
+  ? suit-envelope-capabilities       => [+ int],
+  ? suit-manifest-capabilities       => [+ int],
+  ? suit-common-capabilities         => [+ int],
+  ? suit-text-capabilities           => [+ int],
+  ? suit-text-component-capabilities => [+ int],
+  ? suit-dependency-capabilities     => [+ int],
+  * [+int]                           => [+ int],
+  $$SUIT_Capability_Report_Extensions
+}
+
+SUIT_Component_Capability = [*bstr,?true]
+
 suit-report-nonce = 2
 suit-report-records = 3
 suit-report-result = 4
@@ -96,3 +113,15 @@ suit-report-reason-parameter-unsupported = 8
 suit-report-severing-unsupported = 9
 suit-report-reason-condition-failed = 10
 suit-report-reason-operation-failed = 11
+
+suit-component-capabilities        = 1
+suit-command-capabilities          = 2
+suit-parameters-capabilities       = 3
+suit-crypt-algo-capabilities       = 4
+suit-envelope-capabilities         = 5
+suit-manifest-capabilities         = 6
+suit-common-capabilities           = 7
+suit-text-capabilities             = 8
+suit-text-component-capabilities   = 9
+suit-dependency-capabilities       = 10
+  
