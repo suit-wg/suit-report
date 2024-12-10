@@ -5,12 +5,12 @@
 SUIT                                                            B. Moran
 Internet-Draft                                               Arm Limited
 Intended status: Informational                               H. Birkholz
-Expires: 9 January 2025                                   Fraunhofer SIT
-                                                             8 July 2024
+Expires: 13 June 2025                                     Fraunhofer SIT
+                                                        10 December 2024
 
 
                    Secure Reporting of Update Status
-                       draft-ietf-suit-report-09
+                       draft-ietf-suit-report-10
 
 Abstract
 
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 January 2025.
+   This Internet-Draft will expire on 13 June 2025.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Moran & Birkholz         Expires 9 January 2025                 [Page 1]
+Moran & Birkholz          Expires 13 June 2025                  [Page 1]
 
-Internet-Draft      Secure Reporting of Update Status          July 2024
+Internet-Draft      Secure Reporting of Update Status      December 2024
 
 
    and restrictions with respect to this document.  Code Components
@@ -69,17 +69,24 @@ Table of Contents
    2.  Conventions and Terminology . . . . . . . . . . . . . . . . .   3
    3.  The SUIT Record . . . . . . . . . . . . . . . . . . . . . . .   3
    4.  The SUIT_Report . . . . . . . . . . . . . . . . . . . . . . .   6
+     4.1.  SUIT Record . . . . . . . . . . . . . . . . . . . . . . .   7
+     4.2.  SUIT Report Result  . . . . . . . . . . . . . . . . . . .   7
    5.  Attestation . . . . . . . . . . . . . . . . . . . . . . . . .   9
    6.  Capability Reporting  . . . . . . . . . . . . . . . . . . . .  10
    7.  EAT Claim . . . . . . . . . . . . . . . . . . . . . . . . . .  11
    8.  SUIT_Report container . . . . . . . . . . . . . . . . . . . .  11
    9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  12
-   10. Security Considerations . . . . . . . . . . . . . . . . . . .  13
-   11. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  13
-   12. References  . . . . . . . . . . . . . . . . . . . . . . . . .  13
-     12.1.  Normative References . . . . . . . . . . . . . . . . . .  14
-     12.2.  Informative References . . . . . . . . . . . . . . . . .  14
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  15
+     9.1.  SUIT Report Elements  . . . . . . . . . . . . . . . . . .  13
+     9.2.  SUIT Record Elements  . . . . . . . . . . . . . . . . . .  13
+     9.3.  SUIT Report Reasons . . . . . . . . . . . . . . . . . . .  14
+     9.4.   SUIT Capability Report Elements  . . . . . . . . . . . .  15
+   10. Security Considerations . . . . . . . . . . . . . . . . . . .  16
+   11. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  17
+   12. References  . . . . . . . . . . . . . . . . . . . . . . . . .  17
+     12.1.  Normative References . . . . . . . . . . . . . . . . . .  17
+     12.2.  Informative References . . . . . . . . . . . . . . . . .  18
+   Appendix A.  Full CDDL  . . . . . . . . . . . . . . . . . . . . .  18
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  21
 
 1.  Introduction
 
@@ -100,19 +107,18 @@ Table of Contents
 
    *  missing support for multiple components
 
+
+
+Moran & Birkholz          Expires 13 June 2025                  [Page 2]
+
+Internet-Draft      Secure Reporting of Update Status      December 2024
+
+
    The CBOR objects defined in this document allow devices to:
 
    *  report a trace of how an update was performed
 
    *  report expected vs. actual values for critical checks
-
-
-
-
-Moran & Birkholz         Expires 9 January 2025                 [Page 2]
-
-Internet-Draft      Secure Reporting of Update Status          July 2024
-
 
    *  describe the installation of complex multi-component architectures
 
@@ -156,19 +162,19 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
 
    *  Conditions
 
+
+
+
+Moran & Birkholz          Expires 13 June 2025                  [Page 3]
+
+Internet-Draft      Secure Reporting of Update Status      December 2024
+
+
    Of these, only conditions change the behavior of the processor from
    the default, and then only when the condition fails.
 
    Then, to reconstruct the flow of a manifest, all a developer needs is
    a list of metadata about failed conditions:
-
-
-
-
-Moran & Birkholz         Expires 9 January 2025                 [Page 3]
-
-Internet-Draft      Secure Reporting of Update Status          July 2024
-
 
    *  the current manifest
 
@@ -213,18 +219,17 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
    contained in one of the root manifest's dependencies, or nested even
    further below that.
 
+
+
+Moran & Birkholz          Expires 13 June 2025                  [Page 4]
+
+Internet-Draft      Secure Reporting of Update Status      December 2024
+
+
    For example, suppose that the root manifest has 3 dependencies and
    each of those dependencies has 2 dependencies of its own:
 
    *  Root
-
-
-
-
-Moran & Birkholz         Expires 9 January 2025                 [Page 4]
-
-Internet-Draft      Secure Reporting of Update Status          July 2024
-
 
       -  Dependency A
 
@@ -272,14 +277,9 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
 
-
-
-
-
-
-Moran & Birkholz         Expires 9 January 2025                 [Page 5]
+Moran & Birkholz          Expires 13 June 2025                  [Page 5]
 
-Internet-Draft      Secure Reporting of Update Status          July 2024
+Internet-Draft      Secure Reporting of Update Status      December 2024
 
 
 4.  The SUIT_Report
@@ -291,22 +291,14 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
    were measured and reported, and a reason for a failure if one
    occured.
 
-SUIT_Report = {
-  suit-reference              => SUIT_Reference,
-  ? suit-report-nonce         => bstr,
-  suit-report-records         => [ * SUIT_Record / system-property-claims ],
-  suit-report-result          => true / {
-    suit-report-result-code   => int,
-    suit-report-result-record => SUIT_Record,
-    suit-report-result-reason => SUIT_Report_Reasons,
-  },
-  ? suit-report-capability-report => SUIT_Capability_Report,
-  $$SUIT_Report_Extensions
-}
-system-property-claims = {
-  system-component-id => SUIT_Component_Identifier,
-  + SUIT_Parameters,
-}
+   CDDL ~~~ SUIT_Report = { suit-reference => SUIT_Reference, ? suit-
+   report-nonce => bstr, suit-report-records => [ * SUIT_Record /
+   system-property-claims ], suit-report-result => true / { suit-report-
+   result-code => int, suit-report-result-record => SUIT_Record, suit-
+   report-result-reason => SUIT_Report_Reasons, }, ? suit-report-
+   capability-report => SUIT_Capability_Report, $$SUIT_Report_Extensions
+   } system-property-claims = { system-component-id =>
+   SUIT_Component_Identifier, + SUIT_Parameters, } ~~~
 
    The suit-reference provides a reference URI and digest for a suit
    manifest.  The uri SHOULD be the canonical URI that is provided in
@@ -329,15 +321,6 @@ system-property-claims = {
    [I-D.ietf-suit-manifest]) that is the characteristic digest of the
    Root manifest.
 
-
-
-
-
-Moran & Birkholz         Expires 9 January 2025                 [Page 6]
-
-Internet-Draft      Secure Reporting of Update Status          July 2024
-
-
    suit-report-manifest-uri provides the reference URI that was provided
    in the root manifest.
 
@@ -346,6 +329,16 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
    report is authenticated within a container that provides freshness
    already.  For example, attestation evidence typically contains a
    proof of freshness.
+
+
+
+
+Moran & Birkholz          Expires 13 June 2025                  [Page 6]
+
+Internet-Draft      Secure Reporting of Update Status      December 2024
+
+
+4.1.  SUIT Record
 
    suit-report-records is a list of 0 or more SUIT Records or system-
    property-claims.  Because SUIT Records are only generated on failure,
@@ -372,6 +365,8 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
      }
    }
 
+4.2.  SUIT Report Result
+
    suit-report-result provides a mechanism to show that the SUIT
    procedure completed successfully (value is true) or why it failed
    (value is a map of an error code and a SUIT_Record).
@@ -387,15 +382,17 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
    *  suit-report-reason-cose-unsupported: an unusupported COSE
       structure or header was encountered.
 
-
-
-Moran & Birkholz         Expires 9 January 2025                 [Page 7]
-
-Internet-Draft      Secure Reporting of Update Status          July 2024
-
-
    *  suit-report-reason-alg-unsupported: an unsupported COSE algorithm
       was encountered.
+
+
+
+
+
+Moran & Birkholz          Expires 13 June 2025                  [Page 7]
+
+Internet-Draft      Secure Reporting of Update Status      December 2024
+
 
    *  suit-report-reason-unauthorised: Signature/MAC verification
       failed.
@@ -445,9 +442,12 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
 
-Moran & Birkholz         Expires 9 January 2025                 [Page 8]
+
+
+
+Moran & Birkholz          Expires 13 June 2025                  [Page 8]
 
-Internet-Draft      Secure Reporting of Update Status          July 2024
+Internet-Draft      Secure Reporting of Update Status      December 2024
 
 
 5.  Attestation
@@ -501,9 +501,9 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
 
-Moran & Birkholz         Expires 9 January 2025                 [Page 9]
+Moran & Birkholz          Expires 13 June 2025                  [Page 9]
 
-Internet-Draft      Secure Reporting of Update Status          July 2024
+Internet-Draft      Secure Reporting of Update Status      December 2024
 
 
    This approach simplifies the design of the bootloader since it is
@@ -534,8 +534,8 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
      ? suit-envelope-capabilities       => [+ int],
      ? suit-manifest-capabilities       => [+ int],
      ? suit-common-capabilities         => [+ int],
-     ? suit-text-component-capabilities => [+ int],
      ? suit-text-capabilities           => [+ int],
+     ? suit-text-component-capabilities => [+ int],
      ? suit-dependency-capabilities     => [+ int],
      * [+int]                           => [+ int],
      $$SUIT_Capability_Report_Extensions
@@ -557,9 +557,9 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
 
-Moran & Birkholz         Expires 9 January 2025                [Page 10]
+Moran & Birkholz          Expires 13 June 2025                 [Page 10]
 
-Internet-Draft      Secure Reporting of Update Status          July 2024
+Internet-Draft      Secure Reporting of Update Status      December 2024
 
 
    Additional capability reporting can be added as follows: if a
@@ -613,9 +613,9 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
 
 
 
-Moran & Birkholz         Expires 9 January 2025                [Page 11]
+Moran & Birkholz          Expires 13 June 2025                 [Page 11]
 
-Internet-Draft      Secure Reporting of Update Status          July 2024
+Internet-Draft      Secure Reporting of Update Status      December 2024
 
 
    SUIT_Report_Protected /= SUIT_Report_COSE_Sign1 .and SUIT_COSE_Profiles
@@ -659,20 +659,212 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
    for the SUIT_Report, SUIT_Reference, and SUIT_Capability_Report CBOR
    data structures.
 
-   IANA is also requested to add a table to the SUIT page for
-   SUIT_Capability_Report_Extensions.
+   IANA is also requested to add the following registries to the SUIT
+   category:
+
+   *  SUIT Report Elements
+
+   *  SUIT Record Elements
 
 
 
 
-
-
-
-
-Moran & Birkholz         Expires 9 January 2025                [Page 12]
+Moran & Birkholz          Expires 13 June 2025                 [Page 12]
 
-Internet-Draft      Secure Reporting of Update Status          July 2024
+Internet-Draft      Secure Reporting of Update Status      December 2024
 
+
+   *  SUIT Report Reasons
+
+   *  SUIT Capability Report Elements
+
+9.1.  SUIT Report Elements
+
+   IANA is requested to create a new registry for SUIT Report Elements.
+
+                 +=======+===================+===========+
+                 | Label | Name              | Reference |
+                 +=======+===================+===========+
+                 | 2     | Nonce             | Section 4 |
+                 +-------+-------------------+-----------+
+                 | 3     | Records           | Section 4 |
+                 +-------+-------------------+-----------+
+                 | 4     | Result            | Section 4 |
+                 +-------+-------------------+-----------+
+                 | 5     | Result Code       | Section 4 |
+                 +-------+-------------------+-----------+
+                 | 6     | Result Record     | Section 4 |
+                 +-------+-------------------+-----------+
+                 | 7     | Result Reason     | Section 4 |
+                 +-------+-------------------+-----------+
+                 | 8     | Capability Report | Section 4 |
+                 +-------+-------------------+-----------+
+                 | 99    | Reference         | Section 4 |
+                 +-------+-------------------+-----------+
+
+                                  Table 1
+
+9.2.  SUIT Record Elements
+
+   IANA is requested to create a new registry for SUIT Record Elements.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Moran & Birkholz          Expires 13 June 2025                 [Page 13]
+
+Internet-Draft      Secure Reporting of Update Status      December 2024
+
+
+                +=======+===================+=============+
+                | Label | Name              | Reference   |
+                +=======+===================+=============+
+                | 0     | Manifest ID       | Section 4.1 |
+                +-------+-------------------+-------------+
+                | 1     | Manifest Section  | Section 4.1 |
+                +-------+-------------------+-------------+
+                | 2     | Section Offset    | Section 4.1 |
+                +-------+-------------------+-------------+
+                | 3     | Component Index   | Section 4.1 |
+                +-------+-------------------+-------------+
+                | 4     | Dependency Index  | Section 4.1 |
+                +-------+-------------------+-------------+
+                | 5     | Record Properties | Section 4.1 |
+                +-------+-------------------+-------------+
+
+                                  Table 2
+
+9.3.  SUIT Report Reasons
+
+   IANA is requested to create a new registry for SUIT Report Reasons.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Moran & Birkholz          Expires 13 June 2025                 [Page 14]
+
+Internet-Draft      Secure Reporting of Update Status      December 2024
+
+
+      +=======+======================================+=============+
+      | Label | Name                                 | Reference   |
+      +=======+======================================+=============+
+      | 0     | Result OK                            | Section 4.2 |
+      +-------+--------------------------------------+-------------+
+      | 1     | CBOR Parse Failure                   | Section 4.2 |
+      +-------+--------------------------------------+-------------+
+      | 2     | Unsupported COSE Structure or Header | Section 4.2 |
+      +-------+--------------------------------------+-------------+
+      | 3     | Unsupported COSE Algorithm           | Section 4.2 |
+      +-------+--------------------------------------+-------------+
+      | 4     | Signature / MAC verification failed  | Section 4.2 |
+      +-------+--------------------------------------+-------------+
+      | 5     | Unsupported SUIT Command             | Section 4.2 |
+      +-------+--------------------------------------+-------------+
+      | 6     | Unsupported SUIT Component           | Section 4.2 |
+      +-------+--------------------------------------+-------------+
+      | 7     | Unauthorized SUIT Component          | Section 4.2 |
+      +-------+--------------------------------------+-------------+
+      | 8     | Unsupported SUIT Parameter           | Section 4.2 |
+      +-------+--------------------------------------+-------------+
+      | 9     | Severing Unsupported                 | Section 4.2 |
+      +-------+--------------------------------------+-------------+
+      | 10    | Condition Failed                     | Section 4.2 |
+      +-------+--------------------------------------+-------------+
+      | 11    | Operation Failed                     | Section 4.2 |
+      +-------+--------------------------------------+-------------+
+
+                                 Table 3
+
+9.4.   SUIT Capability Report Elements
+
+   IANA is requested to create a new registry for SUIT Capability Report
+   Elements.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Moran & Birkholz          Expires 13 June 2025                 [Page 15]
+
+Internet-Draft      Secure Reporting of Update Status      December 2024
+
+
+             +=======+==========================+===========+
+             | Label | Name                     | Reference |
+             +=======+==========================+===========+
+             | 1     | Components               | Section 6 |
+             +-------+--------------------------+-----------+
+             | 2     | Commands                 | Section 6 |
+             +-------+--------------------------+-----------+
+             | 3     | Parameters               | Section 6 |
+             +-------+--------------------------+-----------+
+             | 4     | Cryptographic Algorithms | Section 6 |
+             +-------+--------------------------+-----------+
+             | 5     | Envelope Elements        | Section 6 |
+             +-------+--------------------------+-----------+
+             | 6     | Manifest Elements        | Section 6 |
+             +-------+--------------------------+-----------+
+             | 7     | Common Elements          | Section 6 |
+             +-------+--------------------------+-----------+
+             | 8     | Text Elements            | Section 6 |
+             +-------+--------------------------+-----------+
+             | 9     | Component Text Elements  | Section 6 |
+             +-------+--------------------------+-----------+
+
+                                 Table 4
 
 10.  Security Considerations
 
@@ -699,6 +891,13 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
    provide an attacker with better visibility.  Therefore, SUIT_Reports
    SHOULD be encrypted wherever possible.
 
+
+
+Moran & Birkholz          Expires 13 June 2025                 [Page 16]
+
+Internet-Draft      Secure Reporting of Update Status      December 2024
+
+
    There are also operational considerations that intersect with these
    security considerations.  In situations where the SUIT report is
    encrypted as an element of a message within another protocol, care
@@ -722,14 +921,6 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
 
 12.  References
 
-
-
-
-Moran & Birkholz         Expires 9 January 2025                [Page 13]
-
-Internet-Draft      Secure Reporting of Update Status          July 2024
-
-
 12.1.  Normative References
 
    [I-D.ietf-suit-manifest]
@@ -737,18 +928,40 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
               O. Rønningstad, "A Concise Binary Object Representation
               (CBOR)-based Serialization Format for the Software Updates
               for Internet of Things (SUIT) Manifest", Work in Progress,
-              Internet-Draft, draft-ietf-suit-manifest-25, 5 February
+              Internet-Draft, draft-ietf-suit-manifest-32, 9 December
               2024, <https://datatracker.ietf.org/doc/html/draft-ietf-
-              suit-manifest-25>.
+              suit-manifest-32>.
+
+   [I-D.ietf-suit-mti]
+              Moran, B., Rønningstad, O., and A. Tsukamoto, "Mandatory-
+              to-Implement Algorithms for Authors and Recipients of
+              Software Update for the Internet of Things manifests",
+              Work in Progress, Internet-Draft, draft-ietf-suit-mti-08,
+              21 October 2024, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-suit-mti-08>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
 
+
+
+
+
+Moran & Birkholz          Expires 13 June 2025                 [Page 17]
+
+Internet-Draft      Secure Reporting of Update Status      December 2024
+
+
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+   [RFC9052]  Schaad, J., "CBOR Object Signing and Encryption (COSE):
+              Structures and Process", STD 96, RFC 9052,
+              DOI 10.17487/RFC9052, August 2022,
+              <https://www.rfc-editor.org/rfc/rfc9052>.
 
 12.2.  Informative References
 
@@ -762,36 +975,182 @@ Internet-Draft      Secure Reporting of Update Status          July 2024
    [I-D.ietf-rats-eat]
               Lundblade, L., Mandyam, G., O'Donoghue, J., and C.
               Wallace, "The Entity Attestation Token (EAT)", Work in
-              Progress, Internet-Draft, draft-ietf-rats-eat-29, 8 July
-              2024, <https://datatracker.ietf.org/doc/html/draft-ietf-
-              rats-eat-29>.
-
-   [I-D.ietf-suit-mti]
-              Moran, B., Rønningstad, O., and A. Tsukamoto, "Mandatory-
-              to-Implement Algorithms for Authors and Recipients of
-              Software Update for the Internet of Things manifests",
-              Work in Progress, Internet-Draft, draft-ietf-suit-mti-05,
-              12 February 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-suit-mti-05>.
-
-
-
-
-
-
-
-
-Moran & Birkholz         Expires 9 January 2025                [Page 14]
-
-Internet-Draft      Secure Reporting of Update Status          July 2024
-
+              Progress, Internet-Draft, draft-ietf-rats-eat-31, 6
+              September 2024, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-rats-eat-31>.
 
    [I-D.ietf-suit-trust-domains]
               Moran, B. and K. Takayama, "SUIT Manifest Extensions for
               Multiple Trust Domains", Work in Progress, Internet-Draft,
-              draft-ietf-suit-trust-domains-07, 6 July 2024,
+              draft-ietf-suit-trust-domains-09, 4 December 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-suit-
-              trust-domains-07>.
+              trust-domains-09>.
+
+Appendix A.  Full CDDL
+
+   In order to create a valid SUIT Report document the structure of the
+   corresponding CBOR message MUST adhere to the following CDDL data
+   definition.
+
+   To be valid, the following CDDL MUST have the COSE CDDL appended to
+   it.  The COSE CDDL can be obtained by following the directions in
+   [RFC9052], Section 1.4.  It must also have the CDDL from
+   [I-D.ietf-suit-mti] appended to it.
+
+
+
+
+
+
+
+
+
+Moran & Birkholz          Expires 13 June 2025                 [Page 18]
+
+Internet-Draft      Secure Reporting of Update Status      December 2024
+
+
+   SUIT_Report_Protected /= SUIT_Report_COSE_Sign1 .and SUIT_COSE_Profiles
+   SUIT_Report_Protected /= SUIT_Report_COSE_Sign1_Tagged .and SUIT_COSE_Profiles
+   SUIT_Report_Protected /= SUIT_Report_COSE_MAC0 .and SUIT_COSE_Profiles
+   SUIT_Report_Protected /= SUIT_Report_COSE_MAC0_Tagged .and SUIT_COSE_Profiles
+
+   SUIT_Report_COSE_Sign1_Tagged = #6.18(SUIT_Report_COSE_Sign1)
+   SUIT_Report_COSE_Sign1 = [
+       protected : bstr,
+       unprotected : {* int => any},
+       payload : bstr .cbor SUIT_Report_Unprotected,
+       signature : bstr
+   ]
+   SUIT_Report_COSE_MAC0_Tagged = #6.17(SUIT_Report_COSE_MAC0)
+   SUIT_Report_COSE_MAC0 = [
+       protected : bstr,
+       unprotected : {* int => any},
+       payload : bstr .cbor SUIT_Report_Unprotected,
+       tag : bstr
+   ]
+   SUIT_Report_Unprotected = SUIT_Report / SUIT_Report_COSE_Encrypt0
+   SUIT_Report_COSE_Encrypt0 = COSE_Encrypt0
+
+   SUIT_Report = {
+     suit-reference              => SUIT_Reference,
+     ? suit-report-nonce         => bstr,
+     suit-report-records         => [ * SUIT_Record / system-property-claims ],
+     suit-report-result          => true / {
+       suit-report-result-code   => int,
+       suit-report-result-record => SUIT_Record,
+       suit-report-result-reason => SUIT_Report_Reasons,
+     },
+     ? suit-report-capability-report => SUIT_Capability_Report,
+     $$SUIT_Report_Extensions
+   }
+
+   SUIT_Reference = [
+       suit-report-manifest-uri : tstr,
+       suit-report-manifest-digest : SUIT_Digest
+   ]
+
+   SUIT_Record = [
+       suit-record-manifest-id        : [* uint ],
+       suit-record-manifest-section   : int,
+       suit-record-section-offset     : uint,
+       suit-record-component-index    : uint,
+       suit-record-properties         : {*$$SUIT_Parameters},
+       $$SUIT_Record_Extensions
+   ]
+
+
+
+Moran & Birkholz          Expires 13 June 2025                 [Page 19]
+
+Internet-Draft      Secure Reporting of Update Status      December 2024
+
+
+   system-property-claims = {
+     system-component-id => SUIT_Component_Identifier,
+     + $$SUIT_Parameters,
+   }
+
+   SUIT_Capability_Report = {
+     suit-component-capabilities        => [+ SUIT_Component_Capability ]
+     suit-command-capabilities          => [+ int],
+     suit-parameters-capabilities       => [+ int],
+     suit-crypt-algo-capabilities       => [+ int],
+     ? suit-envelope-capabilities       => [+ int],
+     ? suit-manifest-capabilities       => [+ int],
+     ? suit-common-capabilities         => [+ int],
+     ? suit-text-capabilities           => [+ int],
+     ? suit-text-component-capabilities => [+ int],
+     ? suit-dependency-capabilities     => [+ int],
+     * [+int]                           => [+ int],
+     $$SUIT_Capability_Report_Extensions
+   }
+
+   SUIT_Component_Capability = [*bstr,?true]
+
+   suit-report-nonce = 2
+   suit-report-records = 3
+   suit-report-result = 4
+   suit-report-result-code = 5
+   suit-report-result-record = 6
+   suit-report-result-reason = 7
+   suit-report-capability-report = 8
+   suit-reference = 99
+
+   suit-system-properties = 13
+   system-component-id = 0
+
+   suit-record-manifest-id = 0
+   suit-record-manifest-section = 1
+   suit-record-section-offset = 2
+   suit-record-component-index = 3
+   suit-record-dependency-index = 4
+   suit-record-properties = 5
+
+   SUIT_Report_Reasons /= suit-report-reason-ok
+   SUIT_Report_Reasons /= suit-report-reason-cbor-parse
+   SUIT_Report_Reasons /= suit-report-reason-cose-unsupported
+   SUIT_Report_Reasons /= suit-report-reason-alg-unsupported
+   SUIT_Report_Reasons /= suit-report-reason-unauthorised
+   SUIT_Report_Reasons /= suit-report-reason-command-unsupported
+   SUIT_Report_Reasons /= suit-report-reason-component-unsupported
+
+
+
+Moran & Birkholz          Expires 13 June 2025                 [Page 20]
+
+Internet-Draft      Secure Reporting of Update Status      December 2024
+
+
+   SUIT_Report_Reasons /= suit-report-reason-component-unauthorised
+   SUIT_Report_Reasons /= suit-report-reason-parameter-unsupported
+   SUIT_Report_Reasons /= suit-report-severing-unsupported
+   SUIT_Report_Reasons /= suit-report-reason-condition-failed
+   SUIT_Report_Reasons /= suit-report-reason-operation-failed
+
+   suit-report-reason-ok = 0
+   suit-report-reason-cbor-parse = 1
+   suit-report-reason-cose-unsupported = 2
+   suit-report-reason-alg-unsupported = 3
+   suit-report-reason-unauthorised = 4
+   suit-report-reason-command-unsupported = 5
+   suit-report-reason-component-unsupported = 6
+   suit-report-reason-component-unauthorised = 7
+   suit-report-reason-parameter-unsupported = 8
+   suit-report-severing-unsupported = 9
+   suit-report-reason-condition-failed = 10
+   suit-report-reason-operation-failed = 11
+
+   suit-component-capabilities        = 1
+   suit-command-capabilities          = 2
+   suit-parameters-capabilities       = 3
+   suit-crypt-algo-capabilities       = 4
+   suit-envelope-capabilities         = 5
+   suit-manifest-capabilities         = 6
+   suit-common-capabilities           = 7
+   suit-text-capabilities             = 8
+   suit-text-component-capabilities   = 9
+   suit-dependency-capabilities       = 10
 
 Authors' Addresses
 
@@ -814,27 +1173,4 @@ Authors' Addresses
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Moran & Birkholz         Expires 9 January 2025                [Page 15]
+Moran & Birkholz          Expires 13 June 2025                 [Page 21]
