@@ -204,17 +204,17 @@ developer needs to know which was selected when the command executed.
 
 suit-record-properties contains any measured properties that led to the
 command failure.
-For example, this could be the actual value of a SUIT_Digest or
-class identifier. This is encoded in a SUIT_Parameters block as defined
+For example, this could be the actual value of a SUIT\_Digest or
+class identifier. This is encoded in a SUIT\_Parameters block as defined
 in {{I-D.ietf-suit-manifest}}.
 
-# The SUIT_Report {#suit-report}
+# The SUIT\_Report {#suit-report}
 
 Some metadata is common to all records, such as the root manifest:
 the manifest that is the entry-point for the manifest processor. This
-metadata is aggregated with a list of SUIT_Records. The SUIT_Report
+metadata is aggregated with a list of SUIT\_Records. The SUIT\_Report
 may also contain a list of any system properties that were measured
-and reported, and a reason for a failure if one occured.
+and reported, and a reason for a failure if one occurred.
 
 CDDL
 ~~~
@@ -237,7 +237,7 @@ system-property-claims = {
 ~~~
 
 The suit-reference provides a reference URI and digest for a suit
-manifest. The uri SHOULD be the canonical URI that is provided in the
+manifest. The URI SHOULD be the canonical URI that is provided in the
 manifest. The digest is the digest of the manifest.
 
 NOTE: The digest is used
@@ -246,7 +246,7 @@ a manifest to be uniquely identified (collision resistance) whereas
 other identifiers, such as the sequence number, can collide,
 particularly in scenarios with multiple trusted signers.
 
-The following CDDL describes a SUIT_Reference.
+The following CDDL describes a SUIT\_Reference.
 
 ~~~CDDL
 SUIT_Reference = {
@@ -255,7 +255,7 @@ SUIT_Reference = {
 }
 ~~~
 
-suit-report-manifest-digest provides a SUIT_Digest (as defined in
+suit-report-manifest-digest provides a SUIT\_Digest (as defined in
 {{I-D.ietf-suit-manifest}}) that is the characteristic digest of the
 Root manifest.
 
@@ -272,19 +272,19 @@ freshness.
 
 suit-report-records is a list of 0 or more SUIT Records or
 system-property-claims. Because SUIT Records are only generated on failure,
-in simple cases this can be an empty list. SUIT_Records and
+in simple cases this can be an empty list. SUIT\_Records and
 suit-system-property-claims are merged into a single list because this
 reduces the overhead for a constrained node that generates this report.
 The use of a single append-only log allows report generators to use simple
 memory management. Because the system-property-claims are encoded as maps
-and SUIT_Records are encoded as lists, a recipient need only filter the
+and SUIT\_Records are encoded as lists, a recipient need only filter the
 CBOR Type-5 entries from suit-report-records to obtain all
 system-property-claims.
 
-System properties can be extracted from suit-report-records by filtering
+System Properties can be extracted from suit-report-records by filtering
 suit-report-records for maps. System Properties are a list of measured
 or asserted properties
-of the system that creates the SUIT_Report. These properties are scoped by
+of the system that creates the SUIT\_Report. These properties are scoped by
 component identifier. Because this list is expected to be constructed on
 the fly by a constrained node, component identifiers may appear more than
 once. A recipient may convert the result to a more conventional structure:
@@ -301,7 +301,7 @@ SUIT_Record_System_Properties = {
 
 suit-report-result provides a mechanism to show that the SUIT procedure
 completed successfully (value is true) or why it failed (value is a map
-of an error code and a SUIT_Record).
+of an error code and a SUIT\_Record).
 
 suit-report-result-reason gives a high-level explanation of the failure.
 These reasons are intended for interoperable implementations. The reasons
@@ -334,25 +334,25 @@ provided for debugging reasons. This code is not intended for
 interoperability.
 
 The suit-report-result-record indicates the exact point in the manifest
-or manifest dependency tree where the error occured.
+or manifest dependency tree where the error occurred.
 
-suit-report-capability-report provides a mechanism to report the capabilities of the Manifest Processor. The SUIT_Capability_Report is described in {{capabilities}}. The capability report is optional to include in the SUIT_Report, according to an application-specific policy. While the SUIT_Capability_Report is not expected to be very large, applications should ensure that they only report capabilities when necessary in order to conserve bandwidth. A capability report is not necessary except when:
+suit-report-capability-report provides a mechanism to report the capabilities of the Manifest Processor. The SUIT\_Capability\_Report is described in {{capabilities}}. The capability report is optional to include in the SUIT\_Report, according to an application-specific policy. While the SUIT\_Capability\_Report is not expected to be very large, applications should ensure that they only report capabilities when necessary in order to conserve bandwidth. A capability report is not necessary except when:
 
 1. A client explicitly requests the capability report, or
 2. A manifest attempts to use a capability that the Manifest Processor does not implement.
 
 #  Attestation
 
-This document describes how a well-informed verifier can infer the trustworthiness of a remote device. Remote attestation is done by using the SUIT_Manifest_Envelope along with the SUIT_Report to reconstruct the state of the device at boot time. By embedding data used for remote attestation in the SUIT_Report, a remote device can use an append-only log to collect both measurements and debug/failure information into the same document. This document can then be conveyed to a verifier as a part of the attestation evidence. A remote attestation format to convey attestation evidence, such as an Entity Attestation Token (EAT, see {{-EAT}}), that contains a SUIT_Report MUST also include an integrity measurement of the Manifest Processor & Report Generator.
+This document describes how a well-informed verifier can infer the trustworthiness of a remote device. Remote attestation is done by using the SUIT\_Manifest\_Envelope along with the SUIT\_Report to reconstruct the state of the device at boot time. By embedding data used for remote attestation in the SUIT\_Report, a remote device can use an append-only log to collect both measurements and debug/failure information into the same document. This document can then be conveyed to a verifier as a part of the attestation evidence. A remote attestation format to convey attestation evidence, such as an Entity Attestation Token (EAT, see {{-EAT}}), that contains a SUIT\_Report MUST also include an integrity measurement of the Manifest Processor & Report Generator.
 
-When a Concise Reference Integrity Manifest (CoRIM, see {{-CoRIM}} is delivered in a SUIT_Manifest_Envelope, this codifies the delivery of verification information to the verifier:
+When a Concise Reference Integrity Manifest (CoRIM, see {{-CoRIM}}) is delivered in a SUIT\_Manifest\_Envelope, this codifies the delivery of verification information to the verifier:
 
 * The Firmware Distributor:
-    * sends the SUIT_Manifest_Envelope to the Verifier without payload or text, but with CoRIM
-    * sends the SUIT_Manifest_Envelope to the recipient without CoRIM, or text, but with payload
+    * sends the SUIT\_Manifest\_Envelope to the Verifier without payload or text, but with CoRIM
+    * sends the SUIT\_Manifest\_Envelope to the recipient without CoRIM, or text, but with payload
 * The Recipient:
-    * Installs the firmware as described in the SUIT_Manifest and generates a SUIT_report, which is encapsulated in an EAT by the installer and sent to the Firmware Distributor.
-    * Boots the firmware as described in the SUIT_Manifest and creates a SUIT_report, which is encapsulated in an EAT by the installer and sent to the Firmware Distributor.
+    * Installs the firmware as described in the SUIT\_Manifest and generates a SUIT\_report, which is encapsulated in an EAT by the installer and sent to the Firmware Distributor.
+    * Boots the firmware as described in the SUIT\_Manifest and creates a SUIT\_report, which is encapsulated in an EAT by the installer and sent to the Firmware Distributor.
 * The Firmware Distributor sends both reports to the verifier (separately or together)
 * The Verifier:
     * Reconstructs the state of the device using the manifest
@@ -367,7 +367,7 @@ This information is not intended as Attestation Evidence and while an Attestatio
 
 Because SUIT is extensible, a manifest author must know what capabilities a device has available. To enable this, a capability report is a set of lists that define which commands, parameters, algorithms, and component IDs are supported by a manifest processor.
 
-The CDDL for a SUIT_Capability_Report follows:
+The CDDL for a SUIT\_Capability\_Report follows:
 
 ~~~~CDDL
 SUIT_Capability_Report = {
@@ -388,26 +388,26 @@ SUIT_Capability_Report = {
 SUIT_Component_Capability = [*bstr,?true]
 ~~~~
 
-A SUIT_Component_Capability is similar to a SUIT_Component_ID, with one difference: it may optionally be terminated by a CBOR 'true' which acts as a wild-card match for any component with a prefix matching the SUIT_Component_Capability leading up to the 'true.' This feature is for use with filesystem storage, key value stores, or any other arbitrary-component-id storage systems.
+A SUIT\_Component\_Capability is similar to a SUIT\_Component\_ID, with one difference: it may optionally be terminated by a CBOR 'true' which acts as a wild-card match for any component with a prefix matching the SUIT\_Component\_Capability leading up to the 'true.' This feature is for use with filesystem storage, key value stores, or any other arbitrary-component-id storage systems.
 
 When reporting capabilities, it is OPTIONAL to report capabilities that are declared mandatory by the SUIT Manifest {{I-D.ietf-suit-manifest}}. Capabilities defined by extensions MUST be reported.
 
-Additional capability reporting can be added as follows: if a manifest element does not exist in this map, it can be added by specifying the CBOR path to the manifest element in an array and using this as the key. For example SUIT_Dependencies, as described in {{I-D.ietf-suit-trust-domains}} could have an extension added, which was key 3 in the SUIT_Dependencies map. This capability would be reported as: \[3, 3, 1\] => \[3\], where the key consists of the key for SUIT_Manifest (3), the key for SUIT_Common (3), and the key for SUIT_Dependencies (1). Then the value indicates that this manifest processor supports the extension (3).
+Additional capability reporting can be added as follows: if a manifest element does not exist in this map, it can be added by specifying the CBOR path to the manifest element in an array and using this as the key. For example SUIT\_Dependencies, as described in {{I-D.ietf-suit-trust-domains}} could have an extension added, which was key 3 in the SUIT\_Dependencies map. This capability would be reported as: \[3, 3, 1\] => \[3\], where the key consists of the key for SUIT\_Manifest (3), the key for SUIT\_Common (3), and the key for SUIT\_Dependencies (1). Then the value indicates that this manifest processor supports the extension (3).
 
 #  EAT Claim {#eat}
 
-The SUIT_Report is a form of measurement done by the SUIT Manifest Processor as it attempts to invoke a manifest or install a manifest. As a result, the SUIT_Report can be captured in an EAT measurements type.
-The Verifier MAY convert a SUIT_Report into a more consumable version of the EAT claim by, for example, constructing a measres claim that contains the digest of a component, the vendor ID & class ID of a component, etc.
+The SUIT\_Report is a form of measurement done by the SUIT Manifest Processor as it attempts to invoke a manifest or install a manifest. As a result, the SUIT\_Report can be captured in an EAT measurements type.
+The Verifier MAY convert a SUIT\_Report into a more consumable version of the EAT claim by, for example, constructing a measurement results claim that contains the digest of a component, the vendor ID & class ID of a component, etc.
 
-#  SUIT_Report container {#container}
+#  SUIT\_Report container {#container}
 
-The SUIT_Report MUST be carried in a container or transport that ensures authenticity. The SUIT_Report MUST be transported using one of the following options:
+The SUIT\_Report MUST be carried in a container or transport that ensures authenticity. The SUIT\_Report MUST be transported using one of the following options:
 
 * As an element of an existing document that ensures authenticity, such as in a measurements claim in an EAT.
 * As the payload of a message delivered over secure transport, such as a CoAP {{?RFC7252}} or Lightweight Machine 2 Machine {{LwM2M}} message.
 * Contained within a secure container that conforms to the current recommendations of {{I-D.ietf-suit-mti}}.
 
-In this case, the SUIT_Report is carried as sole payload of a COSE_Encrypt0 or COSE_Sign1 as shown in the CDDL snippet below.
+In this case, the SUIT\_Report is carried as sole payload of a COSE\_Encrypt0 or COSE\_Sign1 as shown in the CDDL snippet below.
 
 ~~~CDDL
 SUIT_Report_Protected /= SUIT_Report_COSE_Sign1 .and SUIT_COSE_Profiles
@@ -433,17 +433,17 @@ SUIT_Report_Unprotected = SUIT_Report / SUIT_Report_COSE_Encrypt0
 SUIT_Report_COSE_Encrypt0 = COSE_Encrypt0
 ~~~
 
-Note that SUIT_Report_COSE_Sign1 and SUIT_Report_COSE_MAC0 MUST be combined with a SUIT_COSE_Profile from {{I-D.ietf-suit-mti}} using the CDDL .and directive. The SUIT_Report_COSE_Encrypt0 carries a ciphertext payload that MUST contain just the ciphertext obtained by encrypting the following CDDL:
+Note that SUIT\_Report\_COSE\_Sign1 and SUIT\_Report\_COSE\_MAC0 MUST be combined with a SUIT\_COSE\_Profile from {{I-D.ietf-suit-mti}} using the CDDL .and directive. The SUIT\_Report\_COSE\_Encrypt0 carries a ciphertext payload that MUST contain just the ciphertext obtained by encrypting the following CDDL:
 
 ~~~CDDL
 SUIT_Report_plaintext = bstr .cbor SUIT_Report
 ~~~
 
-SUIT_COSE_Profiles define only AES-CTR encryption due to its suitability for firmware distribution. Because AES-CTR is not authenticated, SUIT_Report_Protected defines authenticated containers with an encrypted payload.
+SUIT\_COSE\_Profiles define only AES-CTR encryption due to its suitability for firmware distribution. Because AES-CTR is not authenticated, SUIT\_Report\_Protected defines authenticated containers with an encrypted payload.
 
 #  IANA Considerations {#iana}
 
-IANA is requested to allocate a CBOR tag and a coap content-type each for the SUIT_Report, SUIT_Reference, and SUIT_Capability_Report CBOR data structures.
+IANA is requested to allocate a CBOR tag and a CoAP content-type each for the SUIT\_Report, SUIT\_Reference, and SUIT\_Capability\_Report CBOR data structures.
 
 IANA is also requested to add the following registries to the SUIT category:
 
@@ -525,20 +525,20 @@ ensure the authenticity of a SUIT report. The report MAY be bundled
 as the payload of a cryptographic container as described in {{container}}.
 communicated over a secure transport. It may also be communicated as
 part of an existing authenticated protocol, such as within an EAT
-token. Ideally, the SUIT_Report SHOULD be communicated as part of an
+token. Ideally, the SUIT\_Report SHOULD be communicated as part of an
 attestation flow, such as within an EAT token, since this proves the
 authenticity of the environment (hardware, software, or both) in which
-the SUIT_Report was generated.
+the SUIT\_Report was generated.
 
-The SUIT_Report MAY require confidentiality as well. A SUIT_Report
+The SUIT\_Report MAY require confidentiality as well. A SUIT\_Report
 could potentially reveal confidential information about the kinds of
 device that a particular user has. It could also reveal confidential
 information about intellectual property contained in a device. Where
-these concerns are relevant, the SUIT_Report MUST be encrypted, for
-example using a COSE_Encrypt as described in {{container}}, or by using
+these concerns are relevant, the SUIT\_Report MUST be encrypted, for
+example using a COSE\_Encrypt as described in {{container}}, or by using
 secure transport. When reporting failures, particularly in the
 cryptographic primitives, there is a risk that over-reporting can
-provide an attacker with better visibility. Therefore, SUIT_Reports
+provide an attacker with better visibility. Therefore, SUIT\_Reports
 SHOULD be encrypted wherever possible.
 
 There are also operational considerations that intersect with these
@@ -547,8 +547,8 @@ encrypted as an element of a message within another protocol, care must
 be taken to ensure that this does not leak information and that the
 principle of least privilege is respected. For example, in an EAT-based
 attestation workflow, the Verifier often will not need the full SUIT
-Report. Similarly, the Relying Party may also not need the SUIT_Report.
-In this case, the SUIT_Report MUST be encrypted even if the EAT token
+Report. Similarly, the Relying Party may also not need the SUIT\_Report.
+In this case, the SUIT\_Report MUST be encrypted even if the EAT token
 that contains it is also encrypted.
 
 In contrast, however, there are scenarios where the EAT Verifier
@@ -556,7 +556,7 @@ consumes the SUIT report and translates it into one or more other
 EAT claims. For example, a SUIT report that shows a particular digest
 was matched using an suit-condition-image can be translated into a
 EAT measres (Measurement Results) claim. In this scenario, the Verifier
-must have access to the full SUIT_Report.
+must have access to the full SUIT\_Report.
 
 #  Acknowledgements
 
