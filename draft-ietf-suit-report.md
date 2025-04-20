@@ -37,6 +37,12 @@ informative:
   I-D.ietf-rats-eat: EAT
   I-D.birkholz-rats-corim: CoRIM
   I-D.ietf-suit-trust-domains:
+  LwM2M:
+    target: "https://www.openmobilealliance.org/specifications/lwm2m"
+    title: "OMA Lightweight M2M"
+    date: 2025-04-20
+    author:
+    - org: "Open Mobile Alliance"
 
 normative:
   I-D.ietf-suit-manifest:
@@ -398,7 +404,7 @@ The Verifier MAY convert a SUIT_Report into a more consumable version of the EAT
 The SUIT_Report MUST be carried in a container or transport that ensures authenticity. The SUIT_Report MUST be transported using one of the following options:
 
 * As an element of an existing document that ensures authenticity, such as in a measurements claim in an EAT.
-* As the payload of a message delivered over secure transport, such as a CoAP or LwM2M message.
+* As the payload of a message delivered over secure transport, such as a CoAP {{?RFC7252}} or Lightweight Machine 2 Machine {{LwM2M}} message.
 * Contained within a secure container that conforms to the current recommendations of {{I-D.ietf-suit-mti}}.
 
 In this case, the SUIT_Report is carried as sole payload of a COSE_Encrypt0 or COSE_Sign1 as shown in the CDDL snippet below.
