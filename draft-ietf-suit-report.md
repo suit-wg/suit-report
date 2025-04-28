@@ -37,6 +37,7 @@ informative:
   I-D.ietf-rats-eat: EAT
   I-D.birkholz-rats-corim: CoRIM
   I-D.ietf-suit-trust-domains:
+  I-D.ietf-scitt-architecture:
   LwM2M:
     target: "https://www.openmobilealliance.org/specifications/lwm2m"
     title: "OMA Lightweight M2M"
@@ -277,9 +278,11 @@ in simple cases this can be an empty list. SUIT\_Records and
 suit-system-property-claims are merged into a single list because this
 reduces the overhead for a constrained node that generates this report.
 The use of a single append-only log allows report generators to use simple
-memory management. Because the system-property-claims are encoded as maps
-and SUIT\_Records are encoded as lists, a recipient need only filter the
-CBOR Type-5 entries from suit-report-records to obtain all
+memory management. 
+The concept of append-only logs for software supply chains
+is explained in {{I-D.ietf-scitt-architecture}}. Because the system-property-claims
+are encoded as maps and SUIT\_Records are encoded as lists, a recipient need
+only filter the CBOR Type-5 entries from suit-report-records to obtain all 
 system-property-claims.
 
 System Properties can be extracted from suit-report-records by filtering
