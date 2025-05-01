@@ -27,11 +27,16 @@ author:
        name: Brendan Moran
        organization: Arm Limited
        email: brendan.moran.ietf@gmail.com
- -
-       ins: H. Birkholz
-       name: Henk Birkholz
-       organization: Fraunhofer SIT
-       email: henk.birkholz@sit.fraunhofer.de
+-
+  ins: H. Birkholz
+  name: Henk Birkholz
+  org: Fraunhofer SIT
+  abbrev: Fraunhofer SIT
+  email: henk.birkholz@ietf.contact
+  street: Rheinstrasse 75
+  code: '64295'
+  city: Darmstadt
+  country: Germany
 
 informative:
   I-D.ietf-rats-eat: EAT
@@ -50,7 +55,9 @@ normative:
   RFC9052: cose
   I-D.ietf-suit-mti:
 
-
+entity:
+  SELF: "RFCthis"
+  
 --- abstract
 
 The Software Update for the Internet of Things (SUIT) manifest provides
@@ -451,14 +458,102 @@ SUIT\_COSE\_Profiles define only AES-CTR encryption due to its suitability for f
 
 #  IANA Considerations {#iana}
 
-IANA is requested to allocate a CBOR tag and a CoAP content-type each for the SUIT\_Report, SUIT\_Reference, and SUIT\_Capability\_Report CBOR data structures.
+IANA is requested to name the overall SUIT registry group "Software Update for the Internet of Things (SUIT)".
 
-IANA is also requested to add the following registries to the SUIT category:
+IANA is requested to allocate a CBOR tag for each of:
 
-  * SUIT Report Elements
-  * SUIT Record Elements
-  * SUIT Report Reasons
-  * SUIT Capability Report Elements
+* SUIT\_Report\_Protected
+* SUIT\_Reference
+* SUIT\_Capability\_Report
+
+IANA is requested to allocate a CoAP content-type and a media-type for SUIT\_Report.
+
+IANA is also requested to add the following registries to the SUIT registry group:
+
+* SUIT Report Elements
+* SUIT Record Elements
+* SUIT Report Reasons
+* SUIT Capability Report Elements
+
+For each of these registries, registration policy is:
+
+* -256 to 255: Standards Action
+* -65536 to 257, 256 to 65535: Specification Required
+* -4294967296 to -65537, 65536 to 4294967295: First Come, First Served
+
+## Expert Review Instructions
+The IANA registries established in this document allow values to be added based on expert review. This section gives some general guidelines for what the experts should be looking for, but they are being designated as experts for a reason, so they should be given substantial latitude.
+
+Expert reviewers should take into consideration the following points:
+
+* Point squatting should be discouraged. Reviewers are encouraged to get sufficient information for registration requests to ensure that the usage is not going to duplicate one that is already registered, and that the point is likely to be used in deployments. The zones tagged as private use are intended for testing purposes and closed environments; code points in other ranges should not be assigned for testing.
+* Specifications are required for the standards track range of point assignment. Specifications should exist for all other ranges, but early assignment before a specification is available is considered to be permissible. When specifications are not provided, the description provided needs to have sufficient information to identify what the point is being used for.
+* Experts should take into account the expected usage of fields when approving point assignment. The fact that there is a range for standards track documents does not mean that a standards track document cannot have points assigned outside of that range. The length of the encoded value should be weighed against how many code points of that length are left, the size of device it will be used on, and the number of code points left that encode to that size.
+
+## Media Type Registration
+
+### application/suit-report+cose
+
+{:compact}
+Type name:
+: application
+
+Subtype name:
+: suit-report+cose
+
+Required parameters:
+: n/a
+
+Encoding considerations:
+: binary (CBOR)
+
+Security considerations:
+: {{seccons}} of {{&SELF}}
+
+Interoperability considerations:
+: n/a
+
+Published specification:
+: {{&SELF}}
+
+Applications that use this media type:
+: SUIT Manifest Processor, SUIT Manifest Distributor, SUIT Manifest Author, RATS Attesters, RATS Verifiers
+
+Fragment identifier considerations:
+: The syntax and semantics of fragment identifiers are as specified for "application/cose".
+
+Person & email address to contact for further information:
+: SUIT WG mailing list (suit@ietf.org)
+
+Intended usage:
+: COMMON
+
+Restrictions on usage:
+: none
+
+Author/Change controller:
+: IETF
+
+Provisional registration:
+: no
+
+## CoAP Content-Format Registration
+
+IANA is requested to assign a CoAP Content-Format ID for the CoSWID media type in the "CoAP Content-Formats" sub-registry, from the "IETF Review or IESG Approval" space (256..999), within the "CoRE Parameters" registry {{RFC7252}} {{IANA.core-parameters}}:
+
+Media type | Encoding | ID | Reference
+---|---|---|---
+application/suit-report+cose|cbor+cose|TBA|{{SELF}}
+
+## CBOR Tag Registration
+
+IANA is requested to allocate a tag in the "CBOR Tags" registry {{IANA.cbor-tags}}, preferably in the Specification Required range:
+
+Tag | Data Item | Semantics
+---|---|---
+TBA | array | SUIT\_Report\_Protected
+TBA | map | SUIT\_Reference
+TBA | map | SUIT\_Capability\_Report
 
 ## SUIT Report Elements
 
