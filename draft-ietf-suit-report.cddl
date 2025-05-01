@@ -1,7 +1,11 @@
-SUIT_Report_Protected /= SUIT_Report_COSE_Sign1 .and SUIT_COSE_Profiles
-SUIT_Report_Protected /= SUIT_Report_COSE_Sign1_Tagged .and SUIT_COSE_Profiles
-SUIT_Report_Protected /= SUIT_Report_COSE_MAC0 .and SUIT_COSE_Profiles
-SUIT_Report_Protected /= SUIT_Report_COSE_MAC0_Tagged .and SUIT_COSE_Profiles
+SUIT_Report_Protected /= \
+        SUIT_Report_COSE_Sign1 .and SUIT_COSE_Profiles
+SUIT_Report_Protected /= \
+        SUIT_Report_COSE_Sign1_Tagged .and SUIT_COSE_Profiles
+SUIT_Report_Protected /= \
+      SUIT_Report_COSE_MAC0 .and SUIT_COSE_Profiles
+SUIT_Report_Protected /= \
+        SUIT_Report_COSE_MAC0_Tagged .and SUIT_COSE_Profiles
 
 SUIT_Report_COSE_Sign1_Tagged = #6.18(SUIT_Report_COSE_Sign1)
 SUIT_Report_COSE_Sign1 = [
@@ -23,7 +27,8 @@ SUIT_Report_COSE_Encrypt0 = COSE_Encrypt0
 SUIT_Report = {
   suit-reference              => SUIT_Reference,
   ? suit-report-nonce         => bstr,
-  suit-report-records         => [ * SUIT_Record / system-property-claims ],
+  suit-report-records         => \
+    [ * SUIT_Record / system-property-claims ],
   suit-report-result          => true / {
     suit-report-result-code   => int,
     suit-report-result-record => SUIT_Record,
@@ -53,7 +58,7 @@ system-property-claims = {
 }
 
 SUIT_Capability_Report = {
-  suit-component-capabilities        => [+ SUIT_Component_Capability ]
+  suit-component-capabilities  => [+ SUIT_Component_Capability]
   suit-command-capabilities          => [+ int],
   suit-parameters-capabilities       => [+ int],
   suit-crypt-algo-capabilities       => [+ int],

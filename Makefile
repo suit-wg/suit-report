@@ -19,6 +19,7 @@
 
 MD_FILE := draft-ietf-suit-report.md
 DRAFT := $(shell grep 'docname: ' $(MD_FILE) | awk '{print $$2}')
+EXTRA= draft-ietf-suit-report.cddl
 
 all: $(DRAFT).xml $(DRAFT).txt $(DRAFT).html
 
@@ -26,9 +27,9 @@ $(DRAFT).html: $(DRAFT).xml
 	xml2rfc $(DRAFT).xml --html
 
 $(DRAFT).txt: $(DRAFT).xml
-	xml2rfc $(DRAFT).xml
+	xml2rfc $(DRAFT).xml --text
 
-$(DRAFT).xml: $(MD_FILE)
+$(DRAFT).xml: $(MD_FILE) ${EXTRA}
 	kramdown-rfc2629 $(MD_FILE) > $(DRAFT).xml
 
 .PHONY: clean
