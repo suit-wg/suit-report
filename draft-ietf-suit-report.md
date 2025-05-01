@@ -27,7 +27,7 @@ author:
        name: Brendan Moran
        organization: Arm Limited
        email: brendan.moran.ietf@gmail.com
- - 
+ -
        ins: H. Birkholz
        name: Henk Birkholz
        organization: Fraunhofer SIT
@@ -126,7 +126,7 @@ Most conditions compare a parameter to an actual value, so the "reason"
 is typically simply the actual value.
 
 Since it is possible that a non-condition command (directive) may fail in an
-exceptional circumstance, this must be included as well. However, 
+exceptional circumstance, this must be included as well. However,
 a failed directive will terminate processing of the manifest. To accommodate
 for a failed command and for explicit "completion," an additional "result"
 element is added as well. In the case of a command failure,
@@ -265,19 +265,19 @@ freshness.
 
 ## SUIT Record {#suit-record}
 
-suit-report-records is a list of 0 or more SUIT Records or 
+suit-report-records is a list of 0 or more SUIT Records or
 system-property-claims. Because SUIT Records are only generated on failure,
-in simple cases this can be an empty list. SUIT_Records and 
+in simple cases this can be an empty list. SUIT_Records and
 suit-system-property-claims are merged into a single list because this
 reduces the overhead for a constrained node that generates this report.
 The use of a single append-only log allows report generators to use simple
 memory management. Because the system-property-claims are encoded as maps
 and SUIT_Records are encoded as lists, a recipient need only filter the
-CBOR Type-5 entries from suit-report-records to obtain all 
+CBOR Type-5 entries from suit-report-records to obtain all
 system-property-claims.
 
 System properties can be extracted from suit-report-records by filtering
-suit-report-records for maps. System Properties are a list of measured 
+suit-report-records for maps. System Properties are a list of measured
 or asserted properties
 of the system that creates the SUIT_Report. These properties are scoped by
 component identifier. Because this list is expected to be constructed on
@@ -311,9 +311,9 @@ encountered.
 * suit-report-reason-unauthorised: Signature/MAC verification failed.
 * suit-report-reason-command-unsupported: an unsupported command was
 encountered.
-* suit-report-reason-component-unsupported: The manifest declared a 
+* suit-report-reason-component-unsupported: The manifest declared a
 component/prefix that does not exist.
-* suit-report-reason-component-unauthorised: The manifest declared a 
+* suit-report-reason-component-unauthorised: The manifest declared a
 component that is not accessible by the signer.
 * suit-report-reason-parameter-unsupported: The manifest used a
 parameter that does not exist.
@@ -321,11 +321,11 @@ parameter that does not exist.
 but the Manifest Processor doesn't support them.
 * suit-report-reason-condition-failed: A condition failed with soft-
 failure off.
-* suit-report-reason-operation-failed: A command failed (e.g., 
+* suit-report-reason-operation-failed: A command failed (e.g.,
 download/copy/swap/write)
 
 The suit-report-result-code reports an internal error code that is
-provided for debugging reasons. This code is not intended for 
+provided for debugging reasons. This code is not intended for
 interoperability.
 
 The suit-report-result-record indicates the exact point in the manifest
@@ -338,7 +338,7 @@ suit-report-capability-report provides a mechanism to report the capabilities of
 
 #  Attestation
 
-This document describes how a well-informed verifier can infer the trustworthiness of a remote device. Remote attestation is done by using the SUIT_Manifest_Envelope along with the SUIT_Report to reconstruct the state of the device at boot time. By embedding data used for remote attestation in the SUIT_Report, a remote device can use an append-only log to collect both measurements and debug/failure information into the same document. This document can then be conveyed to a verifier as a part of the attestation evidence. A remote attestation format to convey attestation evidence, such as an Entity Attestation Token (EAT, see {{-EAT}}), that contains a SUIT_Report MUST also include an integrity measurement of the Manifest Processor & Report Generator. 
+This document describes how a well-informed verifier can infer the trustworthiness of a remote device. Remote attestation is done by using the SUIT_Manifest_Envelope along with the SUIT_Report to reconstruct the state of the device at boot time. By embedding data used for remote attestation in the SUIT_Report, a remote device can use an append-only log to collect both measurements and debug/failure information into the same document. This document can then be conveyed to a verifier as a part of the attestation evidence. A remote attestation format to convey attestation evidence, such as an Entity Attestation Token (EAT, see {{-EAT}}), that contains a SUIT_Report MUST also include an integrity measurement of the Manifest Processor & Report Generator.
 
 When a Concise Reference Integrity Manifest (CoRIM, see {{-CoRIM}} is delivered in a SUIT_Manifest_Envelope, this codifies the delivery of verification information to the verifier:
 
@@ -523,7 +523,7 @@ authenticity for them to be useful. Several options are available to
 ensure the authenticity of a SUIT report. The report MAY be bundled
 as the payload of a cryptographic container as described in {{container}}.
 communicated over a secure transport. It may also be communicated as
-part of an existing authenticated protocol, such as within an EAT 
+part of an existing authenticated protocol, such as within an EAT
 token. Ideally, the SUIT_Report SHOULD be communicated as part of an
 attestation flow, such as within an EAT token, since this proves the
 authenticity of the environment (hardware, software, or both) in which
@@ -533,7 +533,7 @@ The SUIT_Report MAY require confidentiality as well. A SUIT_Report
 could potentially reveal confidential information about the kinds of
 device that a particular user has. It could also reveal confidential
 information about intellectual property contained in a device. Where
-these concerns are relevant, the SUIT_Report MUST be encrypted, for 
+these concerns are relevant, the SUIT_Report MUST be encrypted, for
 example using a COSE_Encrypt as described in {{container}}, or by using
 secure transport. When reporting failures, particularly in the
 cryptographic primitives, there is a risk that over-reporting can
