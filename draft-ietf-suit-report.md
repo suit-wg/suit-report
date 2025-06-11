@@ -55,10 +55,7 @@ normative:
 
 The Software Update for the Internet of Things (SUIT) manifest provides
 a way for many different update and boot
-workflows to be described by a common format. However, this does not
-provide a feedback mechanism for developers in the event that an update
-or boot fails.
-
+workflows to be described by a common format.
 This specification describes a lightweight feedback mechanism that
 allows a developer in possession of a manifest to reconstruct the
 decisions made and actions performed by a manifest processor.
