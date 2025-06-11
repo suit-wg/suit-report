@@ -245,7 +245,7 @@ system-property-claims = {
 ~~~
 
 The suit-reference provides a reference URI and digest for a suit
-manifest. The URI SHOULD be the canonical URI that is provided in the
+manifest. The URI MUST be the canonical URI that is provided in the
 manifest. The digest is the digest of the manifest.
 
 NOTE: The digest is used
@@ -276,7 +276,7 @@ is authenticated within a container that provides freshness already.
 For example, attestation evidence typically contains a proof of
 freshness.
 
-## SUIT Record {#suit-record}
+## SUIT\_Report\_Records {#suit-report-records}
 
 suit-report-records is a list of 0 or more SUIT Records or
 system-property-claims. Because SUIT Records are only generated on failure,
