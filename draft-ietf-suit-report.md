@@ -112,7 +112,7 @@ Terms used in this specification include:
 
 # The SUIT Record
 
-If the developer can be assumed to have a copy of the
+If the developer has a copy of the
 manifest, then they need little information to reconstruct what the
 manifest processor has done. They simply need any data that influences
 the control flow of the manifest. The manifest only supports the
@@ -127,7 +127,7 @@ following control flow primitives:
 Of these, only conditions change the behavior of the processor from the
 default, and then only when the condition fails.
 
-Then, to reconstruct the flow of a manifest, all a developer needs is
+To reconstruct the flow of a manifest, a developer needs
 a list of metadata about failed conditions:
 
 - the current manifest
@@ -137,13 +137,15 @@ a list of metadata about failed conditions:
 - the "reason" for failure
 
 Most conditions compare a parameter to an actual value, so the "reason"
-is typically simply the actual value.
+is typically the actual value.
 
 Since it is possible that a non-condition command (directive) may fail in an
-exceptional circumstance, this must be included as well. However,
+exceptional circumstance,
+a failure code for a non condition command must be included as well. However,
 a failed directive will terminate processing of the manifest. To accommodate
 for a failed command and for explicit "completion," an additional "result"
-element is added as well. In the case of a command failure,
+element is included as well, however this is included in the SUIT_Report, see {{suit-report}}.
+In the case of a command failure,
 the failure reason is typically a numeric error code. However, these error
 codes need to be standardised in order to be useful.
 
