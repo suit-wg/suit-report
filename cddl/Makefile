@@ -23,6 +23,8 @@ COSE_XML=cose.xml
 COSE_CDDL=cose.cddl
 SUIT_CDDL=suit.cddl
 SUIT_CDDL_URL=https://raw.githubusercontent.com/suit-wg/manifest-spec/master/draft-ietf-suit-manifest.cddl
+SUIT_MTI_CDDL=suit-mti.cddl
+SUIT_MTI_CDDL_URL=https://raw.githubusercontent.com/suit-wg/suit-mti/refs/heads/main/draft-ietf-suit-mti.cddl
 SUIT_COMPLETE_CDDL=suit-complete.cddl
 UPDATE_CDDL=../draft-ietf-suit-report.cddl
 
@@ -36,13 +38,22 @@ ${COSE_XML}:
 ${SUIT_CDDL}:
 	curl -o $@ ${SUIT_CDDL_URL}
 
+${SUIT_MTI_CDDL}:
+	curl -o $@ ${SUIT_MTI_CDDL_URL}
+
 ${COSE_CDDL}: ${COSE_XML} cose_cddl.py
 	@python3 cose_cddl.py $< | sed -e 's/^!$$//' > $@
 
-${SUIT_COMPLETE_CDDL}: ${SUIT_CDDL} ${COSE_CDDL}
+${SUIT_COMPLETE_CDDL}: ${SUIT_CDDL} ${SUIT_MTI_CDDL} ${COSE_CDDL}
 	cat $^ > $@
 
 .PHONY: ${CDDL}
-${CDDL}: ${UPDATE_CDDL} ${COSE_CDDL} #${SUIT_COMPLETE_CDDL}
+${CDDL}: ${UPDATE_CDDL} ${SUIT_COMPLETE_CDDL} #${SUIT_COMPLETE_CDDL}
 	cat $^ > $@
 	cddl $@ generate
+
+.PHONY: clean
+clean:
+	rm -f ${SUIT_CDDL}
+	rm -f ${SUIT_MTI_CDDL}
+	rm -f ${SUIT_COMPLETE_CDDL}
