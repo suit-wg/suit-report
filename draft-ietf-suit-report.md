@@ -43,6 +43,7 @@ informative:
   I-D.birkholz-rats-corim: CoRIM
   I-D.ietf-suit-trust-domains:
   I-D.ietf-scitt-architecture:
+  RFC9334:
   LwM2M:
     target: "https://www.openmobilealliance.org/specifications/lwm2m"
     title: "OMA Lightweight M2M"
@@ -353,9 +354,9 @@ suit-report-capability-report provides a mechanism to report the capabilities of
 
 #  Attestation
 
-This document describes how a well-informed verifier can infer the trustworthiness of a remote device. Remote attestation is done by using the SUIT\_Manifest\_Envelope along with the SUIT\_Report to reconstruct the state of the device at boot time. By embedding data used for remote attestation in the SUIT\_Report, a remote device can use an append-only log to collect both measurements and debug/failure information into the same document. This document can then be conveyed to a verifier as a part of the attestation evidence. A remote attestation format to convey attestation evidence, such as an Entity Attestation Token (EAT, see {{-EAT}}), that contains a SUIT\_Report MUST also include an integrity measurement of the Manifest Processor & Report Generator.
+This document describes how a well-informed Attestation Verifier (Verifier hereafter, See {{RFC9334}}) can infer the trustworthiness of a remote device. Remote attestation is done by using the SUIT\_Manifest\_Envelope along with the SUIT\_Report to reconstruct the state of the device at boot time. By embedding data used for remote attestation in the SUIT\_Report, a remote device can use an append-only log to collect both measurements and debug/failure information into the same document. This document can then be conveyed to a Verifier as a part of the Attestation Evidence. A Remote Attestation format to convey Attestation Evidence, such as an Entity Attestation Token (EAT, see {{-EAT}}), that contains a SUIT\_Report MUST also include an integrity measurement of the Manifest Processor & Report Generator.
 
-When a Concise Reference Integrity Manifest (CoRIM, see {{-CoRIM}}) is delivered in a SUIT\_Manifest\_Envelope, this codifies the delivery of verification information to the verifier:
+When a Concise Reference Integrity Manifest (CoRIM, see {{-CoRIM}}) is delivered in a SUIT\_Manifest\_Envelope, this codifies the delivery of verification information to the Verifier:
 
 * The Firmware Distributor:
     * sends the SUIT\_Manifest\_Envelope to the Verifier without payload or text, but with CoRIM
@@ -363,13 +364,13 @@ When a Concise Reference Integrity Manifest (CoRIM, see {{-CoRIM}}) is delivered
 * The Recipient:
     * Installs the firmware as described in the SUIT\_Manifest and generates a SUIT\_report, which is encapsulated in an EAT by the installer and sent to the Firmware Distributor.
     * Boots the firmware as described in the SUIT\_Manifest and creates a SUIT\_report, which is encapsulated in an EAT by the installer and sent to the Firmware Distributor.
-* The Firmware Distributor sends both reports to the verifier (separately or together)
+* The Firmware Distributor sends both reports to the Verifier (separately or together)
 * The Verifier:
     * Reconstructs the state of the device using the manifest
     * Compares this state to the CoRIM
     * Returns an Attestation Report to the Firmware Distributor
 
-This approach simplifies the design of the bootloader since it is able to use an append-only log. It allows a verifier to validate this report against a signed CoRIM that is provided by the firmware author, which simplifies the delivery chain of verification information to the verifier.
+This approach simplifies the design of the bootloader since it is able to use an append-only log. It allows a Verifier to validate this report against a signed CoRIM that is provided by the firmware author, which simplifies the delivery chain of verification information to the Verifier.
 
 This information is not intended as Attestation Evidence and while an Attestation Report MAY provide this information for conveying error codes and/or failure reports, it SHOULD be translated into general-purpose claims for use by the Relying Party.
 
