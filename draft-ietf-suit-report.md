@@ -147,9 +147,9 @@ element is added as well. In the case of a command failure,
 the failure reason is typically a numeric error code. However, these error
 codes need to be standardised in order to be useful.
 
-Reconstructing what a device has done in this way is compact,
-however it requires some reconstruction effort. This is an issue that
-can be solved by tooling.
+This approach effectively compresses the log of operations taken using the SUIT Manifest
+as a dictionary. This enables a full reconstruction of the log using a matching
+decompression tool.
 
 ~~~
 SUIT_Record = [
