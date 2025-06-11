@@ -150,7 +150,7 @@ Reconstructing what a device has done in this way is compact,
 however it requires some reconstruction effort. This is an issue that
 can be solved by tooling.
 
-~~~
+~~~CDDL
 SUIT_Record = [
     suit-record-manifest-id        : [* uint ],
     suit-record-manifest-section   : int,
@@ -223,8 +223,7 @@ metadata is aggregated with a list of SUIT\_Records. The SUIT\_Report
 may also contain a list of any system properties that were measured
 and reported, and a reason for a failure if one occurred.
 
-CDDL
-~~~
+~~~CDDL
 SUIT_Report = {
   suit-reference              => SUIT_Reference,
   ? suit-report-nonce         => bstr,
@@ -396,7 +395,7 @@ SUIT_Capability_Report = {
 }
 
 SUIT_Component_Capability = [*bstr,?true]
-~~~~
+~~~
 
 A SUIT\_Component\_Capability is similar to a SUIT\_Component\_ID, with one difference: it may optionally be terminated by a CBOR 'true' which acts as a wild-card match for any component with a prefix matching the SUIT\_Component\_Capability leading up to the 'true.' This feature is for use with filesystem storage, key value stores, or any other arbitrary-component-id storage systems.
 
