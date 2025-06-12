@@ -27,19 +27,18 @@ author:
        name: Brendan Moran
        organization: Arm Limited
        email: brendan.moran.ietf@gmail.com
--
-  ins: H. Birkholz
-  name: Henk Birkholz
-  org: Fraunhofer SIT
-  abbrev: Fraunhofer SIT
-  email: henk.birkholz@ietf.contact
-  street: Rheinstrasse 75
-  code: '64295'
-  city: Darmstadt
-  country: Germany
+ -
+    ins: H. Birkholz
+    name: Henk Birkholz
+    org: Fraunhofer SIT
+    abbrev: Fraunhofer SIT
+    email: henk.birkholz@ietf.contact
+    street: Rheinstrasse 75
+    code: '64295'
+    city: Darmstadt
+    country: Germany
 
 informative:
-  I-D.ietf-rats-eat: EAT
   I-D.birkholz-rats-corim: CoRIM
   I-D.ietf-suit-trust-domains:
   I-D.ietf-scitt-architecture:
@@ -53,7 +52,10 @@ informative:
 normative:
   I-D.ietf-suit-manifest:
   RFC9052: cose
+  RFC9711: EAT
   I-D.ietf-suit-mti:
+  IANA.cbor-tags:
+  IANA.core-parameters:
 
 entity:
   SELF: "RFCthis"
@@ -415,11 +417,11 @@ The Verifier MAY convert a SUIT\_Report into a more consumable version of the EA
 
 The SUIT\_Report MUST be carried in a container or transport that ensures authenticity. The SUIT\_Report MUST be transported using one of the following options:
 
-* As an element of an existing document that ensures authenticity, such as in a measurements claim in an EAT.
-* As the payload of a message delivered over secure transport, such as a CoAP {{?RFC7252}} or Lightweight Machine to Machine {{LwM2M}} message.
+* As an element of an existing document that ensures authenticity, such as in a measurements claim in an EAT (See {{-EAT}}).
+* As the payload of a message delivered over secure transport, such as a DTLS {{?RFC9147}}, CoAP {{?RFC7252}} or Lightweight Machine to Machine {{LwM2M}} message.
 * Contained within a secure container that conforms to the current recommendations of {{I-D.ietf-suit-mti}}.
 
-In this case, the SUIT\_Report is carried as sole payload of a COSE\_Encrypt0 or COSE\_Sign1 as shown in the CDDL snippet below.
+When a secure container is used, that container MUST be a COSE\_Encrypt0 or COSE\_Sign1 and SUIT\_Report MUST be the sole payload as shown in the CDDL snippet below.
 
 ~~~CDDL
 SUIT_Report_Protected /= SUIT_Report_COSE_Sign1 \
@@ -544,7 +546,7 @@ IANA is requested to assign a CoAP Content-Format ID for the CoSWID media type i
 
 Media type | Encoding | ID | Reference
 ---|---|---|---
-application/suit-report+cose|cbor+cose|TBA|{{SELF}}
+application/suit-report+cose|cbor+cose|TBA|{{&SELF}}
 
 ## CBOR Tag Registration
 
@@ -620,7 +622,7 @@ Label | Name | Reference
 8 | Text Elements | {{capabilities}}
 9 | Component Text Elements | {{capabilities}}
 
-#  Security Considerations
+#  Security Considerations {#seccons}
 
 There are two aspects to the security considerations for SUIT reports:
 authenticity and confidentiality. SUIT reports must have guaranteed
