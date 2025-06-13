@@ -652,8 +652,9 @@ be taken to ensure that this does not leak information and that the
 principle of least privilege is respected. For example, in an EAT-based
 attestation workflow, the Verifier often will not need the full SUIT
 Report. Similarly, the Relying Party may also not need the SUIT\_Report.
-In this case, the SUIT\_Report MUST be encrypted even if the EAT token
-that contains it is also encrypted.
+To enable the principle of least privilege in this and similar
+scenarios, the SUIT\_Report should be independently encrypted even if
+the EAT token or encrypted transport that contains it is also encrypted.
 
 In contrast, however, there are scenarios where the EAT Verifier
 consumes the SUIT report and translates it into one or more other
