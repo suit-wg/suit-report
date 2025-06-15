@@ -109,7 +109,7 @@ Terms used in this specification include:
   specification refers to boot, any boot-specific operations described
   are equally applicable to starting an executable in an OS context.
 
-# The SUIT Record
+# The SUIT\_Record
 
 If the developer has a copy of the
 manifest, then they need little information to reconstruct what the
@@ -143,7 +143,7 @@ exceptional circumstance,
 a failure code for a non condition command must be included as well. However,
 a failed directive will terminate processing of the manifest. To accommodate
 for a failed command and for explicit "completion," an additional "result"
-element is included as well, however this is included in the SUIT_Report, see {{suit-report}}.
+element is included as well, however this is included in the SUIT\_Report, see {{suit-report}}.
 In the case of a command failure,
 the failure reason is typically a numeric error code. However, these error
 codes need to be standardised in order to be useful.
@@ -277,10 +277,10 @@ is authenticated within a container that provides freshness already.
 For example, attestation evidence typically contains a proof of
 freshness.
 
-## SUIT Record {#suit-record}
+## SUIT\_Record {#suit-record}
 
-suit-report-records is a list of 0 or more SUIT Records or
-system-property-claims. Because SUIT Records are only generated on failure,
+suit-report-records is a list of 0 or more SUIT\_Records or
+system-property-claims. Because SUIT\_Records are only generated on failure,
 in simple cases this can be an empty list. SUIT\_Records and
 suit-system-property-claims are merged into a single list because this
 reduces the overhead for a constrained node that generates this report.
@@ -308,7 +308,7 @@ SUIT_Record_System_Properties = {
 }
 ~~~~
 
-## SUIT Report Result {#suit-report-result}
+## SUIT\_Report Result {#suit-report-result}
 
 suit-report-result provides a mechanism to show that the SUIT procedure
 completed successfully (value is true) or why it failed (value is a map
@@ -470,9 +470,9 @@ IANA is requested to allocate a CoAP content-type and a media-type for SUIT\_Rep
 
 IANA is also requested to add the following registries to the SUIT registry group:
 
-* SUIT Report Elements
-* SUIT Record Elements
-* SUIT Report Reasons
+* SUIT\_Report Elements
+* SUIT\_Record Elements
+* SUIT\_Report Reasons
 * SUIT Capability Report Elements
 
 For each of these registries, registration policy is:
@@ -555,9 +555,9 @@ TBA | array | SUIT\_Report\_Protected
 TBA | map | SUIT\_Reference
 TBA | map | SUIT\_Capability\_Report
 
-## SUIT Report Elements
+## SUIT\_Report Elements
 
-IANA is requested to create a new registry for SUIT Report Elements.
+IANA is requested to create a new registry for SUIT\_Report Elements.
 
 Label | Name | Reference
 ---|---|---
@@ -570,9 +570,9 @@ Label | Name | Reference
 8 | Capability Report | {{suit-report}}
 99 | Reference | {{suit-report}}
 
-## SUIT Record Elements
+## SUIT\_Record Elements
 
-IANA is requested to create a new registry for SUIT Record Elements.
+IANA is requested to create a new registry for SUIT\_Record Elements.
 
 Label | Name | Reference
 ---|---|---
@@ -583,9 +583,9 @@ Label | Name | Reference
 4 | Dependency Index | {{suit-record}}
 5 | Record Properties | {{suit-record}}
 
-## SUIT Report Reasons
+## SUIT\_Report Reasons
 
-IANA is requested to create a new registry for SUIT Report Reasons.
+IANA is requested to create a new registry for SUIT\_Report Reasons.
 
 Label | Name | Reference
 ---|---|---
@@ -621,10 +621,10 @@ Label | Name | Reference
 
 #  Security Considerations
 
-There are two aspects to the security considerations for SUIT reports:
-authenticity and confidentiality. SUIT reports must have guaranteed
+There are two aspects to the security considerations for SUIT\_Reports:
+authenticity and confidentiality. SUIT\_Reports must have guaranteed
 authenticity for them to be useful. Several options are available to
-ensure the authenticity of a SUIT report. The report MAY be bundled
+ensure the authenticity of a SUIT\_Report. The report MAY be bundled
 as the payload of a cryptographic container as described in {{container}}.
 communicated over a secure transport. It may also be communicated as
 part of an existing authenticated protocol, such as within an EAT
@@ -645,18 +645,17 @@ provide an attacker with better visibility. Therefore, SUIT\_Reports
 SHOULD be encrypted wherever possible.
 
 There are also operational considerations that intersect with these
-security considerations. In situations where the SUIT report is
+security considerations. In situations where the SUIT\_Report is
 encrypted as an element of a message within another protocol, care must
 be taken to ensure that this does not leak information and that the
 principle of least privilege is respected. For example, in an EAT-based
-attestation workflow, the Verifier often will not need the full SUIT
-Report. Similarly, the Relying Party may also not need the SUIT\_Report.
+attestation workflow, the Verifier often will not need the full SUIT\_Report. Similarly, the Relying Party may also not need the SUIT\_Report.
 In this case, the SUIT\_Report MUST be encrypted even if the EAT token
 that contains it is also encrypted.
 
 In contrast, however, there are scenarios where the EAT Verifier
-consumes the SUIT report and translates it into one or more other
-EAT claims. For example, a SUIT report that shows a particular digest
+consumes the SUIT\_Report and translates it into one or more other
+EAT claims. For example, a SUIT\_Report that shows a particular digest
 was matched using an suit-condition-image can be translated into a
 EAT measres (Measurement Results) claim. In this scenario, the Verifier
 must have access to the full SUIT\_Report.
@@ -668,7 +667,7 @@ The authors would like to thank Dave Thaler for his feedback.
 --- back
 
 # Full CDDL {#full-cddl}
-In order to create a valid SUIT Report document the structure of the corresponding CBOR message MUST adhere to the following CDDL data definition.
+In order to create a valid SUIT\_Report document the structure of the corresponding CBOR message MUST adhere to the following CDDL data definition.
 
 To be valid, the following CDDL MUST have the COSE CDDL appended to it. The COSE CDDL can be obtained by following the directions in {{-cose, Section 1.4}}. It must also have the CDDL from {{I-D.ietf-suit-mti}} appended to it.
 
