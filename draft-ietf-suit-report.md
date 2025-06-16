@@ -176,24 +176,24 @@ and each of those dependencies has 2 dependencies of its own:
 
 * Root
 
-    * Dependency A
+    * Dependency A (index 0)
 
-        * Dependency A0
-        * Dependency A1
+        * Dependency AA (index 0,0)
+        * Dependency AB (index 0,1)
 
-    * Dependency B
+    * Dependency B (index 1)
 
-        * Dependency B0
-        * Dependency B1
+        * Dependency BA (index 1,0)
+        * Dependency BB (index 1,1)
 
-    * Dependency C
+    * Dependency C (index 2)
 
-        * Dependency C0
-        * Dependency C1
+        * Dependency CA (index 2,0)
+        * Dependency CB (index 2,1)
 
 A manifest-id of \[1,0\] would indicate that the current command was
-contained within Dependency B0. Similarly, a manifest-id of \[2,1\]
-would indicate Dependency C1
+contained within Dependency BA. Similarly, a manifest-id of \[2,1\]
+would indicate Dependency CB
 
 suit-record-manifest-section indicates which section of the manifest was
 active. This is used in addition to an offset so that the developer can
