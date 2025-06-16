@@ -354,14 +354,14 @@ suit-report-capability-report provides a mechanism to report the capabilities of
 
 #  Attestation
 
-Where Remote Attestation (See {{RFC9334}}) is in use, the Attestation Verifier (Verifier hereafter) requires a set of
-Attestation Evidence. Attestation Evidence contains Attestation Claims about the Attester. These Attestation Claims
-contain measurements of the Attester. Many of these measurements are the same measurements that are made in SUIT,
+Where Remote Attestation (see {{RFC9334}}, the RATS Architecture) is in use, the RATS Verifier (Verifier hereafter) requires a set of
+Attestation Evidence. Attestation Evidence contains Evidence Claims about the Attester. These Evidence Claims
+contain measurements about the Attester. Many of these measurements are the same measurements that are generated in SUIT,
 which means that a SUIT\_Report contains most of the Claims and some of the Endorsements that a Verifier requires.
 
-Using a SUIT\_Manifest and a SUIT\_Report, a well-informed Verifier can infer the trustworthiness of a remote device. Remote attestation is done by using the SUIT\_Manifest\_Envelope along with the SUIT\_Report to reconstruct the state of the device at boot time. By embedding data used for remote attestation in the SUIT\_Report, a remote device can use an append-only log to collect both measurements and debug/failure information into the same document. This document can then be conveyed to a Verifier as a part of the Attestation Evidence. A Remote Attestation format to convey Attestation Evidence, such as an Entity Attestation Token (EAT, see {{-EAT}}), that contains a SUIT\_Report MUST also include an integrity measurement of the Manifest Processor & Report Generator.
+Using a SUIT\_Manifest and a SUIT\_Report, improves a well-informed Verifier's ability to appraise the trustworthiness of a remote device. Remote attestation is done by using the SUIT\_Manifest\_Envelope along with the SUIT\_Report to reconstruct the state of the device at boot time. By embedding data used for remote attestation in the SUIT\_Report, a remote device can use a verifiable data structure, such as an append-only log,  to notarize both measurements and debug/failure information via the same document. This document can then be conveyed to a Verifier as a part of the Attestation Evidence. A Remote Attestation format to convey Attestation Evidence, such as an Entity Attestation Token (EAT, see {{-EAT}}), that contains a SUIT\_Report MUST also include an integrity measurement of the Manifest Processor & Report Generator.
 
-When a Concise Reference Integrity Manifest (CoRIM, see {{-CoRIM}}) is delivered in a SUIT\_Manifest\_Envelope, this codifies the delivery of verification information to the Verifier:
+When a Concise Reference Integrity Manifest (CoRIM, see {{-CoRIM}}) is delivered in a SUIT\_Manifest\_Envelope, this codifies the delivery of appraisal information to the Verifier:
 
 * The Firmware Distributor:
     * sends the SUIT\_Manifest\_Envelope to the Verifier without payload or text, but with CoRIM
