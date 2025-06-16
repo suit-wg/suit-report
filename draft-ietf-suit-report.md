@@ -642,7 +642,7 @@ these concerns are relevant, the SUIT\_Report MUST be encrypted, for
 example using a COSE\_Encrypt as described in {{container}}, or by using
 secure transport. When reporting failures, particularly in the
 cryptographic primitives, reporting can
-provide an attacker with better visibility. Therefore, SUIT\_Reports
+increase an attacker's insight into exploitable weaknesses and vulnerabilities. Therefore, SUIT\_Reports
 SHOULD be encrypted wherever possible.
 
 There are also operational considerations that intersect with these
