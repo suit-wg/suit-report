@@ -417,11 +417,11 @@ The Verifier MAY convert a SUIT\_Report into a more consumable version of the EA
 
 The SUIT\_Report MUST be carried in a container or transport that ensures authenticity. The SUIT\_Report MUST be transported using one of the following options:
 
-* As an element of an existing document that ensures authenticity, such as in a measurements claim in an EAT (See {{-EAT}}).
+* As an element of an existing document that ensures authenticity, such as in a measurements claim in an EAT (see {{-EAT}}).
 * As the payload of a message delivered over secure transport, such as a DTLS {{?RFC9147}}, CoAP {{?RFC7252}} or Lightweight Machine to Machine {{LwM2M}} message.
 * Contained within a secure container that conforms to the current recommendations of {{I-D.ietf-suit-mti}}.
 
-When a secure container is used, that container MUST be a COSE\_Encrypt0 or COSE\_Sign1 and SUIT\_Report MUST be the sole payload as shown in the CDDL snippet below.
+If a secure container is used, that container MUST be a COSE\_Encrypt0 or COSE\_Sign1 and SUIT\_Report MUST be the sole payload as shown in the CDDL definition fragment below.
 
 ~~~CDDL
 SUIT_Report_Protected /= SUIT_Report_COSE_Sign1 \
