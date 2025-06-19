@@ -109,7 +109,7 @@ Terms used in this specification include:
   specification refers to boot, any boot-specific operations described
   are equally applicable to starting an executable in an OS context.
 
-# The SUIT Record
+# The SUIT\_Record
 
 If the developer has a copy of the
 manifest, then they need little information to reconstruct what the
@@ -143,7 +143,7 @@ exceptional circumstance,
 a failure code for a non condition command must be included as well. However,
 a failed directive will terminate processing of the manifest. To accommodate
 for a failed command and for explicit "completion," an additional "result"
-element is included as well, however this is included in the SUIT_Report, see {{suit-report}}.
+element is included as well, however this is included in the SUIT\_Report, see {{suit-report}}.
 In the case of a command failure,
 the failure reason is typically a numeric error code. However, these error
 codes need to be standardised in order to be useful.
@@ -152,7 +152,7 @@ Reconstructing what a device has done in this way is compact,
 however it requires some reconstruction effort. This is an issue that
 can be solved by tooling.
 
-~~~
+~~~CDDL
 SUIT_Record = [
     suit-record-manifest-id        : [* uint ],
     suit-record-manifest-section   : int,
@@ -176,24 +176,24 @@ and each of those dependencies has 2 dependencies of its own:
 
 * Root
 
-    * Dependency A
+    * Dependency A (index 0)
 
-        * Dependency A0
-        * Dependency A1
+        * Dependency AA (index 0,0)
+        * Dependency AB (index 0,1)
 
-    * Dependency B
+    * Dependency B (index 1)
 
-        * Dependency B0
-        * Dependency B1
+        * Dependency BA (index 1,0)
+        * Dependency BB (index 1,1)
 
-    * Dependency C
+    * Dependency C (index 2)
 
-        * Dependency C0
-        * Dependency C1
+        * Dependency CA (index 2,0)
+        * Dependency CB (index 2,1)
 
 A manifest-id of \[1,0\] would indicate that the current command was
-contained within Dependency B0. Similarly, a manifest-id of \[2,1\]
-would indicate Dependency C1
+contained within Dependency BA. Similarly, a manifest-id of \[2,1\]
+would indicate Dependency CB
 
 suit-record-manifest-section indicates which section of the manifest was
 active. This is used in addition to an offset so that the developer can
@@ -225,8 +225,7 @@ metadata is aggregated with a list of SUIT\_Records. The SUIT\_Report
 may also contain a list of any system properties that were measured
 and reported, and a reason for a failure if one occurred.
 
-CDDL
-~~~
+~~~CDDL
 SUIT_Report = {
   suit-reference              => SUIT_Reference,
   ? suit-report-nonce         => bstr,
@@ -247,7 +246,7 @@ system-property-claims = {
 ~~~
 
 The suit-reference provides a reference URI and digest for a suit
-manifest. The URI SHOULD be the canonical URI that is provided in the
+manifest. The URI MUST be the canonical URI that is provided in the
 manifest. The digest is the digest of the manifest.
 
 NOTE: The digest is used
@@ -278,10 +277,10 @@ is authenticated within a container that provides freshness already.
 For example, attestation evidence typically contains a proof of
 freshness.
 
-## SUIT Record {#suit-record}
+## SUIT\_Report\_Records {#suit-report-records}
 
-suit-report-records is a list of 0 or more SUIT Records or
-system-property-claims. Because SUIT Records are only generated on failure,
+suit-report-records is a list of 0 or more SUIT\_Records or
+system-property-claims. Because SUIT\_Records are only generated on failure,
 in simple cases this can be an empty list. SUIT\_Records and
 suit-system-property-claims are merged into a single list because this
 reduces the overhead for a constrained node that generates this report.
@@ -309,7 +308,7 @@ SUIT_Record_System_Properties = {
 }
 ~~~~
 
-## SUIT Report Result {#suit-report-result}
+## SUIT\_Report Result {#suit-report-result}
 
 suit-report-result provides a mechanism to show that the SUIT procedure
 completed successfully (value is true) or why it failed (value is a map
@@ -398,7 +397,7 @@ SUIT_Capability_Report = {
 }
 
 SUIT_Component_Capability = [*bstr,?true]
-~~~~
+~~~
 
 A SUIT\_Component\_Capability is similar to a SUIT\_Component\_ID, with one difference: it may optionally be terminated by a CBOR 'true' which acts as a wild-card match for any component with a prefix matching the SUIT\_Component\_Capability leading up to the 'true.' This feature is for use with filesystem storage, key value stores, or any other arbitrary-component-id storage systems.
 
@@ -471,9 +470,9 @@ IANA is requested to allocate a CoAP content-type and a media-type for SUIT\_Rep
 
 IANA is also requested to add the following registries to the SUIT registry group:
 
-* SUIT Report Elements
-* SUIT Record Elements
-* SUIT Report Reasons
+* SUIT\_Report Elements
+* SUIT\_Record Elements
+* SUIT\_Report Reasons
 * SUIT Capability Report Elements
 
 For each of these registries, registration policy is:
@@ -556,9 +555,9 @@ TBA | array | SUIT\_Report\_Protected
 TBA | map | SUIT\_Reference
 TBA | map | SUIT\_Capability\_Report
 
-## SUIT Report Elements
+## SUIT\_Report Elements
 
-IANA is requested to create a new registry for SUIT Report Elements.
+IANA is requested to create a new registry for SUIT\_Report Elements.
 
 Label | Name | Reference
 ---|---|---
@@ -571,9 +570,9 @@ Label | Name | Reference
 8 | Capability Report | {{suit-report}}
 99 | Reference | {{suit-report}}
 
-## SUIT Record Elements
+## SUIT\_Record Elements
 
-IANA is requested to create a new registry for SUIT Record Elements.
+IANA is requested to create a new registry for SUIT\_Record Elements.
 
 Label | Name | Reference
 ---|---|---
@@ -584,9 +583,9 @@ Label | Name | Reference
 4 | Dependency Index | {{suit-record}}
 5 | Record Properties | {{suit-record}}
 
-## SUIT Report Reasons
+## SUIT\_Report Reasons
 
-IANA is requested to create a new registry for SUIT Report Reasons.
+IANA is requested to create a new registry for SUIT\_Report Reasons.
 
 Label | Name | Reference
 ---|---|---
@@ -622,10 +621,10 @@ Label | Name | Reference
 
 #  Security Considerations
 
-There are two aspects to the security considerations for SUIT reports:
-authenticity and confidentiality. SUIT reports must have guaranteed
+There are two aspects to the security considerations for SUIT\_Reports:
+authenticity and confidentiality. SUIT\_Reports must have guaranteed
 authenticity for them to be useful. Several options are available to
-ensure the authenticity of a SUIT report. The report MAY be bundled
+ensure the authenticity of a SUIT\_Report. The report MAY be bundled
 as the payload of a cryptographic container as described in {{container}}.
 communicated over a secure transport. It may also be communicated as
 part of an existing authenticated protocol, such as within an EAT
@@ -646,19 +645,19 @@ provide an attacker with better visibility. Therefore, SUIT\_Reports
 SHOULD be encrypted wherever possible.
 
 There are also operational considerations that intersect with these
-security considerations. In situations where the SUIT report is
+security considerations. In situations where the SUIT\_Report is
 encrypted as an element of a message within another protocol, care must
 be taken to ensure that this does not leak information and that the
 principle of least privilege is respected. For example, in an EAT-based
-attestation workflow, the Verifier often will not need the full SUIT
-Report. Similarly, the Relying Party may also not need the SUIT\_Report.
+attestation workflow, the Verifier often will not need the full SUIT\_Report.
+Similarly, the Relying Party may also not need the SUIT\_Report.
 To enable the principle of least privilege in this and similar
 scenarios, the SUIT\_Report should be independently encrypted even if
 the EAT token or encrypted transport that contains it is also encrypted.
 
 In contrast, however, there are scenarios where the EAT Verifier
-consumes the SUIT report and translates it into one or more other
-EAT claims. For example, a SUIT report that shows a particular digest
+consumes the SUIT\_Report and translates it into one or more other
+EAT claims. For example, a SUIT\_Report that shows a particular digest
 was matched using an suit-condition-image can be translated into a
 EAT measres (Measurement Results) claim. In this scenario, the Verifier
 must have access to the full SUIT\_Report.
@@ -670,7 +669,7 @@ The authors would like to thank Dave Thaler for his feedback.
 --- back
 
 # Full CDDL {#full-cddl}
-In order to create a valid SUIT Report document the structure of the corresponding CBOR message MUST adhere to the following CDDL data definition.
+In order to create a valid SUIT\_Report document the structure of the corresponding CBOR message MUST adhere to the following CDDL data definition.
 
 To be valid, the following CDDL MUST have the COSE CDDL appended to it. The COSE CDDL can be obtained by following the directions in {{-cose, Section 1.4}}. It must also have the CDDL from {{I-D.ietf-suit-mti}} appended to it.
 
