@@ -640,8 +640,8 @@ information about intellectual property contained in a device. Where
 these concerns are relevant, the SUIT\_Report MUST be encrypted, for
 example using a COSE\_Encrypt as described in {{container}}, or by using
 secure transport. When reporting failures, particularly in the
-cryptographic primitives, there is a risk that over-reporting can
-provide an attacker with better visibility. Therefore, SUIT\_Reports
+cryptographic primitives, reporting can
+increase an attacker's insight into exploitable weaknesses and vulnerabilities. Therefore, SUIT\_Reports
 SHOULD be encrypted wherever possible.
 
 There are also operational considerations that intersect with these
