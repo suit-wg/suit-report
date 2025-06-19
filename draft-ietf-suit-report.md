@@ -1,7 +1,7 @@
 ---
 title: Secure Reporting of Update Status
 abbrev: Secure Reporting of Update Status
-docname: draft-ietf-suit-report-10
+docname: draft-ietf-suit-report-11
 category: info
 
 ipr: trust200902
@@ -112,7 +112,7 @@ Terms used in this specification include:
   specification refers to boot, any boot-specific operations described
   are equally applicable to starting an executable in an OS context.
 
-# The SUIT\_Record
+# The SUIT\_Record {#suit-record}
 
 If the developer has a copy of the
 manifest, then they need little information to reconstruct what the
@@ -682,6 +682,6 @@ In order to create a valid SUIT\_Report document the structure of the correspond
 To be valid, the following CDDL MUST have the COSE CDDL appended to it. The COSE CDDL can be obtained by following the directions in {{-cose, Section 1.4}}. It must also have the CDDL from {{I-D.ietf-suit-mti}} appended to it.
 
 ~~~ CDDL
-{::include draft-ietf-suit-report.cddl}
+{::include-fold draft-ietf-suit-report.cddl}
 ~~~
 
