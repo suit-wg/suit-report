@@ -649,9 +649,11 @@ security considerations. In situations where the SUIT\_Report is
 encrypted as an element of a message within another protocol, care must
 be taken to ensure that this does not leak information and that the
 principle of least privilege is respected. For example, in an EAT-based
-attestation workflow, the Verifier often will not need the full SUIT\_Report. Similarly, the Relying Party may also not need the SUIT\_Report.
-In this case, the SUIT\_Report MUST be encrypted even if the EAT token
-that contains it is also encrypted.
+attestation workflow, the Verifier often will not need the full SUIT\_Report.
+Similarly, the Relying Party may also not need the SUIT\_Report.
+To enable the principle of least privilege in this and similar
+scenarios, the SUIT\_Report should be independently encrypted even if
+the EAT token or encrypted transport that contains it is also encrypted.
 
 In contrast, however, there are scenarios where the EAT Verifier
 consumes the SUIT\_Report and translates it into one or more other
