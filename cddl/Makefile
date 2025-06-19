@@ -47,8 +47,7 @@ ${COSE_CDDL}: ${COSE_XML} cose_cddl.py
 ${SUIT_COMPLETE_CDDL}: ${SUIT_CDDL} ${SUIT_MTI_CDDL} ${COSE_CDDL}
 	cat $^ > $@
 
-.PHONY: ${CDDL}
-${CDDL}: ${UPDATE_CDDL} ${SUIT_COMPLETE_CDDL} #${SUIT_COMPLETE_CDDL}
+${CDDL}: ${UPDATE_CDDL} ${SUIT_COMPLETE_CDDL}
 	cat $^ > $@
 	cddl $@ generate
 
