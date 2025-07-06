@@ -655,8 +655,9 @@ when the transport or enclosing token is also encrypted. This layered encryption
 only authorized entities can access the contents of the SUIT\_Report.
 
 On the other hand, in scenarios where the EAT Verifier requires full access to the SUIT\_Report.
-For example, to extract or convert its content into specific EAT claims, such as `measres`
-(Measurement Results), the SUIT\_Report must be accessible in its entirety. A typical case
+For example, the SUIT\_Report must be accessible in its entirety for the EAT Verifier
+to extract or convert the SUIT\_Report content into specific EAT claims, such as `measres`
+(Measurement Results). A typical case
 involves translating a successful `suit-condition-image` check into a digest-based claim within
 the EAT.
 
