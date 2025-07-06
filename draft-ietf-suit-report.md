@@ -667,7 +667,7 @@ in {{I-D.ietf-suit-mti}}. If using the same profile is not feasible (e.g., due t
 imposed by `suit-sha256-hsslms-a256kw-a256ctr`), then a profile offering comparable security
 strength SHOULD be selected—for instance, `suit-sha256-esp256-ecdh-a128ctr`.
 
-In exceptional cases, if no suitable profile can be applied, bnecessity of disabling a SUIT\_Report functionality altogether might arise.
+In exceptional cases, if no suitable profile can be applied, the necessity of disabling a SUIT\_Report functionality altogether might arise.
 
 #  Acknowledgements
 
