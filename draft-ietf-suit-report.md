@@ -415,7 +415,7 @@ The Verifier MAY convert a SUIT\_Report into a more consumable version of the EA
 
 The SUIT\_Report MUST be transported using one of the following methods:
 
-- As part of a larger document that provides authenticity guarantees, such as within a `measurements` claim in an EAT token (see {{-EAT}}).
+- As part of a larger document that provides authenticity guarantees, such as within a `measurements` claim in an Entity Attestation Token (EAT {{-EAT}}).
 - As the payload of a message transmitted over a communication security protocol, such as DTLS {{?RFC9147}}.
 - Encapsulated within a secure container, such as a COSE structure. In the case of COSE, the container MUST be either a `COSE_Encrypt0` or `COSE_Sign1` structure. The SUIT_Report MUST be the sole payload, as illustrated by the CDDL fragment below.
 
@@ -629,12 +629,12 @@ The SUIT\_Report serves four primary security objectives:
 
 The mechanisms for achieving these protections are outlined in {{container}}.
 
-Ideally, a SUIT\_Report SHOULD be conveyed as part of an attestation process,
-such as embedded within an EAT token. This approach ensures that the SUIT\_Report
+Ideally, a SUIT\_Report SHOULD be conveyed as part of a remote attestation procedure,
+such as embeding it in EAT tokens that represent RATS conceptual messages. This approach ensures that the SUIT\_Report
 is cryptographically bound to the environment (hardware, software, or both) in
 which it was generated, thereby strengthening its authenticity.
 
-A SUIT\_Report may disclose sensitive information about the device on which they
+A SUIT\_Report may disclose sensitive information about the device on which it
 were produced. In such cases, the SUIT\_Report MUST be encrypted, as specified in
 {{container}}.
 
@@ -645,8 +645,8 @@ leakage.
 
 In addition to these core security requirements, operational considerations must be taken
 into account. When a SUIT\_Report is included within another protocol message (e.g., inside
-an encrypted EAT token), care must be taken to avoid inadvertently leaking information and
-to uphold the principle of least privilege. For example, in many EAT-based attestation flows,
+an encrypted EAT), care must be taken to avoid inadvertently leaking information and
+to uphold the principle of least privilege. For example, in many EAT-based remote attestation flows,
 the Verifier may not require the full SUIT\_Report. Similarly, the Relying Party might not
 need access to it either.
 
@@ -654,7 +654,7 @@ To support least-privilege access, the SUIT\_Report should be independently encr
 when the transport or enclosing token is also encrypted. This layered encryption ensures that
 only authorized entities can access the contents of the SUIT\_Report.
 
-On the other hand, in scenarios where the EAT Verifier requires full access to the SUIT\_Report.
+In other scenarios, the EAT Verifier might require full access to a SUIT\_Report.
 For example, the SUIT\_Report must be accessible in its entirety for the EAT Verifier
 to extract or convert the SUIT\_Report content into specific EAT claims, such as `measres`
 (Measurement Results). A typical case
@@ -667,8 +667,7 @@ in {{I-D.ietf-suit-mti}}. If using the same profile is not feasible (e.g., due t
 imposed by `suit-sha256-hsslms-a256kw-a256ctr`), then a profile offering comparable security
 strength SHOULD be selected—for instance, `suit-sha256-esp256-ecdh-a128ctr`.
 
-In exceptional cases, if no suitable profile can be applied, SUIT\_Report functionality may need
-to be disabled altogether.
+In exceptional cases, if no suitable profile can be applied, bnecessity of disabling a SUIT\_Report functionality altogether might arise.
 
 #  Acknowledgements
 
