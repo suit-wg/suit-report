@@ -622,9 +622,9 @@ Label | Name | Reference
 
 The SUIT\_Report serves four primary security objectives:
 
-- Authenticity  
-- Integrity  
-- Replay protection  
+- Validated Identity
+- Integrity
+- Replay protection
 - Confidentiality
 
 The mechanisms for achieving these protections are outlined in {{container}}.
