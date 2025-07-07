@@ -43,13 +43,6 @@ informative:
   I-D.ietf-suit-trust-domains:
   I-D.ietf-scitt-architecture:
   RFC9334:
-  LwM2M:
-    target: "https://www.openmobilealliance.org/specifications/lwm2m"
-    title: "OMA Lightweight M2M"
-    date: 2025-04-20
-    author:
-    - org: "Open Mobile Alliance"
-
 normative:
   I-D.ietf-suit-manifest:
   RFC9052: cose
@@ -418,15 +411,13 @@ Additional capability reporting can be added as follows: if a manifest element d
 The SUIT\_Report is a form of measurement done by the SUIT Manifest Processor as it attempts to invoke a manifest or install a manifest. As a result, the SUIT\_Report can be captured in an EAT measurements type.
 The Verifier MAY convert a SUIT\_Report into a more consumable version of the EAT claim by, for example, constructing a measurement results claim that contains the digest of a component, the vendor ID & class ID of a component, etc.
 
-#  SUIT\_Report container {#container}
+#  SUIT\_Report Container {#container}
 
-The SUIT\_Report MUST be carried in a container or transport that ensures authenticity. The SUIT\_Report MUST be transported using one of the following options:
+The SUIT\_Report MUST be transported using one of the following methods:
 
-* As an element of an existing document that ensures authenticity, such as in a measurements claim in an EAT (see {{-EAT}}).
-* As the payload of a message delivered over secure transport, such as a DTLS {{?RFC9147}}, CoAP {{?RFC7252}} or Lightweight Machine to Machine {{LwM2M}} message.
-* Contained within a secure container that conforms to the current recommendations of {{I-D.ietf-suit-mti}}.
-
-If a secure container is used, that container MUST be a COSE\_Encrypt0 or COSE\_Sign1 and SUIT\_Report MUST be the sole payload as shown in the CDDL definition fragment below.
+- As part of a larger document that provides authenticity guarantees, such as within a `measurements` claim in an Entity Attestation Token (EAT {{-EAT}}).
+- As the payload of a message transmitted over a communication security protocol, such as DTLS {{?RFC9147}}.
+- Encapsulated within a secure container, such as a COSE structure. In the case of COSE, the container MUST be either a `COSE_Encrypt0` or `COSE_Sign1` structure. The SUIT_Report MUST be the sole payload, as illustrated by the CDDL fragment below.
 
 ~~~CDDL
 SUIT_Report_Protected /= SUIT_Report_COSE_Sign1 \
@@ -462,7 +453,7 @@ Note that SUIT\_Report\_COSE\_Sign1 and SUIT\_Report\_COSE\_MAC0 MUST be combine
 SUIT_Report_plaintext = bstr .cbor SUIT_Report
 ~~~
 
-SUIT\_COSE\_Profiles define only AES-CTR encryption due to its suitability for firmware distribution. Because AES-CTR is not authenticated, SUIT\_Report\_Protected defines authenticated containers with an encrypted payload.
+SUIT\_COSE\_Profiles, which use AES-CTR encryption, are not integrity protected and authenticated. For this purpose, SUIT\_Report\_Protected defines authenticated containers with an encrypted payload.
 
 #  IANA Considerations {#iana}
 
@@ -474,7 +465,7 @@ IANA is requested to allocate a CBOR tag for each of:
 * SUIT\_Reference
 * SUIT\_Capability\_Report
 
-IANA is requested to allocate a CoAP content-type and a media-type for SUIT\_Report.
+IANA is requested to allocate a CoAP content-type {{?RFC7252}} and a media-type for SUIT\_Report.
 
 IANA is also requested to add the following registries to the SUIT registry group:
 
@@ -627,48 +618,56 @@ Label | Name | Reference
 8 | Text Elements | {{capabilities}}
 9 | Component Text Elements | {{capabilities}}
 
-#  Security Considerations {#seccons}
+#  Security Considerations {#seccons
 
-There are two aspects to the security considerations for SUIT\_Reports:
-authenticity and confidentiality. SUIT\_Reports must have guaranteed
-authenticity for them to be useful. Several options are available to
-ensure the authenticity of a SUIT\_Report. The report MAY be bundled
-as the payload of a cryptographic container as described in {{container}}.
-communicated over a secure transport. It may also be communicated as
-part of an existing authenticated protocol, such as within an EAT
-token. Ideally, the SUIT\_Report SHOULD be communicated as part of an
-attestation flow, such as within an EAT token, since this proves the
-authenticity of the environment (hardware, software, or both) in which
-the SUIT\_Report was generated.
+The SUIT\_Report serves four primary security objectives:
 
-The SUIT\_Report MAY require confidentiality as well. A SUIT\_Report
-could potentially reveal confidential information about the kinds of
-device that a particular user has. It could also reveal confidential
-information about intellectual property contained in a device. Where
-these concerns are relevant, the SUIT\_Report MUST be encrypted, for
-example using a COSE\_Encrypt as described in {{container}}, or by using
-secure transport. When reporting failures, particularly in the
-cryptographic primitives, reporting can
-increase an attacker's insight into exploitable weaknesses and vulnerabilities. Therefore, SUIT\_Reports
-SHOULD be encrypted wherever possible.
+- Validated Identity
+- Integrity
+- Replay protection
+- Confidentiality
 
-There are also operational considerations that intersect with these
-security considerations. In situations where the SUIT\_Report is
-encrypted as an element of a message within another protocol, care must
-be taken to ensure that this does not leak information and that the
-principle of least privilege is respected. For example, in an EAT-based
-attestation workflow, the Verifier often will not need the full SUIT\_Report.
-Similarly, the Relying Party may also not need the SUIT\_Report.
-To enable the principle of least privilege in this and similar
-scenarios, the SUIT\_Report should be independently encrypted even if
-the EAT token or encrypted transport that contains it is also encrypted.
+The mechanisms for achieving these protections are outlined in {{container}}.
 
-In contrast, however, there are scenarios where the EAT Verifier
-consumes the SUIT\_Report and translates it into one or more other
-EAT claims. For example, a SUIT\_Report that shows a particular digest
-was matched using an suit-condition-image can be translated into a
-EAT measres (Measurement Results) claim. In this scenario, the Verifier
-must have access to the full SUIT\_Report.
+Ideally, a SUIT\_Report SHOULD be conveyed as part of a remote attestation procedure,
+such as embeding it in EAT tokens that represent RATS conceptual messages. This approach ensures that the SUIT\_Report
+is cryptographically bound to the environment (hardware, software, or both) in
+which it was generated, thereby strengthening its authenticity.
+
+A SUIT\_Report may disclose sensitive information about the device on which it
+were produced. In such cases, the SUIT\_Report MUST be encrypted, as specified in
+{{container}}.
+
+Furthermore, failure reports, particularly those involving cryptographic operations,
+can unintentionally reveal insights into system weaknesses or vulnerabilities. As such,
+SUIT\_Reports SHOULD be encrypted whenever possible, to minimize the risk of information
+leakage.
+
+In addition to these core security requirements, operational considerations must be taken
+into account. When a SUIT\_Report is included within another protocol message (e.g., inside
+an encrypted EAT), care must be taken to avoid inadvertently leaking information and
+to uphold the principle of least privilege. For example, in many EAT-based remote attestation flows,
+the Verifier may not require the full SUIT\_Report. Similarly, the Relying Party might not
+need access to it either.
+
+To support least-privilege access, the SUIT\_Report should be independently encrypted, even
+when the transport or enclosing token is also encrypted. This layered encryption ensures that
+only authorized entities can access the contents of the SUIT\_Report.
+
+In other scenarios, the EAT Verifier might require full access to a SUIT\_Report.
+For example, the SUIT\_Report must be accessible in its entirety for the EAT Verifier
+to extract or convert the SUIT\_Report content into specific EAT claims, such as `measres`
+(Measurement Results). A typical case
+involves translating a successful `suit-condition-image` check into a digest-based claim within
+the EAT.
+
+When applying cryptographic protection to the SUIT\_Report, the same algorithm profile used for
+the corresponding SUIT manifest SHOULD be reused. The available algorithm profiles are detailed
+in {{I-D.ietf-suit-mti}}. If using the same profile is not feasible (e.g., due to constraints
+imposed by `suit-sha256-hsslms-a256kw-a256ctr`), then a profile offering comparable security
+strength SHOULD be selected—for instance, `suit-sha256-esp256-ecdh-a128ctr`.
+
+In exceptional cases, if no suitable profile can be applied, the necessity of disabling a SUIT\_Report functionality altogether might arise.
 
 #  Acknowledgements
 
