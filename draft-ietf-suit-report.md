@@ -1,7 +1,7 @@
 ---
 title: Secure Reporting of Update Status
 abbrev: Secure Reporting of Update Status
-docname: draft-ietf-suit-report-11
+docname: draft-ietf-suit-report-13
 category: info
 
 ipr: trust200902
@@ -618,7 +618,7 @@ Label | Name | Reference
 8 | Text Elements | {{capabilities}}
 9 | Component Text Elements | {{capabilities}}
 
-#  Security Considerations {#seccons
+#  Security Considerations {#seccons}
 
 The SUIT\_Report serves four primary security objectives:
 
