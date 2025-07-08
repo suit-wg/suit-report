@@ -107,9 +107,13 @@ Terms used in this specification include:
 
 # The SUIT\_Record {#suit-record}
 
+The SUIT\_Record is a record of a decision taken by the Manifest Processor.
+It contains the information that the Manifest Processor used to make the
+decision. The decision can be inferred from this information, so it is not
+includded.
 If the developer has a copy of the
 manifest, then they need little information to reconstruct what the
-manifest processor has done. They simply need any data that influences
+manifest processor has done. They need any data that influences
 the control flow of the manifest. The manifest only supports the
 following control flow primitives:
 
@@ -136,10 +140,10 @@ is typically the actual value.
 
 Since it is possible that a non-condition command (directive) may fail in an
 exceptional circumstance,
-a failure code for a non condition command must be included as well. However,
+a failure code for a non condition command must be communicated to the developer. However,
 a failed directive will terminate processing of the manifest. To accommodate
 for a failed command and for explicit "completion," an additional "result"
-element is included as well, however this is included in the SUIT\_Report, see {{suit-report}}.
+element is included as well, however this is included in the SUIT\_Report ({{suit-report}}).
 In the case of a command failure,
 the failure reason is typically a numeric error code. However, these error
 codes need to be standardised in order to be useful.
@@ -215,10 +219,16 @@ in {{I-D.ietf-suit-manifest}}.
 
 # The SUIT\_Report {#suit-report}
 
+The SUIT\_Report is a SUIT-specific logging container. It contains
+the SUIT\_Records needed to reconstruct the decisiosn made by a
+Manifest Processor as well as references to the Manifest being 
+processed, the result of processing, and an optional capability
+report.
+
 Some metadata is common to all records, such as the root manifest:
 the manifest that is the entry-point for the manifest processor. This
 metadata is aggregated with a list of SUIT\_Records. The SUIT\_Report
-may also contain a list of any system properties that were measured
+may also contain a list of any System Properties that were measured
 and reported, and a reason for a failure if one occurred.
 
 ~~~CDDL
@@ -280,10 +290,8 @@ system-property-claims. Because SUIT\_Records are only generated on failure,
 in simple cases this can be an empty list. SUIT\_Records and
 suit-system-property-claims are merged into a single list because this
 reduces the overhead for a constrained node that generates this report.
-The use of a single append-only log allows report generators to use simple
-memory management. 
-The concept of append-only logs for software supply chains
-is explained in {{I-D.ietf-scitt-architecture}}. Because the system-property-claims
+The use of a single log allows report generators to use simple
+memory management. Because the system-property-claims
 are encoded as maps and SUIT\_Records are encoded as lists, a recipient need
 only filter the CBOR Type-5 entries from suit-report-records to obtain all 
 system-property-claims.
@@ -355,7 +363,7 @@ Attestation Evidence. Attestation Evidence contains Evidence Claims about the At
 contain measurements about the Attester. Many of these measurements are the same measurements that are generated in SUIT,
 which means that a SUIT\_Report contains most of the Claims and some of the Endorsements that a Verifier requires.
 
-Using a SUIT\_Manifest and a SUIT\_Report, improves a well-informed Verifier's ability to appraise the trustworthiness of a remote device. Remote attestation is done by using the SUIT\_Manifest\_Envelope along with the SUIT\_Report to reconstruct the state of the device at boot time. By embedding data used for remote attestation in the SUIT\_Report, a remote device can use a verifiable data structure, such as an append-only log,  to notarize both measurements and debug/failure information via the same document. This document can then be conveyed to a Verifier as a part of the Attestation Evidence. A Remote Attestation format to convey Attestation Evidence, such as an Entity Attestation Token (EAT, see {{-EAT}}), that contains a SUIT\_Report MUST also include an integrity measurement of the Manifest Processor & Report Generator.
+Using a SUIT\_Manifest and a SUIT\_Report, improves a well-informed Verifier's ability to appraise the trustworthiness of a remote device. Remote attestation is done by using the SUIT\_Manifest\_Envelope along with the SUIT\_Report to reconstruct the state of the device at boot time. By embedding data used for remote attestation in the SUIT\_Report, a remote device can use a verifiable data structure, such as an append-only log ({{I-D.ietf-scitt-architecture}}, Section 3) to notarize both measurements and debug/failure information via the same document. This document can then be conveyed to a Verifier as a part of the Attestation Evidence. A Remote Attestation format to convey Attestation Evidence, such as an Entity Attestation Token (EAT, see {{-EAT}}), that contains a SUIT\_Report MUST also include an integrity measurement of the Manifest Processor & Report Generator.
 
 When a Concise Reference Integrity Manifest (CoRIM, see {{-CoRIM}}) is delivered in a SUIT\_Manifest\_Envelope, this codifies the delivery of appraisal information to the Verifier:
 
