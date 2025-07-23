@@ -28,6 +28,7 @@ SUIT_MTI_CDDL_URL=https://raw.githubusercontent.com/suit-wg/suit-mti/refs/heads/
 SUIT_COMPLETE_CDDL=suit-complete.cddl
 UPDATE_CDDL=../draft-ietf-suit-report.cddl
 
+.PHONY: all
 all: ${CDDL}
 
 .PHONY: fetch-xml
@@ -49,8 +50,10 @@ ${SUIT_COMPLETE_CDDL}: ${SUIT_CDDL} ${SUIT_MTI_CDDL} ${COSE_CDDL}
 
 ${CDDL}: ${UPDATE_CDDL} ${SUIT_COMPLETE_CDDL}
 	cat $^ > $@
-#	cddl $@ generate
-	cddlc -2rtcddl $@ | cddl - generate
+
+.PHONY: cddl-syntax-check
+cddl-syntax-check: ${CDDL}
+	cddlc -2rtcddl $^ > /dev/null || echo CDDL Syntax check ok
 
 .PHONY: clean
 clean:

@@ -44,7 +44,9 @@ It will create `draft-ietf-suit-report.txt`, `draft-ietf-suit-report.xml` and `d
 To check the cddl syntax whenever making changes in the cddl file
 
 ```
+make -C cddl clean
 make -C cddl
+make -C cddl cddl-syntax-check
 ```
 
 ## Updating repo on GitHub
