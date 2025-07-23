@@ -17,8 +17,8 @@ Installing required packages on Fedora
 ```
 sudo dnf makecache
 sudo dnf -y install python3-pip git make gem
-gem install kramdown-rfc2629
 pip3 install xml2rfc
+gem install kramdown-rfc2629 cddl cddlc
 ```
 
 Installing required packages on Ubuntu
@@ -26,7 +26,7 @@ Installing required packages on Ubuntu
 sudo apt-get update
 sudo apt-get -y install python3-pip ruby git curl
 pip3 install xml2rfc
-gem install kramdown-rfc2629
+gem install kramdown-rfc2629 cddl cddlc
 ```
 
 ### Generating draft from a markdown file
