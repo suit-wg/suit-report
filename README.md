@@ -60,4 +60,26 @@ draft-ietf-suit-report.cddl
 
 ## Submitting draft
 
-TBD
+Generate xml file containing version number only when submitting draft since the datatracker require the version number on both inside the xml and on the file name
+
+Instead of hard coding the version number in the md file, this way will make it easier to regularly update the md and cddl file in the repo on the github by keeping the file name consistent.
+Otherwise, it will require manually changing the file names back to the without version number every time when git commit and push.
+
+1)
+Revise the next line in the file ‘draft-ietf-suit-report.md’
+```
+docname: draft-ietf-suit-report
+```
+with adding the version number at the end for submitting the draft.
+For example, If the current draft version is ‘08’ then change it as the line below.
+```
+docname: draft-ietf-suit-report-09
+```
+
+2)
+Generate the xml file with `make` command.
+This will generate the `draft-ietf-suit-report-09.xml` for the example above.
+Upload the new xml file as the draft to the datatracker at ietf.
+
+Link to submit the revised draft.
+https://datatracker.ietf.org/submit/
