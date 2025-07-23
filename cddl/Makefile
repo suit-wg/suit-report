@@ -49,7 +49,8 @@ ${SUIT_COMPLETE_CDDL}: ${SUIT_CDDL} ${SUIT_MTI_CDDL} ${COSE_CDDL}
 
 ${CDDL}: ${UPDATE_CDDL} ${SUIT_COMPLETE_CDDL}
 	cat $^ > $@
-	cddl $@ generate
+#	cddl $@ generate
+	cddlc -2rtcddl $@ | cddl - generate
 
 .PHONY: clean
 clean:
