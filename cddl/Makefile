@@ -53,7 +53,7 @@ ${CDDL}: ${UPDATE_CDDL} ${SUIT_COMPLETE_CDDL}
 
 .PHONY: cddl-syntax-check
 cddl-syntax-check: ${CDDL}
-	cddlc -2rtcddl $^ > /dev/null || echo CDDL Syntax check ok
+	cddlc -2rtcddl $^ > /dev/null && echo CDDL Syntax check ok
 
 .PHONY: clean
 clean:
