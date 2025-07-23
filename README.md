@@ -37,8 +37,26 @@ cd suit-report
 make
 ```
 
-It will create `draft-ietf-suit-report-latest.txt` and
-`draft-ietf-suit-report-latest.xml`.
+It will create `draft-ietf-suit-report.txt`, `draft-ietf-suit-report.xml` and `draft-ietf-suit-report.html`
+
+## Conduct CDDL syntax check
+
+To check the cddl syntax whenever making changes in the cddl file
+
+```
+make -C cddl
+```
+
+## Updating repo on GitHub
+
+Make updates to the `draft-ietf-suit-report.md` and/or `draft-ietf-suit-report.cddl`.
+Regenerate xml, txt and html with `make` command.
+
+Commit and push to GitHub the changes on all files listed below.
+```
+draft-ietf-suit-report.md
+draft-ietf-suit-report.cddl
+```
 
 ## Submitting draft
 
