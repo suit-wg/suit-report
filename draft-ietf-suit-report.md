@@ -473,7 +473,7 @@ IANA is requested to allocate a CBOR tag for each of:
 * SUIT\_Reference
 * SUIT\_Capability\_Report
 
-IANA is requested to allocate a CoAP content-type {{?RFC7252}} and a media-type for SUIT\_Report.
+IANA is requested to allocate a CoAP content-format {{?RFC7252}} and a media-type for SUIT\_Report.
 
 IANA is also requested to add the following registries to the SUIT registry group:
 
@@ -546,11 +546,11 @@ Provisional registration:
 
 ## CoAP Content-Format Registration
 
-IANA is requested to assign a CoAP Content-Format ID for the CoSWID media type in the "CoAP Content-Formats" sub-registry, from the "IETF Review or IESG Approval" space (256..999), within the "CoRE Parameters" registry {{RFC7252}} {{IANA.core-parameters}}:
+IANA is requested to assign a CoAP Content-Format ID for the CoSWID media type in the "CoAP Content-Formats" registry, from the "IETF Review with Expert Review or IESG Approval with Expert Review" space (256..9999), within the "CoRE Parameters" registry group {{RFC7252}} {{IANA.core-parameters}}:
 
-Media type | Encoding | ID | Reference
+Content Type | Content Coding | ID | Reference
 ---|---|---|---
-application/suit-report+cose|cbor+cose|TBA|{{&SELF}}
+application/suit-report+cose| |TBA|{{&SELF}}
 
 ## CBOR Tag Registration
 
