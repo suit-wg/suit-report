@@ -143,7 +143,7 @@ exceptional circumstance,
 a failure code for a non condition command must be communicated to the developer. However,
 a failed directive will terminate processing of the manifest. To accommodate
 for a failed command and for explicit "completion," an additional "result"
-element is included as well, however this is included in the SUIT\_Report ({{suit-report}}).
+element is included as well; however, this is included in the SUIT\_Report ({{suit-report}}).
 In the case of a command failure,
 the failure reason is typically a numeric error code. However, these error
 codes need to be standardised in order to be useful.
@@ -227,7 +227,8 @@ report.
 
 Some metadata is common to all records, such as the root manifest:
 the manifest that is the entry-point for the manifest processor. This
-metadata is aggregated with a list of SUIT\_Records. The SUIT\_Report
+metadata is aggregated with a list of SUIT\_Records as defined in 
+{{suit-record}}. The SUIT\_Report
 may also contain a list of any System Properties that were measured
 and reported, and a reason for a failure if one occurred.
 
@@ -272,7 +273,9 @@ SUIT_Reference = {
 
 suit-report-manifest-digest provides a SUIT\_Digest (as defined in
 {{I-D.ietf-suit-manifest}}) that is the characteristic digest of the
-Root manifest.
+Root manifest. This digest MUST be the same digest as is held in
+the first element of SUIT\_Authentication in the referenced
+Manifest\_Envelope.
 
 suit-report-manifest-uri provides the reference URI that was provided in
 the root manifest.
@@ -363,7 +366,19 @@ Attestation Evidence. Attestation Evidence contains Evidence Claims about the At
 contain measurements about the Attester. Many of these measurements are the same measurements that are generated in SUIT,
 which means that a SUIT\_Report contains most of the Claims and some of the Endorsements that a Verifier requires.
 
-Using a SUIT\_Manifest and a SUIT\_Report, improves a well-informed Verifier's ability to appraise the trustworthiness of a remote device. Remote attestation is done by using the SUIT\_Manifest\_Envelope along with the SUIT\_Report to reconstruct the state of the device at boot time. By embedding data used for remote attestation in the SUIT\_Report, a remote device can use a verifiable data structure, such as an append-only log ({{I-D.ietf-scitt-architecture}}, Section 3) to notarize both measurements and debug/failure information via the same document. This document can then be conveyed to a Verifier as a part of the Attestation Evidence. A Remote Attestation format to convey Attestation Evidence, such as an Entity Attestation Token (EAT, see {{-EAT}}), that contains a SUIT\_Report MUST also include an integrity measurement of the Manifest Processor & Report Generator.
+Using a SUIT\_Manifest and a SUIT\_Report, improves a well-informed Verifier's ability to appraise the trustworthiness of a remote device. Remote attestation is done by including the SUIT\_Manifest\_Envelope along with the SUIT\_Report in Evidence to reconstruct the state of the device at boot time. Additionally, by including SUIT\_Report data as telemetry (i.e., debug/failure information) next to measurements in Evidence, both types of Evidence data can be notarized via verifiable data structure, such as an append-only log ({{Section 3 of I-D.ietf-scitt-architecture}}) using the same conceptual message.
+
+For the SUIT\_Report to be usable as Attestation Evidence, the environment that
+generated the SUIT\_Report also needs to be measured. Typically, this means that
+the software that executes the commands in the Manifest (the Manifest
+Processor) must be measured; similarly, the piece of software that assembles
+the measurements, taken by the Manifest Processor, into the SUIT\_Report (the
+Report Generator) must also be measured. Any bootloaders or operating systems
+that facilitate the running of the Manifest Processor or Report Generator also need
+to be measured in order to demonstrate the integrity of the measuring environment.
+
+Therefore, if a Remote Attestation format that conveys Attestation Evidence, such as an Entity Attestation Token (EAT, see {{-EAT}}), contains a SUIT\_Report, then it MUST also include an integrity measurement of the Manifest Processor, the Report Generator and any bootloader or OS environment that ran before or during the 
+execution of both.
 
 When a Concise Reference Integrity Manifest (CoRIM, see {{-CoRIM}}) is delivered in a SUIT\_Manifest\_Envelope, this codifies the delivery of appraisal information to the Verifier:
 
@@ -371,8 +386,8 @@ When a Concise Reference Integrity Manifest (CoRIM, see {{-CoRIM}}) is delivered
     * sends the SUIT\_Manifest\_Envelope to the Verifier without payload or text, but with CoRIM
     * sends the SUIT\_Manifest\_Envelope to the recipient without CoRIM, or text, but with payload
 * The Recipient:
-    * Installs the firmware as described in the SUIT\_Manifest and generates a SUIT\_report, which is encapsulated in an EAT by the installer and sent to the Firmware Distributor.
-    * Boots the firmware as described in the SUIT\_Manifest and creates a SUIT\_report, which is encapsulated in an EAT by the installer and sent to the Firmware Distributor.
+    * Installs the firmware as described in the SUIT\_Manifest and generates a SUIT\_Report, which is encapsulated in an EAT by the installer and sent to the Firmware Distributor.
+    * Boots the firmware as described in the SUIT\_Manifest and creates a SUIT\_Report, which is encapsulated in an EAT by the installer and sent to the Firmware Distributor.
 * The Firmware Distributor sends both reports to the Verifier (separately or together)
 * The Verifier:
     * Reconstructs the state of the device using the manifest
@@ -381,7 +396,13 @@ When a Concise Reference Integrity Manifest (CoRIM, see {{-CoRIM}}) is delivered
 
 This approach simplifies the design of the bootloader since it is able to use an append-only log. It allows a Verifier to validate this report against a signed CoRIM that is provided by the firmware author, which simplifies the delivery chain of verification information to the Verifier.
 
-This information is not intended as Attestation Evidence and while an Attestation Report MAY provide this information for conveying error codes and/or failure reports, it SHOULD be translated into general-purpose claims for use by the Relying Party.
+The log-based structure of the SUIT\_Report is not conducive to processing by a
+typical Relying Party and requires additional information (the SUIT\_Manifest) to
+validate. Due to this structure, the typical workflow would involve a trusted
+party reconstructing the measurements typically used in Attestation Evidence:
+software measurements and hardware identification or measurement. Additional
+information in the SUIT\_Report SHOULD be removed prior to signing by the Verifier;
+the Relying Party SHOULD NOT rely on the SUIT\_Report directly.
 
 # Capability Reporting {#capabilities}
 
@@ -416,8 +437,19 @@ Additional capability reporting can be added as follows: if a manifest element d
 
 #  EAT Claim {#eat}
 
+The Entity Attestation Token (EAT, see {{-EAT}}) is a secure container for conveying
+Attestation Evidence, such as measurements, and Attestation Results.
 The SUIT\_Report is a form of measurement done by the SUIT Manifest Processor as it attempts to invoke a manifest or install a manifest. As a result, the SUIT\_Report can be captured in an EAT measurements type.
-The Verifier MAY convert a SUIT\_Report into a more consumable version of the EAT claim by, for example, constructing a measurement results claim that contains the digest of a component, the vendor ID & class ID of a component, etc.
+
+The log-based structure of the SUIT\_Report is not conducive to processing by a
+typical Relying Party: it contains only a list of waypoints through the SUIT
+Manifest--unless system parameter records are included--and requires additional 
+information (the SUIT\_Manifest) to reconstruct the values that must have been
+present at each test. A Verifier in posession of the SUIT\_Manifest can reconstruct 
+the measurements that would produce the waypoints in the SUIT\_Report. The Verifier 
+SHOULD convert a SUIT\_Report into a more consumable version of the EAT claim by, for 
+example, constructing a measurement results claim that contains the digest of a 
+component, the vendor ID & class ID of a component, etc.
 
 #  SUIT\_Report Container {#container}
 
