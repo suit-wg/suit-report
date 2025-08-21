@@ -366,7 +366,7 @@ Attestation Evidence. Attestation Evidence contains Evidence Claims about the At
 contain measurements about the Attester. Many of these measurements are the same measurements that are generated in SUIT,
 which means that a SUIT\_Report contains most of the Claims and some of the Endorsements that a Verifier requires.
 
-Using a SUIT\_Manifest and a SUIT\_Report, improves a well-informed Verifier's ability to appraise the trustworthiness of a remote device. Remote attestation is done by using the SUIT\_Manifest\_Envelope along with the SUIT\_Report to reconstruct the state of the device at boot time. By embedding data used for remote attestation in the SUIT\_Report, a remote device can use a verifiable data structure, such as an append-only log ({{I-D.ietf-scitt-architecture}}, Section 3) to notarize both measurements and debug/failure information via the same document. This document can then be conveyed to a Verifier as a part of the Attestation Evidence. 
+Using a SUIT\_Manifest and a SUIT\_Report, improves a well-informed Verifier's ability to appraise the trustworthiness of a remote device. Remote attestation is done by including the SUIT\_Manifest\_Envelope along with the SUIT\_Report in Evidence to reconstruct the state of the device at boot time. Additionally, by including SUIT\_Report data as telemetry (i.e., debug/failure information) next to measurements in Evidence, both types of Evidence data can be notarized via verifiable data structure, such as an append-only log ({{Section 3 of I-D.ietf-scitt-architecture}}) using the same conceptual message.
 
 For the SUIT\_Report to be usable as Attestation Evidence, the environment that
 generated the SUIT\_Report also needs to be measured. Typically, this means that
