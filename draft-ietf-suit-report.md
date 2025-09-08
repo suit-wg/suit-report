@@ -42,6 +42,7 @@ informative:
   I-D.birkholz-rats-corim: CoRIM
   I-D.ietf-suit-trust-domains:
   I-D.ietf-scitt-architecture:
+  I-D.ietf-rats-evidence-trans:
   RFC9334:
 normative:
   I-D.ietf-suit-manifest:
@@ -268,10 +269,10 @@ particularly in scenarios with multiple trusted signers.
 The following CDDL describes a SUIT\_Reference.
 
 ~~~CDDL
-SUIT_Reference = {
+SUIT_Reference = [
     suit-report-manifest-uri  : tstr,
     suit-report-manifest-digest : SUIT_Digest,
-}
+]
 ~~~
 
 suit-report-manifest-digest provides a SUIT\_Digest (as defined in
@@ -400,13 +401,33 @@ When a Concise Reference Integrity Manifest (CoRIM, see {{-CoRIM}}) is delivered
 
 This approach simplifies the design of the bootloader since it is able to use an append-only log. It allows a Verifier to validate this report against a signed CoRIM that is provided by the firmware author, which simplifies the delivery chain of verification information to the Verifier.
 
-The log-based structure of the SUIT\_Report is not conducive to processing by a
-typical Relying Party and requires additional information (the SUIT\_Manifest) to
-validate. Due to this structure, the typical workflow would involve a trusted
-party reconstructing the measurements typically used in Attestation Evidence:
-software measurements and hardware identification or measurement. Additional
-information in the SUIT\_Report SHOULD be removed prior to signing by the Verifier;
-the Relying Party SHOULD NOT rely on the SUIT\_Report directly.
+For a Verifier to consume the SUIT\_Report, it requires a copy of the
+SUIT\_Manifest. The Verifier then replays the SUIT\_Manifest, using the
+SUIT\_Report to resolve whether each condition is met. It identifies each
+measurement that is required by attestation policy and records this
+measurement as an Attestation Claim. It evaluates whether the SUIT\_Report
+correctly matches the SUIT\_Manifest as an element of evaluating
+trustworthiness. For example there are several indicators that would show
+that a SUIT\_Report does not match a SUIT\_Manifest. If any of the following
+(not an exhaustive list) occur, then the Manifest Processor that created the
+report is not trustworthy:
+
+* Hash of SUIT\_Manifest at suit-report-manifest-uri does not match suit-report-manifest-digest
+* A SUIT\_Record is issued for a SUIT\_Command\_Sequence that does not exist 
+in the SUIT\_Manifest at suit-report-manifest-uri.
+* A SUIT\_Record is identified at an offset that is not a condition and does
+not have a reporting policy that would indicate a SUIT\_Record is needed.
+
+Many architectures require multiple Verifiers, for example where one Verifier
+handles hardware trust, and another handles software trust, especially the
+evaluation of software authenticity and freshness. Some Verifiers may not
+be capable of processing a SUIT\_Report and, for separation of roles, it
+may be preferable to divide that responsibility. In this case, the Verifier
+of the SUIT\_Report should perform an Evidence Transformation
+{{I-D.ietf-rats-evidence-trans}} and
+produce general purpose Measurement Results Claims that can be consumed by a
+downstream Verifier, for example a Verifying Relying Party, that does not
+understand SUIT\_Reports.
 
 # Capability Reporting {#capabilities}
 
