@@ -512,7 +512,7 @@ SUIT_Report_Unprotected = SUIT_Report / SUIT_Report_COSE_Encrypt0
 SUIT_Report_COSE_Encrypt0 = COSE_Encrypt0
 ~~~
 
-Note that SUIT\_Report\_COSE\_Sign1 and SUIT\_Report\_COSE\_MAC0 MUST be combined with a SUIT\_COSE\_Profile from {{I-D.ietf-suit-mti}} using the CDDL .and directive. The SUIT\_Report\_COSE\_Encrypt0 carries a ciphertext payload that MUST contain just the ciphertext obtained by encrypting the following CDDL:
+Note that SUIT\_Report\_COSE\_Sign1 and SUIT\_Report\_COSE\_MAC0 MUST be combined with a SUIT\_COSE\_Profiles from {{I-D.ietf-suit-mti}} using the CDDL .and directive. The SUIT\_Report\_COSE\_Encrypt0 carries a ciphertext payload that MUST contain just the ciphertext obtained by encrypting the following CDDL:
 
 ~~~CDDL
 SUIT_Report_plaintext = bstr .cbor SUIT_Report
@@ -616,7 +616,7 @@ IANA is requested to allocate a tag in the "CBOR Tags" registry {{IANA.cbor-tags
 Tag | Data Item | Semantics
 ---|---|---
 TBA | array | SUIT\_Report\_Protected
-TBA | map | SUIT\_Reference
+TBA | array | SUIT\_Reference
 TBA | map | SUIT\_Capability\_Report
 
 ## SUIT\_Report Elements
