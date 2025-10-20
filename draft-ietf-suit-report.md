@@ -3,6 +3,7 @@ title: Secure Reporting of SUIT Update Status
 abbrev: SUIT Reports
 docname: draft-ietf-suit-report-16
 category: std
+stream: IETF
 
 ipr: trust200902
 area: Security
@@ -42,6 +43,7 @@ informative:
   I-D.ietf-suit-trust-domains:
   I-D.ietf-scitt-architecture:
   I-D.ietf-rats-evidence-trans:
+  RFC9124:
 normative:
   I-D.ietf-suit-manifest:
   RFC9019: suit-arch
@@ -51,6 +53,7 @@ normative:
   RFC8792:
   RFC9334:
   I-D.ietf-suit-mti:
+  I-D.ietf-suit-trust-domains:
   IANA.cbor-tags:
   IANA.core-parameters:
 
@@ -771,7 +774,7 @@ The authors would like to thank Dave Thaler for his feedback.
 # Full CDDL {#full-cddl}
 In order to create a valid SUIT\_Report document the structure of the corresponding CBOR message MUST adhere to the following CDDL ({{-CDDL}}) data definition.
 
-To be valid, the following CDDL MUST have the COSE CDDL appended to it. The COSE CDDL can be obtained by following the directions in {{-cose, Section 1.4}}. It must also have the CDDL from {{I-D.ietf-suit-mti}} appended to it.
+To be valid, the following CDDL MUST have the COSE CDDL appended to it. The COSE CDDL can be obtained by following the directions in {{-cose, Section 1.4}}. It must also have the CDDL from {{I-D.ietf-suit-mti}} appended to it. This CDDL is line-wrapped per {{RFC8792}}
 
 
 ~~~ CDDL
