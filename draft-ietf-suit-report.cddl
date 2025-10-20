@@ -89,8 +89,7 @@ suit-record-manifest-id = 0
 suit-record-manifest-section = 1
 suit-record-section-offset = 2
 suit-record-component-index = 3
-suit-record-dependency-index = 4
-suit-record-properties = 5
+suit-record-properties = 4
 
 SUIT_Report_Reasons /= suit-report-reason-ok
 SUIT_Report_Reasons /= suit-report-reason-cbor-parse
