@@ -65,7 +65,7 @@ entity:
 The Software Update for the Internet of Things (SUIT) manifest provides
 a way for many different update and boot
 workflows to be described by a common format.
-This specification describes a lightweight feedback mechanism that
+This document specifies a lightweight feedback mechanism that
 allows a developer in possession of a manifest to reconstruct the
 decisions made and actions performed by a manifest processor.
 
@@ -73,8 +73,9 @@ decisions made and actions performed by a manifest processor.
 
 # Introduction
 
-This specification describes a SUIT-specific
-logging container that creates a lightweight feedback mechanism for
+This document specifies a
+logging container, specific to Software Update for the Internet of Things (SUIT)
+that creates a lightweight feedback mechanism for
 developers in the event that an update or boot fails in the manifest
 processor. In this way, it provides the necessary link between the
 Status Tracker Client and the Status Tracker Server as defined in
@@ -111,9 +112,9 @@ The CBOR objects defined in this document allow devices to:
 The terms "Author", "Recipient", and "Manifest" are defined in Section 2 of
 [I-D.ietf-suit-manifest].
 
-Additionally, this specification uses the term
+Additionally, this document uses the term
 Boot: initialization of an executable image. Although this
-specification refers to boot, any boot-specific operations described
+document refers to boot, any boot-specific operations described
 are equally applicable to starting an executable in an OS context.
 
 # The SUIT\_Record {#suit-record}
@@ -161,7 +162,7 @@ codes need to be standardised in order to be useful.
 
 This approach effectively compacts the log of operations taken using the SUIT Manifest
 as a dictionary. This enables a full reconstruction of the log using a matching
-decompaction tool.
+decompaction tool. The following CDDL ({{-CDDL}}) shows the structure of a SUIT\_Record.
 
 ~~~CDDL
 SUIT_Record = [
@@ -255,6 +256,8 @@ metadata is aggregated with a list of SUIT\_Records as defined in
 {{suit-record}}. The SUIT\_Report
 may also contain a list of any System Properties that were measured
 and reported, and a reason for a failure if one occurred.
+The following CDDL describes the structure of a SUIT\_Report and
+a SUIT\_Reference:
 
 ~~~CDDL
 SUIT_Report = {
@@ -270,10 +273,16 @@ SUIT_Report = {
   ? suit-report-capability-report => SUIT_Capability_Report,
   $$SUIT_Report_Extensions
 }
+
 system-property-claims = {
   system-component-id => SUIT_Component_Identifier,
   + SUIT_Parameters,
 }
+
+SUIT_Reference = [
+    suit-report-manifest-uri  : tstr,
+    suit-report-manifest-digest : SUIT_Digest,
+]
 ~~~
 
 The suit-reference provides a reference URI and digest for a suit
@@ -288,14 +297,11 @@ a manifest to be uniquely identified (collision resistance) whereas
 other identifiers, such as the sequence number, can collide,
 particularly in scenarios with multiple trusted signers.
 
-The following CDDL describes a SUIT\_Reference.
-
-~~~CDDL
-SUIT_Reference = [
-    suit-report-manifest-uri  : tstr,
-    suit-report-manifest-digest : SUIT_Digest,
-]
-~~~
+suit-report-nonce provides a container for freshness or replay
+protection information. This field MAY be omitted where the suit-report
+is authenticated within a container that provides freshness already.
+For example, attestation evidence typically contains a proof of
+freshness.
 
 suit-report-manifest-digest provides a SUIT\_Digest (as defined in
 {{I-D.ietf-suit-manifest}}, Section 10) that is the characteristic digest of the
@@ -305,12 +311,6 @@ Manifest\_Envelope.
 
 suit-report-manifest-uri provides the reference URI that was provided in
 the root manifest.
-
-suit-report-nonce provides a container for freshness or replay
-protection information. This field MAY be omitted where the suit-report
-is authenticated within a container that provides freshness already.
-For example, attestation evidence typically contains a proof of
-freshness.
 
 ## suit-report-records {#suit-report-records}
 
@@ -367,7 +367,7 @@ component that is not accessible by the signer.
 * suit-report-reason-parameter-unsupported: The manifest used a
 parameter that does not exist.
 * suit-report-severing-unsupported: The manifest used severable fields
-but the Manifest Processor doesn't support them.
+but the Manifest Processor didn't support them.
 * suit-report-reason-condition-failed: A condition failed with soft-
 failure off.
 * suit-report-reason-operation-failed: A command failed (e.g.,
@@ -551,22 +551,22 @@ SUIT\_COSE\_Profiles, which use AES-CTR encryption, are not integrity protected 
 
 #  IANA Considerations {#iana}
 
-IANA is requested to name the overall SUIT registry group "Software Update for the Internet of Things (SUIT)".
+IANA is requested to rename the overall SUIT registry group (https://www.iana.org/assignments/suit/suit.xhtml) "Software Update for the Internet of Things (SUIT)".
 
-IANA is requested to allocate a CBOR tag for each of:
+IANA is requested to allocate a CBOR tag {{cbor-tag}}for each of:
 
 * SUIT\_Report\_Protected
 * SUIT\_Reference
 * SUIT\_Capability\_Report
 
-IANA is requested to allocate a CoAP content-format {{?RFC7252}} and a media-type for SUIT\_Report.
+IANA is requested to allocate a CoAP content-format {{?RFC7252}} and a media-type for SUIT\_Report {{media-type}}.
 
-IANA is also requested to add the following registries to the SUIT registry group:
+IANA is also requested to add the following registries to the SUIT registry group (https://www.iana.org/assignments/suit/suit.xhtml):
 
-* SUIT\_Report Elements
-* SUIT\_Record Elements
-* SUIT\_Report Reasons
-* SUIT\_Capability\_Report Elements
+* SUIT\_Report Elements {{iana-suit-report-elements}}
+* SUIT\_Record Elements {{iana-suit-record-elements}}
+* SUIT\_Report Reasons {{iana-suit-report-reasons}}
+* SUIT\_Capability\_Report Elements {{iana-suit-capability-report}}
 
 For each of these registries, registration policy is:
 
@@ -575,6 +575,7 @@ For each of these registries, registration policy is:
 * -4294967296 to -65537, 65536 to 4294967295: First Come, First Served
 
 ## Expert Review Instructions
+
 The IANA registries established in this document allow values to be added based on expert review. This section gives some general guidelines for what the experts should be looking for, but they are being designated as experts for a reason, so they should be given substantial latitude.
 
 Expert reviewers should take into consideration the following points:
@@ -583,9 +584,11 @@ Expert reviewers should take into consideration the following points:
 * Specifications are required for the standards track range of point assignment. Specifications should exist for all other ranges, but early assignment before a specification is available is considered to be permissible. When specifications are not provided, the description provided needs to have sufficient information to identify what the point is being used for.
 * Experts should take into account the expected usage of fields when approving point assignment. The fact that there is a range for standards track documents does not mean that a standards track document cannot have points assigned outside of that range. The length of the encoded value should be weighed against how many code points of that length are left, the size of device it will be used on, and the number of code points left that encode to that size.
 
-## Media Type Registration
+## Media Type Registration {#media-type}
 
 ### application/suit-report+cose
+
+IANA is requested to register application/suit-report+cose as a media type for the SUIT\_Report.
 
 {:compact}
 Type name:
@@ -638,7 +641,7 @@ Content Type | Content Coding | ID | Reference
 ---|---|---|---
 application/suit-report+cose| |TBA|{{&SELF}}
 
-## CBOR Tag Registration
+## CBOR Tag Registration {#cbor-tag}
 
 IANA is requested to allocate a tag in the "CBOR Tags" registry {{IANA.cbor-tags}}, preferably in the Specification Required range:
 
@@ -648,7 +651,7 @@ TBA | array | SUIT\_Report\_Protected
 TBA | array | SUIT\_Reference
 TBA | map | SUIT\_Capability\_Report
 
-## SUIT\_Report Elements
+## SUIT\_Report Elements {#iana-suit-report-elements}
 
 IANA is requested to create a new registry for SUIT\_Report Elements.
 
@@ -663,7 +666,7 @@ Label | Name | CDDL Label | Reference
 8 | Capability Report | suit-report-capability-report | {{suit-report}}
 99 | Reference | SUIT_Reference | suit-reference | {{suit-report}}
 
-## SUIT\_Record Elements
+## SUIT\_Record Elements {#iana-suit-record-elements}
 
 IANA is requested to create a new registry for SUIT\_Record Elements.
 
@@ -675,7 +678,7 @@ Label | Name | CDDL Label | Reference
 3 | Component Index  | suit-record-component-index | {{suit-record}}
 4 | Record Properties | suit-record-properties | {{suit-record}}
 
-## SUIT\_Report Reasons
+## SUIT\_Report Reasons {#iana-suit-report-reasons}
 
 IANA is requested to create a new registry for SUIT\_Report Reasons.
 
@@ -695,7 +698,7 @@ Label | Name | CDDL Label | Reference
 11 | Operation Failed | suit-report-reason-operation-failed | {{suit-report-result}}
 
 
-## SUIT Capability Report Elements
+## SUIT Capability Report Elements {#iana-suit-capability-report}
 
 IANA is requested to create a new registry for SUIT Capability Report Elements.
 
