@@ -1,7 +1,7 @@
 ---
 title: Secure Reporting of SUIT Update Status
 abbrev: SUIT Reports
-docname: draft-ietf-suit-report-16
+docname: draft-ietf-suit-report-17
 category: std
 stream: IETF
 
@@ -53,7 +53,6 @@ normative:
   RFC8792:
   RFC9334:
   I-D.ietf-suit-mti:
-  I-D.ietf-suit-trust-domains:
   IANA.cbor-tags:
   IANA.core-parameters:
 
@@ -74,7 +73,7 @@ decisions made and actions performed by a manifest processor.
 # Introduction
 
 This document specifies a
-logging container, specific to Software Update for the Internet of Things (SUIT)
+logging container, specific to Software Update for the Internet of Things (SUIT) Manifests ({{I-D.ietf-suit-manifest}})
 that creates a lightweight feedback mechanism for
 developers in the event that an update or boot fails in the manifest
 processor. In this way, it provides the necessary link between the
@@ -110,7 +109,7 @@ The CBOR objects defined in this document allow devices to:
 
 
 The terms "Author", "Recipient", and "Manifest" are defined in Section 2 of
-[I-D.ietf-suit-manifest].
+{{I-D.ietf-suit-manifest}}.
 
 Additionally, this document uses the term
 Boot: initialization of an executable image. Although this
@@ -142,7 +141,7 @@ To reconstruct the flow of a manifest, a developer needs
 a list of metadata about failed conditions:
 
 - the current manifest
-- the current Command Sequence ({{I-D.suit-manifest}}, Section 5.3.3)
+- the current Command Sequence ({{I-D.ietf-suit-manifest}}, Section 5.3.3)
 - the offset into the current Command Sequence
 - the current component index
 - the "reason" for failure
@@ -285,6 +284,11 @@ SUIT_Reference = [
 ]
 ~~~
 
+Further details for each element appear in subsequent sections: the
+encoding of `suit-report-records` is defined in {{suit-report-records}},
+the result semantics in {{suit-report-result}}, and the optional
+capability report in {{capabilities}}.
+
 The suit-reference provides a reference URI and digest for a suit
 manifest. The URI MUST exactly match the suit-reference-uri
 ({{I-D.ietf-suit-manifest}}, Section 8.4.3) that is provided in the
@@ -366,12 +370,14 @@ component/prefix that does not exist.
 component that is not accessible by the signer.
 * suit-report-reason-parameter-unsupported: The manifest used a
 parameter that does not exist.
-* suit-report-severing-unsupported: The manifest used severable fields
-but the Manifest Processor didn't support them.
+* suit-report-reason-severing-unsupported: The manifest used severable fields
+but the Manifest Processor does not support them.
 * suit-report-reason-condition-failed: A condition failed with soft-
 failure off.
 * suit-report-reason-operation-failed: A command failed (e.g.,
 download/copy/swap/write)
+* suit-report-reason-invoke-pending: Invocation is about to be attempted
+and the final outcome is not yet known.
 
 The suit-report-result-code reports an internal error code that is
 provided for debugging reasons. This code is not intended for
@@ -379,6 +385,17 @@ interoperability.
 
 The suit-report-result-record indicates the exact point in the manifest
 or manifest dependency tree where the error occurred.
+
+NOTE: Some deployments use `SUIT_Command_Invoke`, which can transfer
+control to invoked code that never returns to the Manifest Processor.
+When a SUIT\_Report is produced for remote attestation, implementations
+often need to sign the report before attempting the invoke. Signing with
+an unconditional "success" result would be misleading if the invocation
+ultimately fails. Implementers can leave the invoke outcome
+implicit—allowing a verifier to infer that execution was handed off—or,
+when the result must be reported before invocation, use
+`suit-report-reason-invoke-pending` to signal that invocation is about to
+occur without asserting a final outcome.
 
 suit-report-capability-report provides a mechanism to report the capabilities of the Manifest Processor. The SUIT\_Capability\_Report is described in {{capabilities}}. The capability report is optional to include in the SUIT\_Report, according to an application-specific policy. While the SUIT\_Capability\_Report is not expected to be very large, applications should ensure that they only report capabilities when necessary in order to conserve bandwidth. A capability report is not necessary except when:
 
@@ -553,15 +570,15 @@ SUIT\_COSE\_Profiles, which use AES-CTR encryption, are not integrity protected 
 
 IANA is requested to rename the overall SUIT registry group (https://www.iana.org/assignments/suit/suit.xhtml) "Software Update for the Internet of Things (SUIT)".
 
-IANA is requested to allocate a CBOR tag {{cbor-tag}}for each of:
+IANA is requested to allocate a CBOR tag for each of the following items. Please see {{cbor-tag}} for further details.
 
 * SUIT\_Report\_Protected
 * SUIT\_Reference
 * SUIT\_Capability\_Report
 
-IANA is requested to allocate a CoAP content-format {{?RFC7252}} and a media-type for SUIT\_Report {{media-type}}.
+IANA is requested to allocate a CoAP content-format {{?RFC7252}} and a media-type for SUIT\_Report {{media-type}}. Please see {{media-type}} and {{coap-cf}} for further details.
 
-IANA is also requested to add the following registries to the SUIT registry group (https://www.iana.org/assignments/suit/suit.xhtml):
+IANA is also requested to add the following registries to the SUIT registry group (https://www.iana.org/assignments/suit/suit.xhtml).
 
 * SUIT\_Report Elements {{iana-suit-report-elements}}
 * SUIT\_Record Elements {{iana-suit-record-elements}}
@@ -572,7 +589,11 @@ For each of these registries, registration policy is:
 
 * -256 to 255: Standards Action
 * -65536 to 257, 256 to 65535: Specification Required
-* -4294967296 to -65537, 65536 to 4294967295: First Come, First Served
+* -4294967296 to -65537, 65536 to 4294967295: First Come First Served
+
+Requests in the Standards Action and Specification Required ranges MUST also
+undergo designated expert review as described below; this guidance supplements
+the normal IANA processing for those policies.
 
 ## Expert Review Instructions
 
@@ -633,7 +654,7 @@ Author/Change controller:
 Provisional registration:
 : no
 
-## CoAP Content-Format Registration
+## CoAP Content-Format Registration {#coap-cf}
 
 IANA is requested to assign a CoAP Content-Format ID for the SUIT\_Report media type in the "CoAP Content-Formats" registry, from the "IETF Review with Expert Review or IESG Approval with Expert Review" space (256..9999), within the "CoRE Parameters" registry group {{RFC7252}} {{IANA.core-parameters}}:
 
@@ -657,14 +678,14 @@ IANA is requested to create a new registry for SUIT\_Report Elements.
 
 Label | Name | CDDL Label | Reference
 ---|---|---|---
-2 | Nonce | suit-report-nonce |{{suit-report}}
-3 | Records | suit-report-records | {{suit-report}}
-4 | Result | suit-report-result | {{suit-report}}
-5 | Result Code | suit-report-result-code | {{suit-report}}
-6 | Result Record | suit-report-result-record | {{suit-report}}
-7 | Result Reason | suit-report-result-reason | {{suit-report}}
-8 | Capability Report | suit-report-capability-report | {{suit-report}}
-99 | Reference | SUIT_Reference | suit-reference | {{suit-report}}
+2 | Nonce | suit-report-nonce |{{suit-report}} of {{&SELF}}
+3 | Records | suit-report-records | {{suit-report}} of {{&SELF}}
+4 | Result | suit-report-result | {{suit-report}} of {{&SELF}}
+5 | Result Code | suit-report-result-code | {{suit-report}} of {{&SELF}}
+6 | Result Record | suit-report-result-record | {{suit-report}} of {{&SELF}}
+7 | Result Reason | suit-report-result-reason | {{suit-report}} of {{&SELF}}
+8 | Capability Report | suit-report-capability-report | {{suit-report}} of {{&SELF}}
+99 | Reference | suit-reference | {{suit-report}} of {{&SELF}}
 
 ## SUIT\_Record Elements {#iana-suit-record-elements}
 
@@ -672,11 +693,11 @@ IANA is requested to create a new registry for SUIT\_Record Elements.
 
 Label | Name | CDDL Label | Reference
 ---|---|---|---
-0 | Manifest ID | suit-record-manifest-id | {{suit-record}}
-1 | Manifest Section | suit-record-manifest-section | {{suit-record}}
-2 | Section Offset | suit-record-section-offset | {{suit-record}}
-3 | Component Index  | suit-record-component-index | {{suit-record}}
-4 | Record Properties | suit-record-properties | {{suit-record}}
+0 | Manifest ID | suit-record-manifest-id | {{suit-record}} of {{&SELF}}
+1 | Manifest Section | suit-record-manifest-section | {{suit-record}} of {{&SELF}}
+2 | Section Offset | suit-record-section-offset | {{suit-record}} of {{&SELF}}
+3 | Component Index  | suit-record-component-index | {{suit-record}} of {{&SELF}}
+4 | Record Properties | suit-record-properties | {{suit-record}} of {{&SELF}}
 
 ## SUIT\_Report Reasons {#iana-suit-report-reasons}
 
@@ -684,18 +705,19 @@ IANA is requested to create a new registry for SUIT\_Report Reasons.
 
 Label | Name | CDDL Label | Reference
 ---|---|---|---
-0 | Result OK | suit-report-reason-ok | {{suit-report-result}}
-1 | CBOR Parse Failure | suit-report-reason-cbor-parse | {{suit-report-result}}
-2 | Unsupported COSE Structure or Header | suit-report-reason-cose-unsupported | {{suit-report-result}}
-3 | Unsupported COSE Algorithm | suit-report-reason-alg-unsupported |  {{suit-report-result}}
-4 | Signature / MAC verification failed | suit-report-reason-unauthorised | {{suit-report-result}}
-5 | Unsupported SUIT Command | suit-report-reason-command-unsupported | {{suit-report-result}}
-6 | Unsupported SUIT Component | suit-report-reason-component-unsupported | {{suit-report-result}}
-7 | Unauthorized SUIT Component | suit-report-reason-component-unauthorised | {{suit-report-result}}
-8 | Unsupported SUIT Parameter | suit-report-reason-parameter-unsupported | {{suit-report-result}}
-9 | Severing Unsupported | suit-report-severing-unsupported | {{suit-report-result}}
-10 | Condition Failed | suit-report-reason-condition-failed | {{suit-report-result}}
-11 | Operation Failed | suit-report-reason-operation-failed | {{suit-report-result}}
+0 | Result OK | suit-report-reason-ok | {{suit-report-result}} of {{&SELF}}
+1 | CBOR Parse Failure | suit-report-reason-cbor-parse | {{suit-report-result}} of {{&SELF}}
+2 | Unsupported COSE Structure or Header | suit-report-reason-cose-unsupported | {{suit-report-result}} of {{&SELF}}
+3 | Unsupported COSE Algorithm | suit-report-reason-alg-unsupported |  {{suit-report-result}} of {{&SELF}}
+4 | Signature / MAC verification failed | suit-report-reason-unauthorised | {{suit-report-result}} of {{&SELF}}
+5 | Unsupported SUIT Command | suit-report-reason-command-unsupported | {{suit-report-result}} of {{&SELF}}
+6 | Unsupported SUIT Component | suit-report-reason-component-unsupported | {{suit-report-result}} of {{&SELF}}
+7 | Unauthorized SUIT Component | suit-report-reason-component-unauthorised | {{suit-report-result}} of {{&SELF}}
+8 | Unsupported SUIT Parameter | suit-report-reason-parameter-unsupported | {{suit-report-result}} of {{&SELF}}
+9 | Severing Unsupported | suit-report-reason-severing-unsupported | {{suit-report-result}} of {{&SELF}}
+10 | Condition Failed | suit-report-reason-condition-failed | {{suit-report-result}} of {{&SELF}}
+11 | Operation Failed | suit-report-reason-operation-failed | {{suit-report-result}} of {{&SELF}}
+12 | Invocation Pending | suit-report-reason-invoke-pending | {{suit-report-result}} of {{&SELF}}
 
 
 ## SUIT Capability Report Elements {#iana-suit-capability-report}
@@ -704,16 +726,16 @@ IANA is requested to create a new registry for SUIT Capability Report Elements.
 
 Label | Name | Reference
 ---|---|---
-1 | Components | suit-component-capabilities | {{capabilities}}
-2 | Commands | suit-command-capabilities | {{capabilities}}
-3 | Parameters | suit-parameters-capabilities | {{capabilities}}
-4 | Cryptographic Algorithms | suit-crypt-algo-capabilities | {{capabilities}}
-5 | Envelope Elements | suit-envelope-capabilities | {{capabilities}}
-6 | Manifest Elements | suit-manifest-capabilities | {{capabilities}}
-7 | Common Elements | suit-common-capabilities | {{capabilities}}
-8 | Text Elements | suit-text-capabilities | {{capabilities}}
-9 | Component Text Elements | suit-text-component-capabilities | {{capabilities}}
-10 | Dependency Capabilities | suit-dependency-capabilities | {{capabilities}}
+1 | Components | suit-component-capabilities | {{capabilities}} of {{&SELF}}
+2 | Commands | suit-command-capabilities | {{capabilities}} of {{&SELF}}
+3 | Parameters | suit-parameters-capabilities | {{capabilities}} of {{&SELF}}
+4 | Cryptographic Algorithms | suit-crypt-algo-capabilities | {{capabilities}} of {{&SELF}}
+5 | Envelope Elements | suit-envelope-capabilities | {{capabilities}} of {{&SELF}}
+6 | Manifest Elements | suit-manifest-capabilities | {{capabilities}} of {{&SELF}}
+7 | Common Elements | suit-common-capabilities | {{capabilities}} of {{&SELF}}
+8 | Text Elements | suit-text-capabilities | {{capabilities}} of {{&SELF}}
+9 | Component Text Elements | suit-text-component-capabilities | {{capabilities}} of {{&SELF}}
+10 | Dependency Capabilities | suit-dependency-capabilities | {{capabilities}} of {{&SELF}}
 
 #  Security Considerations {#seccons}
 
@@ -784,4 +806,3 @@ To be valid, the following CDDL MUST have the COSE CDDL appended to it. The COSE
 ; NOTE: '\' line wrapping per RFC 8792
 {::include-fold draft-ietf-suit-report.cddl}
 ~~~
-

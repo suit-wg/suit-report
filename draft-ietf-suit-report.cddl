@@ -100,9 +100,10 @@ SUIT_Report_Reasons /= suit-report-reason-command-unsupported
 SUIT_Report_Reasons /= suit-report-reason-component-unsupported
 SUIT_Report_Reasons /= suit-report-reason-component-unauthorised
 SUIT_Report_Reasons /= suit-report-reason-parameter-unsupported
-SUIT_Report_Reasons /= suit-report-severing-unsupported
+SUIT_Report_Reasons /= suit-report-reason-severing-unsupported
 SUIT_Report_Reasons /= suit-report-reason-condition-failed
 SUIT_Report_Reasons /= suit-report-reason-operation-failed
+SUIT_Report_Reasons /= suit-report-reason-invoke-pending
 
 suit-report-reason-ok = 0
 suit-report-reason-cbor-parse = 1
@@ -113,9 +114,10 @@ suit-report-reason-command-unsupported = 5
 suit-report-reason-component-unsupported = 6
 suit-report-reason-component-unauthorised = 7
 suit-report-reason-parameter-unsupported = 8
-suit-report-severing-unsupported = 9
+suit-report-reason-severing-unsupported = 9
 suit-report-reason-condition-failed = 10
 suit-report-reason-operation-failed = 11
+suit-report-reason-invoke-pending = 12
 
 suit-component-capabilities        = 1
 suit-command-capabilities          = 2
