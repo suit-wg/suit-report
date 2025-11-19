@@ -291,7 +291,7 @@ capability report in {{capabilities}}.
 
 The suit-reference provides a reference URI and digest for a suit
 manifest. The URI MUST exactly match the suit-reference-uri
-({{I-D.ietf-suit-manifest}}, Section 8.4.3) that is provided in the
+({{Section 8.4.3 of I-D.ietf-suit-manifest}}) that is provided in the
 manifest. The digest is the digest of the manifest, exactly as reported in
 SUIT_Authentication, element 0 ({{I-D.ietf-suit-manifest}}, Section 8.3).
 
