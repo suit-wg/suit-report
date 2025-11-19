@@ -141,7 +141,7 @@ To reconstruct the flow of a manifest, a developer needs
 a list of metadata about failed conditions:
 
 - the current manifest
-- the current Command Sequence ({{I-D.ietf-suit-manifest}}, Section 5.3.3)
+- the current Command Sequence ({{Section 5.3.3 of I-D.ietf-suit-manifest}})
 - the offset into the current Command Sequence
 - the current component index
 - the "reason" for failure
