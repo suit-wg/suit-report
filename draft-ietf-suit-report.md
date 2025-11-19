@@ -447,7 +447,7 @@ For a Verifier to consume the SUIT\_Report, it requires a copy of the
 SUIT\_Manifest. The Verifier then replays the SUIT\_Manifest, using the
 SUIT\_Report to resolve whether each condition is met. It identifies each
 measurement that is required by attestation policy and records this
-measurement as a Claim ({{-EAT}}, Section 4). It evaluates whether the SUIT\_Report
+measurement as a Claim ({{Section 4 of -EAT}}). It evaluates whether the SUIT\_Report
 correctly matches the SUIT\_Manifest as an element of evaluating
 trustworthiness. For example there are several indicators that would show
 that a SUIT\_Report does not match a SUIT\_Manifest. If any of the following
