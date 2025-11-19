@@ -239,7 +239,7 @@ suit-record-properties contains any measured properties that led to the
 command failure.
 For example, this could be the actual value of a SUIT\_Digest or
 class identifier. This is encoded in a SUIT\_Parameters block as defined
-in {{I-D.ietf-suit-manifest}}, Section 8.4.8.
+in {{Section 8.4.8 of I-D.ietf-suit-manifest}}.
 
 # The SUIT\_Report {#suit-report}
 
