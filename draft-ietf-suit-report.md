@@ -308,7 +308,7 @@ For example, attestation evidence typically contains a proof of
 freshness.
 
 suit-report-manifest-digest provides a SUIT\_Digest (as defined in
-{{I-D.ietf-suit-manifest}}, Section 10) that is the characteristic digest of the
+{{Section 10 of I-D.ietf-suit-manifest}}) that is the characteristic digest of the
 Root manifest. This digest MUST be the same digest as is held in
 the first element of SUIT\_Authentication in the referenced
 Manifest\_Envelope.
