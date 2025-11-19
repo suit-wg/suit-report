@@ -799,7 +799,7 @@ The authors would like to thank Dave Thaler for his feedback.
 # Full CDDL {#full-cddl}
 In order to create a valid SUIT\_Report document the structure of the corresponding CBOR message MUST adhere to the following CDDL ({{-CDDL}}) data definition.
 
-To be valid, the following CDDL MUST have the COSE CDDL appended to it. The COSE CDDL can be obtained by following the directions in {{-cose, Section 1.4}}. It must also have the CDDL from {{I-D.ietf-suit-mti}} appended to it. This CDDL is line-wrapped per {{RFC8792}}
+To be valid, the following CDDL MUST have the COSE CDDL appended to it. The COSE CDDL can be obtained by following the directions in {{Section 1.4 of -cose}}. It must also have the CDDL from {{I-D.ietf-suit-mti}} appended to it. This CDDL is line-wrapped per {{RFC8792}}
 
 
 ~~~ CDDL
