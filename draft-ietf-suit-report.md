@@ -108,8 +108,8 @@ The CBOR objects defined in this document allow devices to:
 {::boilerplate bcp14-tagged}
 
 
-The terms "Author", "Recipient", and "Manifest" are defined in Section 2 of
-{{I-D.ietf-suit-manifest}}.
+The terms "Author", "Recipient", and "Manifest" are defined in 
+{{Section 2 of I-D.ietf-suit-manifest}}.
 
 Additionally, this document uses the term
 Boot: initialization of an executable image. Although this
@@ -427,7 +427,7 @@ to be measured in order to demonstrate the integrity of the measuring environmen
 Therefore, if a Remote Attestation format that conveys Attestation Evidence, such as an Entity Attestation Token (EAT, see {{-EAT}}), contains a SUIT\_Report, then it MUST also include an integrity measurement of the Manifest Processor, the Report Generator and any bootloader or OS environment that ran before or during the 
 execution of both.
 
-If Reference Values (RFC9334, Section 8.3) required by the Verifier are delivered in a SUIT\_Envelope, this codifies the delivery of appraisal information to the Verifier:
+If Reference Values ({{Section 8.3 of RFC9334}}) required by the Verifier are delivered in a SUIT\_Envelope, this codifies the delivery of appraisal information to the Verifier:
 
 * The Firmware Distributor:
     * sends the SUIT\_Envelope to the Verifier without payload or text, but with Reference Values
@@ -500,7 +500,7 @@ A SUIT\_Component\_Capability is similar to a SUIT\_Component\_ID, with one diff
 
 When reporting capabilities, it is OPTIONAL to report capabilities that are declared mandatory by the SUIT Manifest {{I-D.ietf-suit-manifest}}. Capabilities defined by extensions MUST be reported.
 
-Additional capability reporting can be added as follows: if a manifest element does not exist in this map, it can be added by specifying the CBOR path to the manifest element in an array and using this as the key. For example SUIT\_Dependencies, as described in {{I-D.ietf-suit-trust-domains}}, Section 5.2.2, could have an extension added, which was key 3 in the SUIT\_Dependencies map. This capability would be reported as: \[3, 3, 1\] => \[3\], where the key consists of the key for SUIT\_Manifest (3), the key for SUIT\_Common (3), and the key for SUIT\_Dependencies (1). Then the value indicates that this manifest processor supports the extension (3).
+Additional capability reporting can be added as follows: if a manifest element does not exist in this map, it can be added by specifying the CBOR path to the manifest element in an array and using this as the key. For example SUIT\_Dependencies, as described in {{Section 5.2.2 of I-D.ietf-suit-trust-domains}},  could have an extension added, which was key 3 in the SUIT\_Dependencies map. This capability would be reported as: \[3, 3, 1\] => \[3\], where the key consists of the key for SUIT\_Manifest (3), the key for SUIT\_Common (3), and the key for SUIT\_Dependencies (1). Then the value indicates that this manifest processor supports the extension (3).
 
 #  EAT Claim {#eat}
 
@@ -520,13 +520,13 @@ component, the Vendor ID and Class ID of a component, etc.
 
 #  SUIT\_Report Container {#container}
 
-Transmission of the SUIT\_Report MUST satisfy the requirements of {{RFC9124}}, Section 4.3.16: REQ.SEC.REPORTING.
+Transmission of the SUIT\_Report MUST satisfy the requirements of {{Section 4.3.16 of RFC9124}}: REQ.SEC.REPORTING.
 
   Status reports from the device to any remote system MUST be performed over an authenticated, confidential channel in order to prevent modification or spoofing of the reports.
 
 As a result, the SUIT\_Report MUST be transported using one of the following methods:
 
-- As part of a larger document that provides authenticity guarantees, such as within a `measurements` claim in an Entity Attestation Token (EAT {{-EAT}}, Section 4.2.16).
+- As part of a larger document that provides authenticity guarantees, such as within a `measurements` claim in an Entity Attestation Token (EAT, {{Section 4.2.16 of -EAT}}).
 - As the payload of a message transmitted over a communication security protocol, such as DTLS {{?RFC9147}}.
 - Encapsulated within a secure container, such as a COSE structure. In the case of COSE, the container MUST be either a `COSE_Encrypt0` or `COSE_Sign1` structure. The SUIT_Report MUST be the sole payload, as illustrated by the CDDL fragment below.
 
