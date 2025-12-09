@@ -1,7 +1,7 @@
 ---
 title: Secure Reporting of SUIT Update Status
 abbrev: SUIT Reports
-docname: draft-ietf-suit-report-17
+docname: draft-ietf-suit-report-18
 category: std
 stream: IETF
 
