@@ -345,7 +345,7 @@ SUIT_Record_System_Properties = {
 }
 ~~~~
 
-## SUIT\_Report Result {#suit-report-result}
+## suit-report-result {#suit-report-result}
 
 suit-report-result provides a mechanism to show that the SUIT procedure
 completed successfully (value is true) or why it failed (value is a map
@@ -621,6 +621,9 @@ Subtype name:
 Required parameters:
 : n/a
 
+Optional parameters: 
+: n/a
+
 Encoding considerations:
 : binary (CBOR)
 
@@ -628,7 +631,7 @@ Security considerations:
 : {{seccons}} of {{&SELF}}
 
 Interoperability considerations:
-: n/a
+: SUIT Reports are encoded as CBOR and optionally wrapped in any COSE structure (e.g., COSE_Sign1, COSE_Mac0, COSE_Encrypt0). Receivers must be able to identify and process the COSE envelope used and support compatible COSE algorithms for validation or decryption. All versioning and structure are self-describing within the CBOR SUIT_Report format, and no media-type parameters are used for negotiation. Interoperability therefore depends on shared deployment profiles that specify the expected COSE protections and algorithms. Comprehension of a SUIT Report is dependent on obtaining a matching SUIT Manifest. The structure is effectively opaque if the matching SUIT Manifest cannot be sourced.
 
 Published specification:
 : {{&SELF}}
