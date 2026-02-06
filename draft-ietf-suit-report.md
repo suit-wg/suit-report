@@ -587,11 +587,11 @@ IANA is also requested to add the following registries to the SUIT registry grou
 
 For each of these registries, registration policy is:
 
-* -256 to 255: Standards Action
-* -65536 to 257, 256 to 65535: Specification Required
+* -256 to 255: Standards Action With Expert Review
+* -65536 to -257, 256 to 65535: Specification Required
 * -4294967296 to -65537, 65536 to 4294967295: First Come First Served
 
-Requests in the Standards Action and Specification Required ranges MUST also
+Requests in the Standards Action and Specification Required ranges MUST
 undergo designated expert review as described below; this guidance supplements
 the normal IANA processing for those policies.
 
@@ -727,8 +727,8 @@ Label | Name | CDDL Label | Reference
 
 IANA is requested to create a new registry for SUIT Capability Report Elements.
 
-Label | Name | Reference
----|---|---
+Label | Name | CDDL Label | Reference
+---|---|---|---
 1 | Components | suit-component-capabilities | {{capabilities}} of {{&SELF}}
 2 | Commands | suit-command-capabilities | {{capabilities}} of {{&SELF}}
 3 | Parameters | suit-parameters-capabilities | {{capabilities}} of {{&SELF}}
