@@ -35,7 +35,7 @@ SUIT_Report = {
     suit-report-result-reason => SUIT_Report_Reasons,
   },
   ? suit-report-capability-report => SUIT_Capability_Report,
-  $$SUIT_Report_Extensions
+  * $$SUIT_Report_Extensions
 }
 
 SUIT_Reference = [
@@ -49,7 +49,7 @@ SUIT_Record = [
     suit-record-section-offset     : uint,
     suit-record-component-index    : uint,
     suit-record-properties         : {*$$SUIT_Parameters},
-    $$SUIT_Record_Extensions
+    * $$SUIT_Record_Extensions
 ]
 
 system-property-claims = {
@@ -69,7 +69,7 @@ SUIT_Capability_Report = {
   ? suit-text-component-capabilities => [+ int],
   ? suit-dependency-capabilities     => [+ int],
   * [+int]                           => [+ int],
-  $$SUIT_Capability_Report_Extensions
+  * $$SUIT_Capability_Report_Extensions
 }
 
 SUIT_Component_Capability = [*bstr,?true]
