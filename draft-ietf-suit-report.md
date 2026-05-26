@@ -1,7 +1,7 @@
 ---
 title: Secure Reporting of SUIT Update Status
 abbrev: SUIT Reports
-docname: draft-ietf-suit-report-18
+docname: draft-ietf-suit-report
 category: std
 stream: IETF
 
@@ -116,6 +116,14 @@ Boot: initialization of an executable image. Although this
 document refers to boot, any boot-specific operations described
 are equally applicable to starting an executable in an OS context.
 
+The term "Reporting Engine" is used as a conceptual function that
+collects reporting information from a Manifest Processor and decides
+whether to emit report output. A Reporting Engine is not required to be
+a separate implementation component. Implementations may expose this
+function through one or more internal APIs. This document specifies the
+report format and externally observable semantics; it does not specify a
+mandatory local API.
+
 # The SUIT\_Record {#suit-record}
 
 The SUIT\_Record is a record of a decision taken by the Manifest Processor.
@@ -169,42 +177,52 @@ SUIT_Record = [
     suit-record-manifest-section   : int,
     suit-record-section-offset     : uint,
     suit-record-component-index    : uint,
-    suit-record-properties         : SUIT_Parameters,
-    $$SUIT_Record_Extensions
+    suit-record-properties         : {*$$SUIT_Parameters},
+    * $$SUIT_Record_Extensions
 ]
 ~~~
 
-suit-record-manifest-id is used to identify which manifest contains the
-command that caused the record to be generated. The manifest id is a
-list of integers that form a walk of the manifest tree, starting at the
-root. An empty list indicates that the command was contained in the
-root manifest. If the list is not empty, the command was contained in
-one of the root manifest's dependencies, or nested even further below
-that.
+suit-record-manifest-id identifies the manifest whose execution
+produced the record. The manifest id is a list of integers that form a
+walk of the manifest dependency tree, starting at the root manifest. An
+empty list indicates the root manifest. If the list is not empty, each
+integer is the Component Index, as defined for Set Component Index in
+{{Section 8.4.10.1 of I-D.ietf-suit-manifest}}, that selected a
+dependency manifest from the manifest identified by the preceding path
+elements. The final integer identifies the dependency manifest whose
+execution produced the record.
 
-For example, suppose that the root manifest has 3 dependencies
-and each of those dependencies has 2 dependencies of its own:
+suit-record-manifest-id and suit-record-component-index therefore refer
+to different index domains. Each element of suit-record-manifest-id is a
+Component Index that identifies a dependency envelope as a component of
+the manifest at the previous level of the dependency tree.
+suit-record-component-index is the current Component Index within the
+manifest identified by suit-record-manifest-id.
+
+For example, suppose that the root manifest has 3 dependency
+components and each of those dependency manifests has 2 dependency
+components of its own:
 
 * Root
 
-    * Dependency A (index 0)
+    * Dependency A (Component Index 0 in Root)
 
-        * Dependency AA (index 0,0)
-        * Dependency AB (index 0,1)
+        * Dependency AA (Component Index 0 in Dependency A)
+        * Dependency AB (Component Index 1 in Dependency A)
 
-    * Dependency B (index 1)
+    * Dependency B (Component Index 1 in Root)
 
-        * Dependency BA (index 1,0)
-        * Dependency BB (index 1,1)
+        * Dependency BA (Component Index 0 in Dependency B)
+        * Dependency BB (Component Index 1 in Dependency B)
 
-    * Dependency C (index 2)
+    * Dependency C (Component Index 2 in Root)
 
-        * Dependency CA (index 2,0)
-        * Dependency CB (index 2,1)
+        * Dependency CA (Component Index 0 in Dependency C)
+        * Dependency CB (Component Index 1 in Dependency C)
 
-A suit-record-manifest-id of \[1,0\] would indicate that the current command was
-contained within Dependency BA. Similarly, a suit-record-manifest-id of \[2,1\]
-would indicate Dependency CB
+A suit-record-manifest-id of \[1,0\] would indicate that the record was
+produced while executing Dependency BA. Similarly, a
+suit-record-manifest-id of \[2,1\] would indicate Dependency CB.
 
 suit-record-manifest-section indicates which Command Sequence of the manifest was
 active. Only the "top level" Command Sequences, with entries in the Manifest are
@@ -236,10 +254,10 @@ processor to loop over commands using a series of component-ids, so the
 developer needs to know which was selected when the command executed.
 
 suit-record-properties contains any measured properties that led to the
-command failure.
-For example, this could be the actual value of a SUIT\_Digest or
-class identifier. This is encoded in a SUIT\_Parameters block as defined
-in {{Section 8.4.8 of I-D.ietf-suit-manifest}}.
+command failure. For example, this could be the actual value of a
+SUIT\_Digest or class identifier. This is encoded as a map whose entries
+are drawn from the $$SUIT\_Parameters group defined in
+{{Section 8.4.8 of I-D.ietf-suit-manifest}}.
 
 # The SUIT\_Report {#suit-report}
 
@@ -262,25 +280,25 @@ a SUIT\_Reference:
 SUIT_Report = {
   suit-reference              => SUIT_Reference,
   ? suit-report-nonce         => bstr,
-  suit-report-records         => \
-        \[ * SUIT_Record / system-property-claims \],
+  suit-report-records         => [
+    * SUIT_Record / system-property-claims ],
   suit-report-result          => true / {
     suit-report-result-code   => int,
     suit-report-result-record => SUIT_Record,
     suit-report-result-reason => SUIT_Report_Reasons,
   },
   ? suit-report-capability-report => SUIT_Capability_Report,
-  $$SUIT_Report_Extensions
+  * $$SUIT_Report_Extensions
 }
 
 system-property-claims = {
   system-component-id => SUIT_Component_Identifier,
-  + SUIT_Parameters,
+  + $$SUIT_Parameters,
 }
 
 SUIT_Reference = [
-    suit-report-manifest-uri  : tstr,
-    suit-report-manifest-digest : SUIT_Digest,
+    suit-report-manifest-uri : tstr,
+    suit-report-manifest-digest : SUIT_Digest
 ]
 ~~~
 
@@ -294,6 +312,17 @@ manifest. The URI MUST exactly match the suit-reference-uri
 ({{Section 8.4.3 of I-D.ietf-suit-manifest}}) that is provided in the
 manifest. The digest is the digest of the manifest, exactly as reported in
 SUIT_Authentication, element 0 ({{Section 8.3 of I-D.ietf-suit-manifest}}).
+
+A recipient of a SUIT\_Report cannot be assumed to already possess the
+SUIT\_Manifest needed to interpret it. SUIT\_Records identify locations
+in a manifest and contain Component Indices, so they are meaningful only
+when the matching manifest can be obtained and validated using
+suit-report-manifest-uri and suit-report-manifest-digest. In contrast,
+system-property-claims contain a SUIT\_Component\_Identifier rather than
+only a Component Index. A recipient MAY process system-property-claims
+without first obtaining the matching SUIT\_Manifest, but MUST NOT use
+SUIT\_Records for manifest reconstruction unless the matching
+SUIT\_Manifest is available.
 
 NOTE: The digest is used
 in preference to other identifiers in the manifest because it allows
@@ -340,7 +369,7 @@ once. A recipient may convert the result to a more conventional structure:
 ~~~~CDDL
 SUIT_Record_System_Properties = {
   * component-id => {
-    + SUIT_Parameters,
+    + $$SUIT_Parameters,
   }
 }
 ~~~~
@@ -479,7 +508,7 @@ The CDDL for a SUIT\_Capability\_Report follows:
 
 ~~~~CDDL
 SUIT_Capability_Report = {
-  suit-component-capabilities  => [+ SUIT_Component_Capability ]
+  suit-component-capabilities  => [+ SUIT_Component_Capability]
   suit-command-capabilities          => [+ int],
   suit-parameters-capabilities       => [+ int],
   suit-crypt-algo-capabilities       => [+ int],
@@ -490,7 +519,7 @@ SUIT_Capability_Report = {
   ? suit-text-component-capabilities => [+ int],
   ? suit-dependency-capabilities     => [+ int],
   * [+int]                           => [+ int],
-  $$SUIT_Capability_Report_Extensions
+  * $$SUIT_Capability_Report_Extensions
 }
 
 SUIT_Component_Capability = [*bstr,?true]
@@ -528,7 +557,7 @@ As a result, the SUIT\_Report MUST be transported using one of the following met
 
 - As part of a larger document that provides authenticity guarantees, such as within a `measurements` claim in an Entity Attestation Token (EAT, {{Section 4.2.16 of -EAT}}).
 - As the payload of a message transmitted over a communication security protocol, such as DTLS {{?RFC9147}}.
-- Encapsulated within a secure container, such as a COSE structure. In the case of COSE, the container MUST be either a `COSE_Encrypt0` or `COSE_Sign1` structure. The SUIT_Report MUST be the sole payload, as illustrated by the CDDL fragment below.
+- Encapsulated within a secure container, such as a COSE structure. In the case of COSE, the container MUST provide authenticity and integrity using `COSE_Sign1` or `COSE_Mac0`; confidentiality MAY be provided by carrying a `COSE_Encrypt0` object as the authenticated payload. The SUIT_Report or encrypted SUIT_Report MUST be the sole payload, as illustrated by the CDDL fragment below.
 
 ~~~CDDL
 SUIT_Report_Protected /= SUIT_Report_COSE_Sign1 \
@@ -565,6 +594,14 @@ SUIT_Report_plaintext = bstr .cbor SUIT_Report
 ~~~
 
 SUIT\_COSE\_Profiles, which use AES-CTR encryption, are not integrity protected and authenticated. For this purpose, SUIT\_Report\_Protected defines authenticated containers with an encrypted payload.
+
+If a report cannot be constructed or authenticated according to local
+policy, the recipient reports the failure through an
+implementation-specific local error or logging mechanism. A recipient
+MUST NOT emit an unauthenticated SUIT\_Report when policy requires
+authenticated reports. If a partial SUIT\_Report is emitted, it MUST
+satisfy the same authentication and integrity policy as any other
+SUIT\_Report emitted by that recipient.
 
 #  IANA Considerations {#iana}
 
@@ -631,7 +668,7 @@ Security considerations:
 : {{seccons}} of {{&SELF}}
 
 Interoperability considerations:
-: SUIT Reports are encoded as CBOR and optionally wrapped in any COSE structure (e.g., COSE_Sign1, COSE_Mac0, COSE_Encrypt0). Receivers must be able to identify and process the COSE envelope used and support compatible COSE algorithms for validation or decryption. All versioning and structure are self-describing within the CBOR SUIT_Report format, and no media-type parameters are used for negotiation. Interoperability therefore depends on shared deployment profiles that specify the expected COSE protections and algorithms. Comprehension of a SUIT Report is dependent on obtaining a matching SUIT Manifest. The structure is effectively opaque if the matching SUIT Manifest cannot be sourced.
+: SUIT Reports are encoded as CBOR and can be wrapped in COSE_Sign1 or COSE_Mac0, optionally carrying COSE_Encrypt0 as the authenticated payload. Receivers must be able to identify and process the COSE envelope used and support compatible COSE algorithms for validation or decryption. All versioning and structure are self-describing within the CBOR SUIT_Report format, and no media-type parameters are used for negotiation. Interoperability therefore depends on shared deployment profiles that specify the expected COSE protections and algorithms. Comprehension of SUIT_Records is dependent on obtaining a matching SUIT Manifest. System property claims can still be processed without the manifest because they contain SUIT_Component_Identifier values rather than only Component Indices.
 
 Published specification:
 : {{&SELF}}
