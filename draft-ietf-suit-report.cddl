@@ -39,7 +39,7 @@ SUIT_Report = {
 }
 
 SUIT_Reference = [
-    suit-report-manifest-uri : tstr,
+    ? suit-report-manifest-uri : tstr,
     suit-report-manifest-digest : SUIT_Digest
 ]
 

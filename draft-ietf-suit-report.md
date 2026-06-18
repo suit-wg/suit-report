@@ -1,7 +1,7 @@
 ---
 title: Secure Reporting of SUIT Update Status
 abbrev: SUIT Reports
-docname: draft-ietf-suit-report
+docname: draft-ietf-suit-report-21
 category: std
 stream: IETF
 
@@ -297,7 +297,7 @@ system-property-claims = {
 }
 
 SUIT_Reference = [
-    suit-report-manifest-uri : tstr,
+    ? suit-report-manifest-uri : tstr,
     suit-report-manifest-digest : SUIT_Digest
 ]
 ~~~
