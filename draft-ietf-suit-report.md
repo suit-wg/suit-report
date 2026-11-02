@@ -1,7 +1,7 @@
 ---
 title: Secure Reporting of SUIT Update Status
 abbrev: SUIT Reports
-docname: draft-ietf-suit-report-21
+docname: draft-ietf-suit-report-22
 category: std
 stream: IETF
 
@@ -297,8 +297,8 @@ system-property-claims = {
 }
 
 SUIT_Reference = [
-    ? suit-report-manifest-uri : tstr,
-    suit-report-manifest-digest : SUIT_Digest
+    suit-report-manifest-digest : SUIT_Digest,
+    ? suit-report-manifest-uri : tstr
 ]
 ~~~
 
@@ -307,17 +307,21 @@ encoding of `suit-report-records` is defined in {{suit-report-records}},
 the result semantics in {{suit-report-result}}, and the optional
 capability report in {{capabilities}}.
 
-The suit-reference provides a reference URI and digest for a suit
-manifest. The URI MUST exactly match the suit-reference-uri
-({{Section 8.4.3 of I-D.ietf-suit-manifest}}) that is provided in the
-manifest. The digest is the digest of the manifest, exactly as reported in
-SUIT_Authentication, element 0 ({{Section 8.3 of I-D.ietf-suit-manifest}}).
+The suit-reference provides a digest and, when available, a reference URI
+for a SUIT manifest. The digest is the digest of the manifest, exactly as
+reported in SUIT_Authentication, element 0
+({{Section 8.3 of I-D.ietf-suit-manifest}}). If the root manifest contains
+a suit-reference-uri ({{Section 8.4.3 of I-D.ietf-suit-manifest}}), the
+SUIT\_Report MUST include suit-report-manifest-uri, and its value MUST
+exactly match that suit-reference-uri. If the root manifest does not contain
+a suit-reference-uri, suit-report-manifest-uri MUST be omitted.
 
 A recipient of a SUIT\_Report cannot be assumed to already possess the
 SUIT\_Manifest needed to interpret it. SUIT\_Records identify locations
 in a manifest and contain Component Indices, so they are meaningful only
 when the matching manifest can be obtained and validated using
-suit-report-manifest-uri and suit-report-manifest-digest. In contrast,
+suit-report-manifest-digest and, when present, suit-report-manifest-uri.
+In contrast,
 system-property-claims contain a SUIT\_Component\_Identifier rather than
 only a Component Index. A recipient MAY process system-property-claims
 without first obtaining the matching SUIT\_Manifest, but MUST NOT use
@@ -343,7 +347,8 @@ the first element of SUIT\_Authentication in the referenced
 Manifest\_Envelope.
 
 suit-report-manifest-uri provides the reference URI that was provided in
-the root manifest.
+the root manifest. This field is present only when the root manifest
+contains suit-reference-uri.
 
 ## suit-report-records {#suit-report-records}
 
@@ -483,9 +488,9 @@ that a SUIT\_Report does not match a SUIT\_Manifest. If any of the following
 (not an exhaustive list) occur, then the Manifest Processor that created the
 report is not trustworthy:
 
-* Hash of SUIT\_Manifest at suit-report-manifest-uri does not match suit-report-manifest-digest
+* Hash of the SUIT\_Manifest does not match suit-report-manifest-digest
 * A SUIT\_Record is issued for a SUIT\_Command\_Sequence that does not exist 
-in the SUIT\_Manifest at suit-report-manifest-uri.
+in the SUIT\_Manifest identified by suit-report-manifest-digest.
 * A SUIT\_Record is identified at an offset that is not a condition and does
 not have a reporting policy that would indicate a SUIT\_Record is needed.
 
